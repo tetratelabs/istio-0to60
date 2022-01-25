@@ -46,16 +46,76 @@ If you have extra time, explore the `istioctl kube-inject` command.
 
 ## Deploy the application
 
-web-frontend
-service, deployment, and service account
-customers
-service, deployment, and service account
+1. Study the two kubernetes yaml files: `web-frontend.yaml` and `customers.yaml`.
 
-k apply -f .
+    ??? tldr "web-frontend.yaml"
+        ```yaml linenums="1"
+        --8<-- "web-frontend.yaml"
+        ```
 
-check that have two running pods, and two containers per pod.
+    ??? tldr "customers.yaml"
+        ```yaml linenums="1"
+        --8<-- "customers.yaml"
+        ```
 
-deploy a curl image, sleep, and use it to curl first the customers service, then the web frontend
+    Each file defines its corresponding deployment, service account, and ClusterIP service.
+
+1. Apply the two files to your Kubernetes cluster.
+
+    ```shell
+    kubectl apply -f customers.yaml
+    ```
+
+    ```shell
+    kubectl apply -f web-frontend.yaml
+    ```
+
+Confirm that:
+
+- Two pods are running, one for each service
+- Each pod consists of two containers, the one running the service image, plus the envoy sidecar
+
+    ```shell
+    kubectl get pod
+    ```
+
+## Verify access to each service
+
+Let's deploy a pod that runs a `curl` image so we can verify that each service is reachable from within the cluster.
+The istio distribution comes with a sample called `sleep` that will serve this purpose.
+
+1. Deploy `sleep` to the default namespace.
+
+    ??? tldr "sleep.yaml"
+        ```yaml linenums="1"
+        --8<-- "sleep/sleep.yaml"
+        ```
+
+    ```shell
+    kubectl apply -f sleep.yaml
+    ```
+
+1. Capture the name of the sleep pod to an environment variable
+
+    ```shell
+    SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
+    ```
+
+1. Use the `kubectl exec` command to call the `customer` service.
+
+    ```shell
+    kubectl exec $SLEEP_POD -it -- curl customers
+    ```
+
+    The console output should show a list of customers in JSON format.
+
+1. Call the `web-frontend` service
+
+    ```shell
+    kubectl exec $SLEEP_POD -it -- curl web-frontend
+    ```
+
+    The console output should show an HTML page listing customers using an HTML table.
 
 ## Next
 
