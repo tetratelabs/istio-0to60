@@ -23,7 +23,7 @@ and back to normal.
 ## Code blocks
 
 ```shell linenums="1"
-cat deployment.yaml
+cat sample.yaml
 ```
 
 ```yaml linenums="1" title="example yaml"
@@ -36,8 +36,8 @@ details:
 
 ### Includes
 
-```yaml title="deployment.yaml" linenums="1"
---8<-- "deployment.yaml"
+```yaml title="sample.yaml" linenums="1"
+--8<-- "sample.yaml"
 ```
 
 ## Tabs

@@ -44,5 +44,21 @@ kubectl get mutatingwebhookconfigurations
 
 If you have extra time, explore the `istioctl kube-inject` command.
 
-## Deploy the applications
+## Deploy the application
 
+web-frontend
+service, deployment, and service account
+customers
+service, deployment, and service account
+
+k apply -f .
+
+check that have two running pods, and two containers per pod.
+
+deploy a curl image, sleep, and use it to curl first the customers service, then the web frontend
+
+## Next
+
+In the next lab, we expose the `web-frontend` using an Istio Ingress Gateway.
+
+This will allow us to see this application in a web browser.
