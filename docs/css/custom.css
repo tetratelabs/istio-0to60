@@ -1,0 +1,7 @@
+
+/* when pygments is enabled, the language class is suppressed for some strange reason,
+  meaning this won't work / can't discriminate a shell block from any other block.
+  todo: find a fix. */
+pre code.language-shell::before {
+  content: '$ ';
+}

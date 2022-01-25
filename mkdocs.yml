@@ -1,6 +1,17 @@
-site_name: Istio 0 to 60
+site_name: Istio 0 to 60 Labs
 theme:
   name: material
+extra_css:
+  - css/custom.css
+nav:
+  - environment.md
+  - install.md
+  - the-app.md
+  - ingress.md
+  - dashboards.md
+  - security.md
+  - traffic-shifting.md
+  - summary.md
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -23,3 +34,11 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.tasklist:
       custom_checkbox: false
+  - toc:
+      permalink: true
+
+
+# consider these at some point..
+#  - pymdownx.betterem:
+#      smart_enable: all
+#  - pymdownx.smartsymbols

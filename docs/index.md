@@ -1,69 +1,9 @@
-# Welcome to MkDocs
+# Welcome!
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Welcome to the Istio 0 to 60 workshop!
 
-## Let's learn..
+On this site you will find the hands-on labs for the workshop.
 
-Eitan is [re-]learning mkdocs.
+In the first lab, we walk you through accessing and configuring your [lab environment](environment.md).
 
-## Admonitions
-
-!!! tip
-
-    this is a note.
-    and this is yet another line.
-
-!!! success
-
-    this is a note.
-    and this is yet another line.
-
-and back to normal.
-
-## Code blocks
-
-```shell linenums="1"
-cat deployment.yaml
-```
-
-```yaml linenums="1" title="example yaml"
----
-name: Eitan
-age: 52
-details:
-  kids: 3
-```
-
-### Includes
-
-```yaml title="deployment.yaml" linenums="1"
---8<-- "deployment.yaml"
-```
-
-## Tabs
-
-=== "One"
-
-    this is me.
-
-=== "Two"
-
-    another
-
-the end.
-
-## Keys
-
-++ctrl+c++
-
-## Emojis
-
-:octicons-mark-github-16:
-
-:smile:
-
-## Task lists
-
-- [x] start learning mkdocs
-- [ ] start building the workshop labs!
-
+Let's begin.
