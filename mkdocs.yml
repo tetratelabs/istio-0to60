@@ -20,7 +20,7 @@ nav:
   - dashboards.md
   - security.md
   - traffic-shifting.md
-  - summary.md
+  - Summary: summary.md
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -42,7 +42,7 @@ markdown_extensions:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.tasklist:
-      custom_checkbox: false
+      custom_checkbox: true
   - toc:
       permalink: true
 
