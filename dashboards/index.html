@@ -299,6 +299,60 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#kiali" class="md-nav__link">
+    Kiali
+  </a>
+  
+    <nav class="md-nav" aria-label="Kiali">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiali-cleanup" class="md-nav__link">
+    Kiali Cleanup
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zipkin" class="md-nav__link">
+    Zipkin
+  </a>
+  
+    <nav class="md-nav" aria-label="Zipkin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zipkin-cleanup" class="md-nav__link">
+    Zipkin Cleanup
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prometheus" class="md-nav__link">
+    Prometheus
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grafana" class="md-nav__link">
+    Grafana
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -405,6 +459,60 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#kiali" class="md-nav__link">
+    Kiali
+  </a>
+  
+    <nav class="md-nav" aria-label="Kiali">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiali-cleanup" class="md-nav__link">
+    Kiali Cleanup
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zipkin" class="md-nav__link">
+    Zipkin
+  </a>
+  
+    <nav class="md-nav" aria-label="Zipkin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zipkin-cleanup" class="md-nav__link">
+    Zipkin Cleanup
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prometheus" class="md-nav__link">
+    Prometheus
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grafana" class="md-nav__link">
+    Grafana
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -424,10 +532,10 @@
 <h2 id="deploy-the-addons">Deploy the Addons<a class="headerlink" href="#deploy-the-addons" title="Permanent link">&para;</a></h2>
 <p>The istio distribution provides addons for a number of systems that together provide observability for the service mesh:</p>
 <ul>
-<li>Zipkin or Jaeger distributed tracing</li>
-<li>Prometheus for metrics collection</li>
-<li>Grafana provides dashboards for monitoring</li>
-<li>Kiali for visualizing the mesh</li>
+<li><a href="https://zipkin.io/">Zipkin</a> or <a href="https://www.jaegertracing.io/">Jaeger</a> for distributed tracing</li>
+<li><a href="https://prometheus.io/">Prometheus</a> for metrics collection</li>
+<li><a href="https://grafana.com/">Grafana</a> provides dashboards for monitoring, using Prometheus as the data source</li>
+<li><a href="https://kiali.io/">Kiali</a> allows us to visualize the mesh</li>
 </ul>
 <p>These addons are located in the <code>samples/addons/</code> folder of the distribution.</p>
 <ol>
@@ -469,12 +577,59 @@
 <p>Run the following command to generate a mild load against the application.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
 </code></pre></div>
-<p>...</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>siege</code> command stays in the foreground while it runs.
+It may be simplest to leave it running, and open a separate terminal in your cloud shell environment.</p>
+</div>
+<h2 id="kiali">Kiali<a class="headerlink" href="#kiali" title="Permanent link">&para;</a></h2>
+<p>Launch the Kiali dashboard:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>istioctl dashboard kiali
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>istioctl dashboard</code> command also blocks.
+Leave it running until you're finished using the dashboard, at which time 
+pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span> can interrupt the process and put you back at the terminal prompt.</p>
+</div>
+<p>The Kiali dashboard displays.</p>
+<p>Customize the view as follows:</p>
+<ol>
+<li>Select the <code>Graph</code> section from the sidebar.</li>
+<li>From the <code>Namespace</code> "pulldown" menu at the top of the screen, select the <code>default</code> namespace, the location where the application's pods are running.</li>
+<li>From the third <em>pulldown</em> menu, select <em>App graph</em>.</li>
+<li>From the "Display" <em>pulldown</em>, toggle on <em>Traffic Animation</em> and <em>Security</em>.</li>
+<li>From the footer, toggle the legend so that it is visible.  Take a moment to familiarize yourself with the legend.</li>
+</ol>
+<p>Observe the visualization and note the following:</p>
 <ul>
-<li>start with kiali, demo it, consider perhaps showing how mtls is turned on inside the mesh.  mention that will come back to kiali when we begin doing traffic shifting.</li>
-<li>show zipkin and distributed traces</li>
-<li>show prometheus and grafana</li>
+<li>We can see traffic coming in through the ingress gateway to the <code>web-frontend</code>, and the subsequent calls from the <code>web-frontend</code> to the <code>customers</code> service</li>
+<li>The lines connecting the services are green, indicating healthy requests</li>
+<li>The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS</li>
 </ul>
+<p>Such visualizations are helpful in understanding the flow of requests in the mesh and in diagnosis.</p>
+<p>Feel free to spend more time exploring Kiali.</p>
+<p>We will revisit Kiali in a later lab to visualize traffic shifting such as when performing a blue-green or canary deployment.</p>
+<h3 id="kiali-cleanup">Kiali Cleanup<a class="headerlink" href="#kiali-cleanup" title="Permanent link">&para;</a></h3>
+<p>Close the Kiali dashboard.  Interrupt the <code>istioctl dashboard kiali</code> command by pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
+<h2 id="zipkin">Zipkin<a class="headerlink" href="#zipkin" title="Permanent link">&para;</a></h2>
+<p>Launch the Zipkin dashboard:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>istioctl dashboard zipkin
+</code></pre></div>
+<p>The zipkin dashboard displays.</p>
+<ul>
+<li>Click on the red '+' button and select "serviceName".</li>
+<li>Select the service named <code>web-frontend.default</code> and click on the <em>Run Query</em> button (lightblue) to the right.</li>
+</ul>
+<p>A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.</p>
+<p>Click the <em>Show</em> button to the right of one of the traces.  The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.</p>
+<p>Such traces also help us make sense of the flow of requests in a microservice architecture.</p>
+<h3 id="zipkin-cleanup">Zipkin Cleanup<a class="headerlink" href="#zipkin-cleanup" title="Permanent link">&para;</a></h3>
+<p>Close the Zipking dashboard.  Interrupt the <code>istioctl dashboard zipkin</code> command with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
+<h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Permanent link">&para;</a></h2>
+<p>[tbd]</p>
+<h2 id="grafana">Grafana<a class="headerlink" href="#grafana" title="Permanent link">&para;</a></h2>
+<p>[tbd]</p>
 
               
             </article>
