@@ -233,9 +233,81 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Ingress
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Ingress
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-ingress-gateway" class="md-nav__link">
+    The ingress gateway
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-ingress" class="md-nav__link">
+    Configuring ingress
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring ingress">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-gateway-resource" class="md-nav__link">
+    Create a Gateway resource
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-virtualservice-resource" class="md-nav__link">
+    Create a VirtualService resource
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#candidate-follow-on-exercises" class="md-nav__link">
+    Candidate follow-on exercises
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next" class="md-nav__link">
+    Next
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -321,6 +393,62 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-ingress-gateway" class="md-nav__link">
+    The ingress gateway
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-ingress" class="md-nav__link">
+    Configuring ingress
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring ingress">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-gateway-resource" class="md-nav__link">
+    Create a Gateway resource
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-virtualservice-resource" class="md-nav__link">
+    Create a VirtualService resource
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#candidate-follow-on-exercises" class="md-nav__link">
+    Candidate follow-on exercises
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next" class="md-nav__link">
+    Next
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -333,6 +461,139 @@
                 
 
 <h1 id="ingress">Ingress<a class="headerlink" href="#ingress" title="Permanent link">&para;</a></h1>
+<p>The main objective of this lab is to expose the web frontend to the public internet.</p>
+<h2 id="the-ingress-gateway">The ingress gateway<a class="headerlink" href="#the-ingress-gateway" title="Permanent link">&para;</a></h2>
+<p>When you installed Istio, in addition to deploying istiod to Kubernetes, the installation also provisioned an Ingress Gateway.</p>
+<p>View the corresponding istio ingress gateway pod in the <code>istio-system</code> namespace.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl get pod -n istio-system
+</code></pre></div>
+<p>A corresponding LoadBalancer type service was also created:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get svc -n istio-system
+</code></pre></div>
+<p>Make a note of the external IP address for the load balancer.</p>
+<p>Assign it to an environment variable.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+</code></pre></div>
+<p>We could create a DNS A record for this IP address, but for the sake of simplicity, we will access anything we expose from the mesh by using the IP address directly.</p>
+<h2 id="configuring-ingress">Configuring ingress<a class="headerlink" href="#configuring-ingress" title="Permanent link">&para;</a></h2>
+<p>Configuring ingress with Istio is split into two parts:</p>
+<ul>
+<li>Define a <code>Gateway</code> custom resource that governs the specific host, port, and protocol to expose</li>
+<li>Specify how requests should be routed with a <code>VirtualService</code> custom resource.</li>
+</ul>
+<h3 id="create-a-gateway-resource">Create a Gateway resource<a class="headerlink" href="#create-a-gateway-resource" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Review the following Gateway specification.</p>
+<details class="tldr">
+<summary>gateway.yaml</summary>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gateway</span><span class="w"></span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span><span class="w"></span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span><span class="w"></span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">  </span><span class="nt">servers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">        </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTP</span><span class="w"></span>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</details>
+<p>We specify the HTTP protocol, port 80, and the wildcard host value ensures a match against HTTP requests that reference the load balancer IP address <code>$GATEWAY_IP</code>.</p>
+<p>The selector <em>istio: ingressgateway</em> ensures that this gateway resource binds to the physical ingress gateway.</p>
+</li>
+<li>
+<p>Apply the gateway resource to your cluster.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl apply -f gateway.yaml
+</code></pre></div>
+</li>
+<li>
+<p>Attempt an HTTP request in your browser to the gateway IP address.  It should return a 404 (not found).</p>
+</li>
+</ol>
+<h3 id="create-a-virtualservice-resource">Create a VirtualService resource<a class="headerlink" href="#create-a-virtualservice-resource" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Review the following VirtualService specification.</p>
+<details class="tldr">
+<summary>web-frontend-virtualservice.yaml</summary>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span>
+<span class="normal"><a href="#__codelineno-5-14">14</a></span>
+<span class="normal"><a href="#__codelineno-5-15">15</a></span>
+<span class="normal"><a href="#__codelineno-5-16">16</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span><span class="w"></span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">  </span><span class="nt">gateways</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span><span class="w"></span>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">            </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend.default.svc.cluster.local</span><span class="w"></span>
+<a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</details>
+<p>Note how this specification references the name of the gateway ("frontend-gateway"), a matching host ("*"), and specifies a route for requests to be directed to the <code>web-frontend</code> service.</p>
+</li>
+<li>
+<p>Apply the virtual service resource to your cluster.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f web-frontend-virtualservice.yaml
+</code></pre></div>
+</li>
+<li>
+<p>List virtual services in the default namespace.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get virtualservice
+</code></pre></div>
+<p>The output indicates that the virtual service named <code>web-frontend</code> is bound to the gateway, as well as any hostname that routes to the load balancer IP address.</p>
+</li>
+</ol>
+<p>Finally, verify that you can now access <code>web-frontend</code> from your web browser using the gateway IP address.</p>
+<h2 id="candidate-follow-on-exercises">Candidate follow-on exercises<a class="headerlink" href="#candidate-follow-on-exercises" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Consider creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.</li>
+<li><a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-a-single-host">Configuring a TLS ingress gateway</a></li>
+</ul>
+<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
+<p>The application is now running and exposed on the internet.</p>
+<p>In the next lab, we turn our attention to the observability features that are built in to Istio.</p>
 
               
             </article>
