@@ -10,7 +10,7 @@ To work through the workshop:
 
 1. Visit the [workshop site](https://tetratelabs.github.io/istio-0to60/) and work through the labs.
 
-1. Consider checking out this repository to get at the [artifacts](artifacs/).
+1. Consider checking out this repository to get at the [artifacts](artifacts/).
 
 ## Development
 
