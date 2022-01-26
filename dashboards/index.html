@@ -344,11 +344,45 @@
     Prometheus
   </a>
   
+    <nav class="md-nav" aria-label="Prometheus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#observe-how-envoy-exposes-a-prometheus-scrape-endpoint" class="md-nav__link">
+    Observe how Envoy exposes a Prometheus scrape endpoint
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-the-dashboard" class="md-nav__link">
+    Access the dashboard
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
   <a href="#grafana" class="md-nav__link">
     Grafana
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next" class="md-nav__link">
+    Next
   </a>
   
 </li>
@@ -504,11 +538,45 @@
     Prometheus
   </a>
   
+    <nav class="md-nav" aria-label="Prometheus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#observe-how-envoy-exposes-a-prometheus-scrape-endpoint" class="md-nav__link">
+    Observe how Envoy exposes a Prometheus scrape endpoint
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-the-dashboard" class="md-nav__link">
+    Access the dashboard
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
   <a href="#grafana" class="md-nav__link">
     Grafana
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next" class="md-nav__link">
+    Next
   </a>
   
 </li>
@@ -555,10 +623,15 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl apply -f kiali.yaml
 </code></pre></div>
 </li>
+<li>
+<p>Verify that the <code>istio-system</code> namespace is now running additional workloads for each of the addons.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl get pod -n istio-system
+</code></pre></div>
+</li>
 </ol>
 <p>The <code>istioctl</code> CLI provides convenience commands for accessing the web UIs for each dashboard.</p>
 <p>Take a moment to review the help output for the <code>istioctl dashboard</code> command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>istioctl dashboard --help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>istioctl dashboard --help
 </code></pre></div>
 <h2 id="generate-a-load">Generate a load<a class="headerlink" href="#generate-a-load" title="Permanent link">&para;</a></h2>
 <p>In order to have something to observe, we need to generate a load on our system.</p>
@@ -570,12 +643,12 @@
 </li>
 <li>
 <p>Familiarize yourself with the command and its options.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>siege --help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>siege --help
 </code></pre></div>
 </li>
 </ol>
 <p>Run the following command to generate a mild load against the application.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -584,7 +657,7 @@ It may be simplest to leave it running, and open a separate terminal in your clo
 </div>
 <h2 id="kiali">Kiali<a class="headerlink" href="#kiali" title="Permanent link">&para;</a></h2>
 <p>Launch the Kiali dashboard:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>istioctl dashboard kiali
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>istioctl dashboard kiali
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -614,7 +687,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>Close the Kiali dashboard.  Interrupt the <code>istioctl dashboard kiali</code> command by pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
 <h2 id="zipkin">Zipkin<a class="headerlink" href="#zipkin" title="Permanent link">&para;</a></h2>
 <p>Launch the Zipkin dashboard:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>istioctl dashboard zipkin
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>istioctl dashboard zipkin
 </code></pre></div>
 <p>The zipkin dashboard displays.</p>
 <ul>
@@ -627,9 +700,72 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <h3 id="zipkin-cleanup">Zipkin Cleanup<a class="headerlink" href="#zipkin-cleanup" title="Permanent link">&para;</a></h3>
 <p>Close the Zipking dashboard.  Interrupt the <code>istioctl dashboard zipkin</code> command with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
 <h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Permanent link">&para;</a></h2>
-<p>[tbd]</p>
+<p>Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is usually termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.</p>
+<p>With Istio, this is done automatically by envoy.</p>
+<h3 id="observe-how-envoy-exposes-a-prometheus-scrape-endpoint">Observe how Envoy exposes a Prometheus scrape endpoint<a class="headerlink" href="#observe-how-envoy-exposes-a-prometheus-scrape-endpoint" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Capture the customers pod name to a variable.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">CUSTOMERS_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>customers -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+</code></pre></div>
+</li>
+<li>
+<p>Run the following command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -it -- curl localhost:15090/stats/prometheus  <span class="p">|</span> grep istio_requests
+</code></pre></div>
+<p>The list of metrics returned by the endpoint is rather lengthy, so we just peek at the "istio_requests" metric.  But the full response contains many more metrics.</p>
+</li>
+</ol>
+<h3 id="access-the-dashboard">Access the dashboard<a class="headerlink" href="#access-the-dashboard" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Start the prometheus dashboard</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>istioctl dashboard prometheus
+</code></pre></div>
+</li>
+<li>
+<p>In the search field enter the metric named <code>istio_requests_total</code>, and click the <em>Execute</em> button (on the right).</p>
+</li>
+<li>
+<p>Select the tab named "Graph" to obtain a graphical representation of this metric over time.</p>
+<p>Note that you are looking it requests across the entire mesh, i.e. this includes both requests to <code>web-frontend</code> and to <code>customers</code>.</p>
+</li>
+<li>
+<p>As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>istio_requests_total{response_code=&quot;200&quot;}
+</code></pre></div>
+</li>
+<li>
+<p>With respects to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>rate(istio_requests_total[5m])
+</code></pre></div>
+</li>
+</ol>
+<p>There's much more to the Prometheus query language (<a href="https://prometheus.io/docs/prometheus/latest/querying/basics/">this</a> may be a good place to start).</p>
+<p>Grafana consumes these metrics to produce graphs on our behalf.</p>
 <h2 id="grafana">Grafana<a class="headerlink" href="#grafana" title="Permanent link">&para;</a></h2>
-<p>[tbd]</p>
+<ol>
+<li>
+<p>Launch the Grafana dashboard</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>istioctl dashboard grafana
+</code></pre></div>
+</li>
+<li>
+<p>From the sidebar, select <em>Dashboards</em> -&gt; <em>Manager</em></p>
+</li>
+<li>Click on the folder named <em>Istio</em> to reveal pre-designed Istio-specific Grafana dashboards</li>
+<li>Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.</li>
+<li>Explore the Istio Service Dashboard.  First select the service <code>web-frontend</code> and inspect its metrics, then switch to the <code>customers</code> service and review its dashboard.</li>
+<li>Explore the Istio Workload Dashboard.  Select the <code>web-frontend</code> workload.  Look at Outbound Services and note the outbound requests to the customers service.  Select the <code>customres</code> workload and note that it makes no Oubtound Services calls.</li>
+</ol>
+<p>Feel free to further explore these dashboards.</p>
+<h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Terminate the <code>istioctl dashboard</code> command (<span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>)</li>
+<li>Likewise, terminate the <code>siege</code> command</li>
+</ol>
+<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
+<p>We turn our attention next to security features of a service mesh.</p>
 
               
             </article>
