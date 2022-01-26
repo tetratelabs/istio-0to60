@@ -51,6 +51,27 @@ istioctl dashboard --help
 
 In order to have something to observe, we need to generate a load on our system.
 
+### Install a load generator
+
+1. Install a simple load generating tool named `siege`.
+
+    [tbd]
+
+1. Familiarize yourself with the command and its options.
+
+    ```shell
+    siege --help
+    ```
+
+Run the following command to generate a mild load against the application.
+
+```shell
+siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
+```
+
+...
+
 - start with kiali, demo it, consider perhaps showing how mtls is turned on inside the mesh.  mention that will come back to kiali when we begin doing traffic shifting.
 - show zipkin and distributed traces
 - show prometheus and grafana
+
