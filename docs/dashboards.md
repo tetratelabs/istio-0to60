@@ -8,10 +8,10 @@ The services in our mesh are automatically observable, without adding any burden
 
 The istio distribution provides addons for a number of systems that together provide observability for the service mesh:
 
-- Zipkin or Jaeger distributed tracing
-- Prometheus for metrics collection
-- Grafana provides dashboards for monitoring
-- Kiali for visualizing the mesh
+- [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/) for distributed tracing
+- [Prometheus](https://prometheus.io/) for metrics collection
+- [Grafana](https://grafana.com/) provides dashboards for monitoring
+- [Kiali](https://kiali.io/) allows us to visualize the mesh
 
 These addons are located in the `samples/addons/` folder of the distribution.
 
@@ -69,9 +69,21 @@ Run the following command to generate a mild load against the application.
 siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
 ```
 
-...
+## Kiali
+
+[tbd]
 
 - start with kiali, demo it, consider perhaps showing how mtls is turned on inside the mesh.  mention that will come back to kiali when we begin doing traffic shifting.
-- show zipkin and distributed traces
-- show prometheus and grafana
+
+## Zipkin
+
+[tbd]
+
+## Prometheus
+
+[tbd]
+
+## Grafana
+
+[tbd]
 
