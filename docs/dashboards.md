@@ -39,6 +39,12 @@ These addons are located in the `samples/addons/` folder of the distribution.
     kubectl apply -f kiali.yaml
     ```
 
+1. Verify that the `istio-system` namespace is now running additional workloads for each of the addons.
+
+    ```shell
+    kubectl get pod -n istio-system
+    ```
+
 The `istioctl` CLI provides convenience commands for accessing the web UIs for each dashboard.
 
 Take a moment to review the help output for the `istioctl dashboard` command:
@@ -141,9 +147,77 @@ Close the Zipking dashboard.  Interrupt the `istioctl dashboard zipkin` command 
 
 ## Prometheus
 
-[tbd]
+Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is usually termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.
+
+With Istio, this is done automatically by envoy.
+
+### Observe how Envoy exposes a Prometheus scrape endpoint
+
+1. Capture the customers pod name to a variable.
+
+    ```shell
+    CUSTOMERS_POD=$(kubectl get pod -l app=customers -ojsonpath='{.items[0].metadata.name}')
+    ```
+
+1. Run the following command:
+
+    ```shell
+    kubectl exec $CUSTOMERS_POD -it -- curl localhost:15090/stats/prometheus  | grep istio_requests
+    ```
+
+    The list of metrics returned by the endpoint is rather lengthy, so we just peek at the "istio_requests" metric.  But the full response contains many more metrics.
+
+### Access the dashboard
+
+1. Start the prometheus dashboard
+
+    ```shell
+    istioctl dashboard prometheus
+    ```
+
+1. In the search field enter the metric named `istio_requests_total`, and click the _Execute_ button (on the right).
+
+1. Select the tab named "Graph" to obtain a graphical representation of this metric over time.
+
+    Note that you are looking it requests across the entire mesh, i.e. this includes both requests to `web-frontend` and to `customers`.
+
+2. As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:
+
+    ```text
+    istio_requests_total{response_code="200"}
+    ```
+
+3. With respects to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:
+
+    ```text
+    rate(istio_requests_total[5m])
+    ```
+
+There's much more to the Prometheus query language ([this](https://prometheus.io/docs/prometheus/latest/querying/basics/) may be a good place to start).
+
+Grafana consumes these metrics to produce graphs on our behalf.
 
 ## Grafana
 
-[tbd]
+1. Launch the Grafana dashboard
 
+    ```shell
+    istioctl dashboard grafana
+    ```
+
+1. From the sidebar, select _Dashboards_ -> _Manager_
+1. Click on the folder named _Istio_ to reveal pre-designed Istio-specific Grafana dashboards
+1. Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.
+1. Explore the Istio Service Dashboard.  First select the service `web-frontend` and inspect its metrics, then switch to the `customers` service and review its dashboard.
+1. Explore the Istio Workload Dashboard.  Select the `web-frontend` workload.  Look at Outbound Services and note the outbound requests to the customers service.  Select the `customres` workload and note that it makes no Oubtound Services calls.
+
+Feel free to further explore these dashboards.
+
+## Cleanup
+
+1. Terminate the `istioctl dashboard` command (++ctrl+c++)
+1. Likewise, terminate the `siege` command
+
+## Next
+
+We turn our attention next to security features of a service mesh.
