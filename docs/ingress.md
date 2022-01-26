@@ -65,7 +65,7 @@ Configuring ingress with Istio is split into two parts:
         --8<-- "web-frontend-virtualservice.yaml"
         ```
 
-    Note how this specification references the name of the gateway ("gateway"), a matching host ("*"), and specifies a route for requests to be directed to the `web-frontend` service.
+    Note how this specification references the name of the gateway ("frontend-gateway"), a matching host ("*"), and specifies a route for requests to be directed to the `web-frontend` service.
 
 1. Apply the virtual service resource to your cluster.
 
@@ -82,6 +82,12 @@ Configuring ingress with Istio is split into two parts:
     The output indicates that the virtual service named `web-frontend` is bound to the gateway, as well as any hostname that routes to the load balancer IP address.
 
 Finally, verify that you can now access `web-frontend` from your web browser using the gateway IP address.
+
+## Candidate follow-on exercises
+
+- Consider creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.
+- [Configuring a TLS ingress gateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-a-single-host)
+ 
 
 ## Next
 

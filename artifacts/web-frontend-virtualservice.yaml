@@ -7,7 +7,7 @@ spec:
   hosts:
     - "*"
   gateways:
-    - gateway
+    - frontend-gateway
   http:
     - route:
         - destination:
