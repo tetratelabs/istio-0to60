@@ -248,9 +248,60 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Observability
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Observability
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-the-addons" class="md-nav__link">
+    Deploy the Addons
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-a-load" class="md-nav__link">
+    Generate a load
+  </a>
+  
+    <nav class="md-nav" aria-label="Generate a load">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-a-load-generator" class="md-nav__link">
+    Install a load generator
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -321,6 +372,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-the-addons" class="md-nav__link">
+    Deploy the Addons
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-a-load" class="md-nav__link">
+    Generate a load
+  </a>
+  
+    <nav class="md-nav" aria-label="Generate a load">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-a-load-generator" class="md-nav__link">
+    Install a load generator
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -333,6 +419,62 @@
                 
 
 <h1 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h1>
+<p>In this lab we explore one of the main strengths of Istio: observability.</p>
+<p>The services in our mesh are automatically observable, without adding any burden on developers.</p>
+<h2 id="deploy-the-addons">Deploy the Addons<a class="headerlink" href="#deploy-the-addons" title="Permanent link">&para;</a></h2>
+<p>The istio distribution provides addons for a number of systems that together provide observability for the service mesh:</p>
+<ul>
+<li>Zipkin or Jaeger distributed tracing</li>
+<li>Prometheus for metrics collection</li>
+<li>Grafana provides dashboards for monitoring</li>
+<li>Kiali for visualizing the mesh</li>
+</ul>
+<p>These addons are located in the <code>samples/addons/</code> folder of the distribution.</p>
+<ol>
+<li>
+<p>Navigate to the addons directory</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span> ~/istio-1.12.2/samples/addons
+</code></pre></div>
+</li>
+<li>
+<p>Deploy each addon:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl apply -f extras/zipkin.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl apply -f prometheus.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl apply -f grafana.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl apply -f kiali.yaml
+</code></pre></div>
+</li>
+</ol>
+<p>The <code>istioctl</code> CLI provides convenience commands for accessing the web UIs for each dashboard.</p>
+<p>Take a moment to review the help output for the <code>istioctl dashboard</code> command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>istioctl dashboard --help
+</code></pre></div>
+<h2 id="generate-a-load">Generate a load<a class="headerlink" href="#generate-a-load" title="Permanent link">&para;</a></h2>
+<p>In order to have something to observe, we need to generate a load on our system.</p>
+<h3 id="install-a-load-generator">Install a load generator<a class="headerlink" href="#install-a-load-generator" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Install a simple load generating tool named <code>siege</code>.</p>
+<p>[tbd]</p>
+</li>
+<li>
+<p>Familiarize yourself with the command and its options.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>siege --help
+</code></pre></div>
+</li>
+</ol>
+<p>Run the following command to generate a mild load against the application.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
+</code></pre></div>
+<p>...</p>
+<ul>
+<li>start with kiali, demo it, consider perhaps showing how mtls is turned on inside the mesh.  mention that will come back to kiali when we begin doing traffic shifting.</li>
+<li>show zipkin and distributed traces</li>
+<li>show prometheus and grafana</li>
+</ul>
 
               
             </article>
