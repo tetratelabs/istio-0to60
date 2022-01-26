@@ -1,6 +1,9 @@
 site_name: Istio 0 to 60 Labs
 theme:
   name: material
+  palette:
+    scheme: default
+  logo: assets/tetrate-logo-white.png
 extra_css:
   - css/custom.css
 nav:
