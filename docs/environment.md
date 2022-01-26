@@ -40,6 +40,18 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
     kubectl get ns
     ```
 
+## Artifacts
+
+The lab instructions reference Kubernetes yaml artifacts that you will need to apply to your cluster at specific points in time.
+
+You have the option of copying and pasting the yaml directly from the lab instructions.
+
+Another, perhaps simpler method is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60) to your Google Cloud Shell environment.  You will find all yaml artifacts in the subdirectory named `artifacts`.
+
+```shell
+git clone https://github.com/tetratelabs/istio-0to60.git
+```
+
 ## Next
 
 Now that we have access to our environment and to our Kubernetes cluster, we can proceed to install Istio.
