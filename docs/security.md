@@ -105,9 +105,9 @@ Let's to apply a policy in which _only `web-frontend` is allowed to call `custom
 
 Study the below authorization policy.
 
-!!! tldr "authn-policy-customers.yaml"
+!!! tldr "authz-policy-customers.yaml"
     ```yaml linenums="1"
-    --8<-- "authn-policy-customers.yaml"
+    --8<-- "authz-policy-customers.yaml"
     ```
 
 - The `selector` section specifies that the policy applies to the `customers` service.
