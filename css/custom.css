@@ -1,6 +1,12 @@
 
 :root {
-  --md-primary-fg-color: #000717;
+  /* 
+  the primary fg color is used not only for the header bg color,
+  but also for the fg color of hyperlinks.
+  making it black has the side effect of making links invisible.
+  so for now going back to the default primary color
+  */
+  /* --md-primary-fg-color: #000717; */
   --md-accent-fg-color: #F05623;
 }
 

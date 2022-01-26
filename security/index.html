@@ -285,9 +285,101 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Security
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Security
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mutual-tls" class="md-nav__link">
+    Mutual TLS
+  </a>
+  
+    <nav class="md-nav" aria-label="Mutual TLS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#can-a-workload-receive-plain-text-requests" class="md-nav__link">
+    Can a workload receive plain-text requests?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-strict-mode" class="md-nav__link">
+    Enable strict mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-that-plain-text-requests-are-no-longer-permitted" class="md-nav__link">
+    Verify that plain-text requests are no longer permitted
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-in-depth" class="md-nav__link">
+    Security in depth
+  </a>
+  
+    <nav class="md-nav" aria-label="Security in depth">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    Challenge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-it" class="md-nav__link">
+    Test it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next" class="md-nav__link">
+    Next
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -343,6 +435,82 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mutual-tls" class="md-nav__link">
+    Mutual TLS
+  </a>
+  
+    <nav class="md-nav" aria-label="Mutual TLS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#can-a-workload-receive-plain-text-requests" class="md-nav__link">
+    Can a workload receive plain-text requests?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-strict-mode" class="md-nav__link">
+    Enable strict mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-that-plain-text-requests-are-no-longer-permitted" class="md-nav__link">
+    Verify that plain-text requests are no longer permitted
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-in-depth" class="md-nav__link">
+    Security in depth
+  </a>
+  
+    <nav class="md-nav" aria-label="Security in depth">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    Challenge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-it" class="md-nav__link">
+    Test it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next" class="md-nav__link">
+    Next
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -359,6 +527,169 @@
 
 
 <h1 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h1>
+<p>In this lab we explore some of the security features of the Istio service mesh.</p>
+<h2 id="mutual-tls">Mutual TLS<a class="headerlink" href="#mutual-tls" title="Permanent link">&para;</a></h2>
+<p>By default, Istio is configured such that when a service is deployed onto the mesh, it will take advantage of mutual TLS:</p>
+<ul>
+<li>the service is given an identity as a function of its associated service account and namespace</li>
+<li>an x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services</li>
+</ul>
+<p>In the <a href="../dashboards/#kiali">observability</a> lab, we looked at the Kiali dashboard and noted the lock icons indicating that traffic was secured with mTLS.</p>
+<h3 id="can-a-workload-receive-plain-text-requests">Can a workload receive plain-text requests?<a class="headerlink" href="#can-a-workload-receive-plain-text-requests" title="Permanent link">&para;</a></h3>
+<p>We can test whether a mesh workload, such as the customers service, will allow a plain-text request as follows:</p>
+<ol>
+<li>
+<p>Create a separate namespace that is not configured with automatic injection.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl create ns otherns
+</code></pre></div>
+</li>
+<li>
+<p>Deploy <code>sleep</code> to that namespace</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl apply -f sleep.yaml -n otherns
+</code></pre></div>
+</li>
+<li>
+<p>Verify that the sleep pod has no sidecars:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get pod -n otherns
+</code></pre></div>
+</li>
+<li>
+<p>Call the customer service from that pod:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -n otherns -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kubectl <span class="nb">exec</span> -n otherns <span class="nv">$SLEEP_POD</span> -it -- curl customers.default
+</code></pre></div>
+</li>
+</ol>
+<p>The output should look like a list of customers in JSON format.</p>
+<p>We conclude that Istio is configured by default to allow plain-text request.
+This is called <em>permissive mode</em> and is specifically designed to allow services that have not yet fully onboarded onto the mesh to participate.</p>
+<h3 id="enable-strict-mode">Enable strict mode<a class="headerlink" href="#enable-strict-mode" title="Permanent link">&para;</a></h3>
+<p>Istio provides the <code>PeerAuthentication</code> custom resource to define peer authenticaion policy.</p>
+<ol>
+<li>
+<p>Apply the following peer authentication policy.</p>
+<details class="tldr">
+<summary>mtls-strict.yaml</summary>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span>
+<span class="normal"><a href="#__codelineno-4-5">5</a></span>
+<span class="normal"><a href="#__codelineno-4-6">6</a></span>
+<span class="normal"><a href="#__codelineno-4-7">7</a></span>
+<span class="normal"><a href="#__codelineno-4-8">8</a></span>
+<span class="normal"><a href="#__codelineno-4-9">9</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security.istio.io/v1beta1</span><span class="w"></span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PeerAuthentication</span><span class="w"></span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">  </span><span class="nt">mtls</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STRICT</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</details>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Strict mtls can be enabled globally by setting the namespace to the name of the istio root namespace, which by default is <code>istio-system</code></p>
+</div>
+</li>
+<li>
+<p>Verify that the peer authentication has been applied.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl get peerauthentication
+</code></pre></div>
+</li>
+</ol>
+<h3 id="verify-that-plain-text-requests-are-no-longer-permitted">Verify that plain-text requests are no longer permitted<a class="headerlink" href="#verify-that-plain-text-requests-are-no-longer-permitted" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl <span class="nb">exec</span> -n otherns <span class="nv">$SLEEP_POD</span> -it -- curl customers.default
+</code></pre></div>
+<p>The console output should indicate that the connection was reset by peer.</p>
+<h2 id="security-in-depth">Security in depth<a class="headerlink" href="#security-in-depth" title="Permanent link">&para;</a></h2>
+<p>Another important layer of security is to define an authorization policy, in which we allow only specific services to communicate with other services.</p>
+<p>At the moment, any container can, for example, call the customers service or the web-frontend service.</p>
+<ol>
+<li>
+<p>Capture the name of the sleep pod runnin in the default namespace</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+</code></pre></div>
+</li>
+<li>
+<p>Call the customers service.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
+</code></pre></div>
+</li>
+<li>
+<p>Call the web-frontend service.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
+</code></pre></div>
+</li>
+</ol>
+<p>Both calls succeed.</p>
+<p>Let's to apply a policy in which <em>only <code>web-frontend</code> is allowed to call <code>customers</code></em>, and <em>only the ingress gateway can call <code>web-frontend</code></em>.</p>
+<p>Study the below authorization policy.</p>
+<div class="admonition tldr">
+<p class="admonition-title">authn-policy-customers.yaml</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-10-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-10-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-10-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-10-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-10-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-10-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-10-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-10-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-10-10">10</a></span>
+<span class="normal"><a href="#__codelineno-10-11">11</a></span>
+<span class="normal"><a href="#__codelineno-10-12">12</a></span>
+<span class="normal"><a href="#__codelineno-10-13">13</a></span>
+<span class="normal"><a href="#__codelineno-10-14">14</a></span>
+<span class="normal"><a href="#__codelineno-10-15">15</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security.istio.io/v1beta1</span><span class="w"></span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AuthorizationPolicy</span><span class="w"></span>
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">allowed-customers-clients</span><span class="w"></span>
+<a id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<a id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w">  </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALLOW</span><span class="w"></span>
+<a id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">source</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="w">        </span><span class="nt">principals</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;cluster.local/ns/default/sa/web-frontend&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<ul>
+<li>The <code>selector</code> section specifies that the policy applies to the <code>customers</code> service.</li>
+<li>Note how the rules have a "from: source: " section indicating who is allowed in.</li>
+<li>The nomenclature for the value of the <code>principals</code> field comes from the <a href="https://spiffe.io/">spiffe</a> standard.  Note how it captures the service account name and namespace associated with the <code>web-frontend</code> service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.</li>
+</ul>
+<h3 id="challenge">Challenge<a class="headerlink" href="#challenge" title="Permanent link">&para;</a></h3>
+<p>Can you come up with a similar authorization policy for <code>web-frontend</code>?</p>
+<ul>
+<li>Use the <code>customers</code> authorization policy as a template</li>
+<li>Revise the selector to match the <code>web-frontend</code> service</li>
+<li>Revise the rule to match the principal for the ingress gateway</li>
+</ul>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The ingress gateway has its own identify.</p>
+<p>Here is a command which can help you find the name of the service account associated with its identify:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl get pod -n istio-system -l <span class="nv">app</span><span class="o">=</span>istio-ingressgateway -o yaml <span class="p">|</span> grep serviceAccountName
+</code></pre></div>
+<p>Use it together with the namespace that the ingress gateway is running in to specify the value for the <code>principals</code> field.</p>
+</div>
+<h3 id="test-it">Test it<a class="headerlink" href="#test-it" title="Permanent link">&para;</a></h3>
+<p>Don't forget to verify that the policy is enforced.</p>
+<ul>
+<li>Call both services again from the sleep pod and ensure communication is no longer allowed.</li>
+<li>The console output should contain the message <em>RBAC: access denied</em>.</li>
+</ul>
+<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
+<p>In the next lab we show how to use Istio's traffic management features to upgrade the customers service with zero downtime.</p>
 
               
             </article>
