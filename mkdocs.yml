@@ -4,6 +4,11 @@ theme:
   palette:
     scheme: default
   logo: assets/tetrate-logo-white.png
+  features:
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+#    - navigation.tabs
 extra_css:
   - css/custom.css
 nav:
