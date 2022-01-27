@@ -787,26 +787,29 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 </code></pre></div>
 </td></tr></table>
 <p>We are telling Istio to check an HTTP header:  if the <code>user-agent</code> is set to <code>debug</code>, route to v2, otherwise route to v1.</p>
-<p>Apply the above yaml to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.</p>
+<p>Open a new terminal and apply the above resource to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl apply -f customers-v2-debug.yaml
 </code></pre></div>
 <h3 id="test-it">Test it<a class="headerlink" href="#test-it" title="Permanent link">&para;</a></h3>
 <p>Open a browser and visit the application.</p>
+<details class="tip">
+<summary>If you need it</summary>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
 </code></pre></div>
-<p>We can tell v1 and v2 apart in that v2 displays both customer names and their city, in two columns.</p>
+</details>
+<p>We can tell v1 and v2 apart in that v2 displays not only customer names but also their city (in two columns).</p>
 <p>If you're using Chrome or Firefox, you can customize the <code>user-agent</code> header as follows:</p>
 <ol>
 <li>Open the browser's developer tools</li>
-<li>Open the "three dots" menu, and select "more tools" -&gt; "network conditions"</li>
+<li>Open the "three dots" menu, and select <em>More tools -&gt; Network conditions</em></li>
 <li>The network conditions panel will open</li>
-<li>Under "user agent", uncheck "Use browser default"</li>
+<li>Under <em>User agent</em>, uncheck <em>Use browser default</em></li>
 <li>Select <em>Custom...</em> and in the text field enter <code>debug</code></li>
 </ol>
-<p>Now refresh the page, and traffic should have been directed to v2.</p>
+<p>Refresh the page; traffic should be directed to v2.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If you refresh the page a good dozen times and then wait ~15-30 seconds, you should be able to see some of that v2 traffic in Kiali too.</p>
+<p>If you refresh the page a good dozen times and then wait ~15-30 seconds, you should see some of that v2 traffic in Kiali.</p>
 </div>
 <h2 id="canary">Canary<a class="headerlink" href="#canary" title="Permanent link">&para;</a></h2>
 <p>Well, v2 looks good; we decide to expose the new version to the public, but we're still prudent.</p>
@@ -850,7 +853,11 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 </td></tr></table>
 <p>Note above the <code>weight</code> field specifying 10 percent of traffic to v2.
 Kiali should now show traffic going to both v1 and v2.</p>
-<p>In your browser:  undo the user agent customization and refresh the page a bunch of times.  Most of the requests still go to v1.</p>
+<ul>
+<li>Apply the above resource.</li>
+<li>In your browser:  undo the user agent customization and refresh the page a bunch of times.</li>
+</ul>
+<p>Most of the requests still go to v1, but some are directed to v2.</p>
 <h2 id="check-grafana">Check Grafana<a class="headerlink" href="#check-grafana" title="Permanent link">&para;</a></h2>
 <p>Before we open the floodgates, we wish to determine how v2 is fairing.</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>istioctl dashboard grafana
@@ -887,7 +894,8 @@ Look at the request rate and the incoming success rate, also the latencies.</p>
 <a id="__codelineno-14-13" name="__codelineno-14-13"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
-<p>After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).</p>
+<p>After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).
+Within a minute or so, the Kiali dashboard should also reflect the fact that all traffic is going to the customers v2 service.</p>
 <p>Though it no longers receives any traffic, we decide to leave v1 running a while longer before retiring it.</p>
 
               
