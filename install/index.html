@@ -466,12 +466,12 @@
 <ol>
 <li>
 <p>Run the following command from your home directory.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl -L https://istio.io/downloadIstio <span class="p">|</span> sh -
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl -L https://istio.io/downloadIstio <span class="p">|</span> sh -
 </code></pre></div>
 </li>
 <li>
 <p>Navigate into the directory created by the above command.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span> istio-1.12.2
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span> istio-1.12.2
 </code></pre></div>
 </li>
 </ol>
@@ -486,30 +486,30 @@
 <ol>
 <li>
 <p>Create a <code>bin</code> subdirectory in your home directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir ~/bin
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir ~/bin
 </code></pre></div>
 </li>
 <li>
 <p>Copy the CLI to that subdirectory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cp ./bin/istioctl ~/bin
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cp ./bin/istioctl ~/bin
 </code></pre></div>
 </li>
 <li>
 <p>Add your home <code>bin</code> subdirectory to your PATH</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">echo</span> <span class="s2">&quot;export PATH=</span><span class="nv">$HOME</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span> &gt;&gt; ~/.bashrc
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">echo</span> <span class="s2">&quot;export PATH=</span><span class="nv">$HOME</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span> &gt;&gt; ~/.bashrc
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">source</span> ~/.bashrc
 </code></pre></div>
 </li>
 </ol>
 <p>Verify that <code>istioctl</code> is installed with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>istioctl version
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>istioctl version
 </code></pre></div>
 <p>With the CLI installed, proceed to install Istio to Kubernetes.</p>
 <h2 id="install-istio_1">Install Istio<a class="headerlink" href="#install-istio_1" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
 <p>Istio can be installed directly with the CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>istioctl install
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>istioctl install
 </code></pre></div>
 </li>
 <li>
@@ -521,12 +521,12 @@
 <ol>
 <li>
 <p>List Kubernetes namespaces and note the new namespace <code>istio-system</code></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get ns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get ns
 </code></pre></div>
 </li>
 <li>
 <p>Verify that the <code>istiod</code> controller pod is running in that namespace</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl get pod -n istio-system
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl get pod -n istio-system
 </code></pre></div>
 </li>
 <li>

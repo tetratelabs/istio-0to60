@@ -491,20 +491,20 @@
 <h2 id="the-ingress-gateway">The Ingress gateway<a class="headerlink" href="#the-ingress-gateway" title="Permanent link">&para;</a></h2>
 <p>When you installed Istio, in addition to deploying istiod to Kubernetes, the installation also provisioned an Ingress Gateway.</p>
 <p>View the corresponding Istio ingress gateway pod in the <code>istio-system</code> namespace.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl get pod -n istio-system
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl get pod -n istio-system
 </code></pre></div>
 <p>A corresponding <em>LoadBalancer</em> type service was also created:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get svc -n istio-system
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get svc -n istio-system
 </code></pre></div>
 <p>Make a note of the external IP address for the load balancer.</p>
 <p>Assign it to an environment variable.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
 </code></pre></div>
 <details class="tip">
 <summary>A small investment</summary>
 <p>When the cloud shell connection is severed, or when openeing a new terminal tab, <code>$GATEWAY_IP</code> will no longer be in scope.</p>
 <p>Ensure <code>GATEWAY_IP</code> is set each time we start a new shell:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span> <span class="s2">&quot;export GATEWAY_IP=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span><span class="s2">&quot;</span> &gt;&gt; ~/.bashrc
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span> <span class="s2">&quot;export GATEWAY_IP=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span><span class="s2">&quot;</span> &gt;&gt; ~/.bashrc
 </code></pre></div>
 </details>
 <p>In normal circumstances we associate this IP address with a hostname via DNS.
@@ -558,7 +558,7 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </li>
 <li>
 <p>Apply the gateway resource to your cluster.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl apply -f gateway.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl apply -f gateway.yaml
 </code></pre></div>
 </li>
 <li>
@@ -609,12 +609,12 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </li>
 <li>
 <p>Apply the virtual service resource to your cluster.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl apply -f web-frontend-virtualservice.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl apply -f web-frontend-virtualservice.yaml
 </code></pre></div>
 </li>
 <li>
 <p>List virtual services in the default namespace.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl get virtualservice
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl get virtualservice
 </code></pre></div>
 <p>The output indicates that the virtual service named <code>web-frontend</code> is bound to the gateway, as well as any hostname that routes to the load balancer IP address.</p>
 </li>

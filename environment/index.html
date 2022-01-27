@@ -513,7 +513,7 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <ol>
 <li>
 <p>Check that the <code>kubectl</code> CLI is installed</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl version --short
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl version --short
 </code></pre></div>
 </li>
 <li>
@@ -531,7 +531,7 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 </ol>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud container clusters get-credentials <span class="se">\</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud container clusters get-credentials <span class="se">\</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">$(</span>gcloud container clusters list --format<span class="o">=</span><span class="s2">&quot;value(name)&quot;</span><span class="k">)</span> <span class="se">\</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    --zone us-central1-a <span class="se">\</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    --project <span class="k">$(</span>gcloud config get-value project<span class="k">)</span>
@@ -544,12 +544,12 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 </li>
 <li>
 <p>Verify that your Kubernetes context is set for your cluster</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl config get-contexts
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl config get-contexts
 </code></pre></div>
 </li>
 <li>
 <p>Run a token command such as <code>kubectl get node</code> or <code>kubectl get ns</code> to ensure that you can communicate with the Kubernetes API Server.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get ns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get ns
 </code></pre></div>
 </li>
 </ol>
@@ -558,7 +558,7 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <p>The lab instructions reference Kubernetes yaml artifacts that you will need to apply to your cluster at specific points in time.</p>
 <p>You have the option of copying and pasting the yaml snippets directly from the lab instructions as you encounter them.</p>
 <p>Another option is to clone the <a href="https://github.com/tetratelabs/istio-0to60">GitHub repository for this workshop</a> from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named <code>artifacts</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git
 </code></pre></div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>Now that we have access to our environment and to our Kubernetes cluster, we can proceed to install Istio.</p>

@@ -474,17 +474,17 @@
 <ol>
 <li>
 <p>Label the default namespace</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl label namespace default istio-injection<span class="o">=</span>enabled
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl label namespace default istio-injection<span class="o">=</span>enabled
 </code></pre></div>
 </li>
 <li>
 <p>Verify that the label has been applied:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get ns -Listio-injection
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get ns -Listio-injection
 </code></pre></div>
 </li>
 </ol>
 <p>You can list the mutating webhooks in your Kubernetes cluster and confirm that the sidecar injector is present.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get mutatingwebhookconfigurations
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get mutatingwebhookconfigurations
 </code></pre></div>
 <p>If you have extra time, explore the <code>istioctl kube-inject</code> command.</p>
 <h2 id="deploy-the-application">Deploy the application<a class="headerlink" href="#deploy-the-application" title="Permanent link">&para;</a></h2>
@@ -689,9 +689,9 @@
 </li>
 <li>
 <p>Apply the two files to your Kubernetes cluster.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl apply -f customers.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl apply -f customers.yaml
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f web-frontend.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f web-frontend.yaml
 </code></pre></div>
 </li>
 </ol>
@@ -700,7 +700,7 @@
 <li>Two pods are running, one for each service</li>
 <li>
 <p>Each pod consists of two containers, the one running the service image, plus the Envoy sidecar</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get pod
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get pod
 </code></pre></div>
 </li>
 </ul>
@@ -846,23 +846,23 @@ The Istio distribution provides a sample app called <code>sleep</code> that will
 </code></pre></div>
 </td></tr></table>
 </details>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl apply -f sleep.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl apply -f sleep.yaml
 </code></pre></div>
 </li>
 <li>
 <p>Capture the name of the sleep pod to an environment variable</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
 </code></pre></div>
 </li>
 <li>
 <p>Use the <code>kubectl exec</code> command to call the <code>customers</code> service.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
 </code></pre></div>
 <p>The console output should show a list of customers in JSON format.</p>
 </li>
 <li>
 <p>Call the <code>web-frontend</code> service</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
 </code></pre></div>
 <p>The console output should show an HTML page listing customers in an HTML table.</p>
 </li>
