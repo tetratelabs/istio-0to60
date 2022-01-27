@@ -84,7 +84,7 @@ Take a moment to learn more about [Istio installation profiles](https://istio.io
     kubectl get pod -n istio-system
     ```
 
-1. Re-run `istioctl version`.  The output should include a _control plane_ version, indicating that istio is indeed present in the cluster.
+1. Re-run `istioctl version`.  The output should include a _control plane_ version, indicating that Istio is indeed present in the cluster.
 
 ## Next
 

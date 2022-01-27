@@ -71,7 +71,7 @@ Apply the following Kubernetes deployment to the cluster.
 
 ### Check that traffic routes strictly to v1
 
-1. Let's bring back our friend `siege` to generate some traffic.
+1. Generate some traffic.
 
     ```shell
     siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
@@ -159,7 +159,7 @@ If all looks good, up the percentage from 90/10 to, say 50/50.
 
 Watch the request volume change (you may need to click on the "refresh dashboard" button in the upper right-hand corner).
 
-Finally, let's switch all traffic over to v2.
+Finally, switch all traffic over to v2.
 
 ```yaml linenums="1" title="customers-virtualservice-final.yaml"
 --8<-- "customers-virtualservice-final.yaml"

@@ -1,6 +1,8 @@
 # Lab environment
 
-An environment has been provisioned for you on Google Cloud Platform (GCP), consisting mainly of a Kubernetes cluster using Google Kubernetes Engine (GKE).
+An environment has been provisioned for you on Google Cloud Platform (GCP), consisting mainly of a Kubernetes cluster.
+
+Your instructor will demonstrate the process of accessing and configuring your environment, described below.
 
 ## Log in to GCP
 
@@ -13,8 +15,8 @@ An environment has been provisioned for you on Google Cloud Platform (GCP), cons
 Select the GCP project you have been assigned, as follows:
 
 1. Click the project selector "pulldown" menu from the top banner, which will open a popup dialog
-1. make sure the "Select from" Organization is set to _tetratelabs.com_
-1. Select the tab named "All"
+1. Make sure the _Select from_ organization is set to _tetratelabs.com_
+1. Select the tab named _All_
 1. You will see your GCP project name (istio-0to60..) listed under the organization tetratelabs.com
 1. Select the project from the list
 
@@ -26,10 +28,10 @@ Verify that your project is selected:
 
 The Google Cloud Shell will serve as your terminal environment for these labs.
 
-- Click the "Activate cloud shell" icon (top right); the icon looks like a shell prompt ">_"
-- A dialog may pop up, click "Continue"
+- Click the _Activate cloud shell_ icon (top right); the icon looks like a shell prompt ">_"
+- A dialog may pop up, click _Continue_
 - Your cloud shell terminal should appear at the bottom of the screen
-- Feel free to expand the size of the cloud shell, or even open it in a separate window (there's a button in the terminal header, on the right)
+- Feel free to expand the size of the cloud shell, or even open it in a separate window (locate the icon button in the terminal header, on the right)
 
 ## Configure cluster access
 
@@ -39,37 +41,37 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
     kubectl version --short
     ```
 
-1. From the top navigation menu (hamburger icon on the top left hand side of the page),
-1. Locate and click on the product "Kubernetes Engine" (you may have to scroll down until you see it)
+1. Activate the top navigation menu (hamburger icon on the top left hand side of the page)
+1. Locate and click on the product _Kubernetes Engine_ (you may have to scroll down until you see it)
 1. Your pre-provisioned 3-node Kubernetes cluster should appear in the main view
-1. Click on that row's "three dot" menu and select the "Connect" option
+1. Click on that row's "three dot" menu and select the _Connect_ option
 1. A dialog prompt will appear with instructions
 1. Copy the `gcloud` command shown and paste it in your cloud shell
-1. Click "authorize" when prompted
+1. Click _Authorize_ when prompted
 
-You should see a message in the console that a _kubeconfig entry [was] generated for [your project]_
+The console message will state that a _kubeconfig entry [was] generated for [your project]_
 
-1. Verify that your kubernetes context is set to your cluster
+1. Verify that your kubernetes context is set for your cluster
 
     ```shell
     kubectl config get-contexts
     ```
 
-1. Run a token command such as `kubectl get node` or `kubectl get ns` to ensure that you can communicate with the Kubernetes Api Server.
+1. Run a token command such as `kubectl get node` or `kubectl get ns` to ensure that you can communicate with the Kubernetes API Server.
 
     ```shell
     kubectl get ns
     ```
 
-All instructions in subsequent labs assume you will be working from inside the Google Cloud Shell.
+All instructions in subsequent labs assume you will be working from the Google Cloud Shell.
 
 ## Artifacts
 
 The lab instructions reference Kubernetes yaml artifacts that you will need to apply to your cluster at specific points in time.
 
-You have the option of copying and pasting the yaml directly from the lab instructions as you encounter them.
+You have the option of copying and pasting the yaml snippets directly from the lab instructions as you encounter them.
 
-Another, perhaps simpler method is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60) to your Google Cloud Shell environment.  You will find all yaml artifacts in the subdirectory named `artifacts`.
+Another option is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60) from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named `artifacts`.
 
 ```shell
 git clone https://github.com/tetratelabs/istio-0to60.git

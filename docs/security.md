@@ -58,7 +58,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 
     !!! tip
 
-        Strict mtls can be enabled globally by setting the namespace to the name of the istio root namespace, which by default is `istio-system`
+        Strict mtls can be enabled globally by setting the namespace to the name of the Istio root namespace, which by default is `istio-system`
 
 1. Verify that the peer authentication has been applied.
 
@@ -101,7 +101,7 @@ At the moment, any container can, for example, call the customers service or the
 
 Both calls succeed.
 
-Let's to apply a policy in which _only `web-frontend` is allowed to call `customers`_, and _only the ingress gateway can call `web-frontend`_.
+We wish to apply a policy in which _only `web-frontend` is allowed to call `customers`_, and _only the ingress gateway can call `web-frontend`_.
 
 Study the below authorization policy.
 

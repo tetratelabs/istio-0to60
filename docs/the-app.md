@@ -81,8 +81,8 @@ Confirm that:
 
 ## Verify access to each service
 
-Let's deploy a pod that runs a `curl` image so we can verify that each service is reachable from within the cluster.
-The istio distribution comes with a sample called `sleep` that will serve this purpose.
+We wish to deploy a pod that runs a `curl` image so we can verify that each service is reachable from within the cluster.
+The Istio distribution comes with a sample called `sleep` that will serve this purpose.
 
 1. Deploy `sleep` to the default namespace.
 

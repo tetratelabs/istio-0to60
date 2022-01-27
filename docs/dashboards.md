@@ -6,7 +6,7 @@ The services in our mesh are automatically observable, without adding any burden
 
 ## Deploy the Addons
 
-The istio distribution provides addons for a number of systems that together provide observability for the service mesh:
+The Istio distribution provides addons for a number of systems that together provide observability for the service mesh:
 
 - [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/) for distributed tracing
 - [Prometheus](https://prometheus.io/) for metrics collection

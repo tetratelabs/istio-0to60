@@ -6,7 +6,7 @@ The main objective of this lab is to expose the web frontend to the public inter
 
 When you installed Istio, in addition to deploying istiod to Kubernetes, the installation also provisioned an Ingress Gateway.
 
-View the corresponding istio ingress gateway pod in the `istio-system` namespace.
+View the corresponding Istio ingress gateway pod in the `istio-system` namespace.
 
 ```shell
 kubectl get pod -n istio-system
