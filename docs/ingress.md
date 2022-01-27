@@ -8,13 +8,13 @@ When you installed Istio, in addition to deploying istiod to Kubernetes, the ins
 
 View the corresponding Istio ingress gateway pod in the `istio-system` namespace.
 
-```shell
+```{.shell .language-shell}
 kubectl get pod -n istio-system
 ```
 
 A corresponding _LoadBalancer_ type service was also created:
 
-```shell
+```{.shell .language-shell}
 kubectl get svc -n istio-system
 ```
 
@@ -22,7 +22,7 @@ Make a note of the external IP address for the load balancer.
 
 Assign it to an environment variable.
 
-```shell
+```{.shell .language-shell}
 GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
@@ -32,7 +32,7 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
 
     Ensure `GATEWAY_IP` is set each time we start a new shell:
 
-    ```shell
+    ```{.shell .language-shell}
     echo "export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')" >> ~/.bashrc
     ```
 
@@ -61,7 +61,7 @@ Configuring ingress with Istio is performed in two parts:
 
 1. Apply the gateway resource to your cluster.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f gateway.yaml
     ```
 
@@ -80,13 +80,13 @@ Configuring ingress with Istio is performed in two parts:
 
 1. Apply the virtual service resource to your cluster.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f web-frontend-virtualservice.yaml
     ```
 
 1. List virtual services in the default namespace.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get virtualservice
     ```
 

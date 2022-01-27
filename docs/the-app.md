@@ -26,19 +26,19 @@ In this lab we will use automatic injection, which involves labeling the namespa
 
 1.  Label the default namespace
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl label namespace default istio-injection=enabled
     ```
 
 1. Verify that the label has been applied:
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get ns -Listio-injection
     ```
 
 You can list the mutating webhooks in your Kubernetes cluster and confirm that the sidecar injector is present.
 
-```shell
+```{.shell .language-shell}
 kubectl get mutatingwebhookconfigurations
 ```
 
@@ -62,11 +62,11 @@ If you have extra time, explore the `istioctl kube-inject` command.
 
 1. Apply the two files to your Kubernetes cluster.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f customers.yaml
     ```
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f web-frontend.yaml
     ```
 
@@ -75,7 +75,7 @@ Confirm that:
 - Two pods are running, one for each service
 - Each pod consists of two containers, the one running the service image, plus the Envoy sidecar
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get pod
     ```
 
@@ -91,19 +91,19 @@ The Istio distribution provides a sample app called `sleep` that will serve this
         --8<-- "sleep/sleep.yaml"
         ```
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f sleep.yaml
     ```
 
 1. Capture the name of the sleep pod to an environment variable
 
-    ```shell
+    ```{.shell .language-shell}
     SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
     ```
 
 1. Use the `kubectl exec` command to call the `customers` service.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl exec $SLEEP_POD -it -- curl customers
     ```
 
@@ -111,7 +111,7 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 
 1. Call the `web-frontend` service
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl exec $SLEEP_POD -it -- curl web-frontend
     ```
 

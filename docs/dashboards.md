@@ -17,31 +17,31 @@ These addons are located in the `samples/addons/` folder of the distribution.
 
 1. Navigate to the addons directory
 
-    ```shell
+    ```{.shell .language-shell}
     cd ~/istio-1.12.2/samples/addons
     ```
 
 1. Deploy each addon:
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f extras/zipkin.yaml
     ```
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f prometheus.yaml
     ```
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f grafana.yaml
     ```
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f kiali.yaml
     ```
 
 1. Verify that the `istio-system` namespace is now running additional workloads for each of the addons.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get pod -n istio-system
     ```
 
@@ -49,7 +49,7 @@ The `istioctl` CLI provides convenience commands for accessing the web UIs for e
 
 Take a moment to review the help information for the `istioctl dashboard` command:
 
-```shell
+```{.shell .language-shell}
 istioctl dashboard --help
 ```
 
@@ -73,13 +73,13 @@ Here are the steps to install from source:
 
 1. Fetch the package
 
-    ```shell
+    ```{.shell .language-shell}
     wget http://download.joedog.org/siege/siege-latest.tar.gz
     ```
 
 1. Unpack it
 
-    ```shell
+    ```{.shell .language-shell}
     tar -xzf siege-latest.tar.gz
     ```
 
@@ -87,19 +87,19 @@ Here are the steps to install from source:
 
 1. Run the `configure` script, and request that siege get installed inside your home directory
 
-    ```shell
+    ```{.shell .language-shell}
     ./configure --prefix=$HOME
     ```
 
 1. Build the code
 
-    ```shell
+    ```{.shell .language-shell}
     make
     ```
 
 1. Finally, install (copies the binary to `~/bin`)
 
-    ```shell
+    ```{.shell .language-shell}
     make install
     ```
 
@@ -109,13 +109,13 @@ Feel free to delete (or preserve) the downloaded tar file and source code.
 
 With `siege` now installed, familiarize yourself with the command and its options.
 
-```shell
+```{.shell .language-shell}
 siege --help
 ```
 
 Run the following command to generate a mild load against the application.
 
-```shell
+```{.shell .language-shell}
 siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
 ```
 
@@ -128,7 +128,7 @@ siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
 
 Launch the Kiali dashboard:
 
-```shell
+```{.shell .language-shell}
 istioctl dashboard kiali
 ```
 
@@ -169,7 +169,7 @@ Close the Kiali dashboard.  Interrupt the `istioctl dashboard kiali` command by 
 
 Launch the Zipkin dashboard:
 
-```shell
+```{.shell .language-shell}
 istioctl dashboard zipkin
 ```
 
@@ -199,13 +199,13 @@ With Istio, this is done automatically by the Envoy sidecar.
 
 1. Capture the customers pod name to a variable.
 
-    ```shell
+    ```{.shell .language-shell}
     CUSTOMERS_POD=$(kubectl get pod -l app=customers -ojsonpath='{.items[0].metadata.name}')
     ```
 
 1. Run the following command:
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl exec $CUSTOMERS_POD -it -- curl localhost:15090/stats/prometheus  | grep istio_requests
     ```
 
@@ -215,7 +215,7 @@ With Istio, this is done automatically by the Envoy sidecar.
 
 1. Start the prometheus dashboard
 
-    ```shell
+    ```{.shell .language-shell}
     istioctl dashboard prometheus
     ```
 
@@ -245,7 +245,7 @@ Grafana consumes these metrics to produce graphs on our behalf.
 
 1. Launch the Grafana dashboard
 
-    ```shell
+    ```{.shell .language-shell}
     istioctl dashboard grafana
     ```
 

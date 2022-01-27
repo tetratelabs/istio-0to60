@@ -15,13 +15,13 @@ The customers service is labeled with `app=customers`.
 
 Verify this with:
 
-```shell
+```{.shell .language-shell}
 kubectl get pod -Lapp,version
 ```
 
 Note the selector on the customers service:
 
-```shell
+```{.shell .language-shell}
 kubectl get svc customers -o wide
 ```
 
@@ -39,7 +39,7 @@ We can inform Istio that two distinct subsets of the `customers` service exist, 
 
 1. Verify that it's been applied.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get destinationrule
     ```
 
@@ -57,7 +57,7 @@ Note above how the route specifies subset v1.
 
 1. Verify that it's been applied.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get virtualservice 
     ```
 
@@ -74,13 +74,13 @@ Apply the following Kubernetes deployment to the cluster.
 
 1. Generate some traffic.
 
-    ```shell
+    ```{.shell .language-shell}
     siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
     ```
 
 1. Open a separate terminal and launch the Kiali dashboard
 
-    ```shell
+    ```{.shell .language-shell}
     istioctl dashboard kiali
     ```
 
@@ -104,7 +104,7 @@ We are telling Istio to check an HTTP header:  if the `user-agent` is set to `de
 
 Apply the above yaml to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.
 
-```shell
+```{.shell .language-shell}
 kubectl apply -f customers-v2-debug.yaml
 ```
 
@@ -112,7 +112,7 @@ kubectl apply -f customers-v2-debug.yaml
 
 Open a browser and visit the application.
 
-```shell
+```{.shell .language-shell}
 GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
@@ -151,7 +151,7 @@ In your browser:  undo the user agent customization and refresh the page a bunch
 
 Before we open the floodgates, we wish to determine how v2 is fairing.
 
-```shell
+```{.shell .language-shell}
 istioctl dashboard grafana
 ```
 

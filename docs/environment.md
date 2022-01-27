@@ -42,7 +42,7 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 
 1. Check that the `kubectl` CLI is installed
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl version --short
     ```
 
@@ -59,7 +59,7 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 
     === "From the command line"
 
-        ```shell
+        ```{.shell .language-shell}
         gcloud container clusters get-credentials \
             $(gcloud container clusters list --format="value(name)") \
             --zone us-central1-a \
@@ -72,13 +72,13 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 
 1. Verify that your Kubernetes context is set for your cluster
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl config get-contexts
     ```
 
 1. Run a token command such as `kubectl get node` or `kubectl get ns` to ensure that you can communicate with the Kubernetes API Server.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get ns
     ```
 
@@ -92,7 +92,7 @@ You have the option of copying and pasting the yaml snippets directly from the l
 
 Another option is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60) from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named `artifacts`.
 
-```shell
+```{.shell .language-shell}
 git clone https://github.com/tetratelabs/istio-0to60.git
 ```
 

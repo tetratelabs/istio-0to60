@@ -14,10 +14,13 @@
   color: #3870e0;
 }
 
-
-/* when pygments is enabled, the language class is suppressed for some strange reason,
-  meaning this won't work / can't discriminate a shell block from any other block.
-  todo: find a fix. */
-pre code.language-shell::before {
+/*
+.highlight.language-shell code::before {
   content: '$ ';
+  color: green;
 }
+.highlight.language-shell code {
+  background-color: black;
+  color: white;
+}
+*/

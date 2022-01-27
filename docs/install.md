@@ -7,13 +7,13 @@ In this lab you will install Istio.
 
 1. Run the following command from your home directory.
 
-    ```shell
+    ```{.shell .language-shell}
     curl -L https://istio.io/downloadIstio | sh -
     ```
 
 1. Navigate into the directory created by the above command.
 
-    ```shell
+    ```{.shell .language-shell}
     cd istio-1.12.2
     ```
 
@@ -33,26 +33,26 @@ The `istioctl` CLI is located in the `bin/` subdirectory.
 
 1. Create a `bin` subdirectory in your home directory:
 
-    ```shell
+    ```{.shell .language-shell}
     mkdir ~/bin
     ```
 
 1. Copy the CLI to that subdirectory:
 
-    ```shell
+    ```{.shell .language-shell}
     cp ./bin/istioctl ~/bin
     ```
 
 1. Add your home `bin` subdirectory to your PATH
 
-    ```shell
+    ```{.shell .language-shell}
     echo "export PATH=$HOME/bin:$PATH" >> ~/.bashrc
     source ~/.bashrc
     ```
 
 Verify that `istioctl` is installed with:
 
-```shell
+```{.shell .language-shell}
 istioctl version
 ```
 
@@ -62,7 +62,7 @@ With the CLI installed, proceed to install Istio to Kubernetes.
 
 1. Istio can be installed directly with the CLI:
 
-    ```shell
+    ```{.shell .language-shell}
     istioctl install
     ```
 
@@ -74,13 +74,13 @@ Take a moment to learn more about [Istio installation profiles](https://istio.io
 
 1. List Kubernetes namespaces and note the new namespace `istio-system`
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get ns
     ```
 
 1. Verify that the `istiod` controller pod is running in that namespace
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get pod -n istio-system
     ```
 

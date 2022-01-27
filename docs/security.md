@@ -17,25 +17,25 @@ We can test whether a mesh workload, such as the customers service, will allow a
 
 1. Create a separate namespace that is not configured with automatic injection.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl create ns otherns
     ```
 
 1. Deploy `sleep` to that namespace
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl apply -f sleep.yaml -n otherns
     ```
 
 1. Verify that the sleep pod has no sidecars:
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get pod -n otherns
     ```
 
 1. Call the customer service from that pod:
 
-    ```shell
+    ```{.shell .language-shell}
     SLEEP_POD=$(kubectl get pod -l app=sleep -n otherns -ojsonpath='{.items[0].metadata.name}')
     kubectl exec -n otherns $SLEEP_POD -it -- curl customers.default
     ```
@@ -62,13 +62,13 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 
 1. Verify that the peer authentication has been applied.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get peerauthentication
     ```
 
 ### Verify that plain-text requests are no longer permitted
 
-```shell
+```{.shell .language-shell}
 kubectl exec -n otherns $SLEEP_POD -it -- curl customers.default
 ```
 
@@ -83,19 +83,19 @@ At the moment, any container can, for example, call the customers service or the
 
 1. Capture the name of the sleep pod running in the default namespace
 
-    ```shell
+    ```{.shell .language-shell}
     SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
     ```
 
 1. Call the `customers` service.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl exec $SLEEP_POD -it -- curl customers
     ```
 
 1. Call the `web-frontend` service.
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl exec $SLEEP_POD -it -- curl web-frontend
     ```
 
@@ -129,7 +129,7 @@ Can you come up with a similar authorization policy for `web-frontend`?
 
     Here is a command which can help you find the name of the service account associated with its identity:
 
-    ```shell
+    ```{.shell .language-shell}
     kubectl get pod -n istio-system -l app=istio-ingressgateway -o yaml | grep serviceAccountName
     ```
 
