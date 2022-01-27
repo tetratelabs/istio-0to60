@@ -28,10 +28,10 @@ Verify that your project is selected:
 
 The Google Cloud Shell will serve as your terminal environment for these labs.
 
-- Click the _Activate cloud shell_ icon (top right); the icon looks like a shell prompt ">_"
+- Click the _Activate cloud shell_ icon (top right); the icon looks like this: :material-console:{.gcp-blue}
 - A dialog may pop up, click _Continue_
 - Your cloud shell terminal should appear at the bottom of the screen
-- Feel free to expand the size of the cloud shell, or even open it in a separate window (locate the icon button in the terminal header, on the right)
+- Feel free to expand the size of the cloud shell, or even open it in a separate window (locate the icon button :material-open-in-new: in the terminal header, on the right)
 
 !!! warning
 
