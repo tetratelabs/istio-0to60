@@ -59,15 +59,57 @@ In order to have something to observe, we need to generate a load on our system.
 
 ### Install a load generator
 
-1. Install a simple load generating tool named `siege`.
+Install a simple load generating tool named `siege`.
 
-    [tbd]
+We have two options:
 
-1. Familiarize yourself with the command and its options.
+1. Install with the package manager, `apt-get`.  The problem is that siege is installed outside your home directory, and in google cloud shell's ephemeral environment, it means you'll need to re-install it each time you start a new session.
+
+1. Install from source. It's a little more work, but does not exhibit the above-mentioned problem.
+
+Here are the steps to install from source:
+
+1. Fetch the package
 
     ```shell
-    siege --help
+    wget http://download.joedog.org/siege/siege-latest.tar.gz
     ```
+
+1. Unpack it
+
+    ```shell
+    tar -xzf siege-latest.tar.gz
+    ```
+
+1. Navigate into the siege subdirectory with `cd siege`++tab++
+
+1. Run the `configure` script, and request that siege get installed inside your home directory
+
+    ```shell
+    ./configure --prefix=$HOME
+    ```
+
+1. Build the code
+
+    ```shell
+    make
+    ```
+
+1. Finally, install (copies the binary to `~/bin`)
+
+    ```shell
+    make install
+    ```
+
+Feel free to delete (or preserve) the downloaded tar file and source code.
+
+### Generate a load
+
+With `siege` now installed, familiarize yourself with the command and its options.
+
+```shell
+siege --help
+```
 
 Run the following command to generate a mild load against the application.
 
