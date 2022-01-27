@@ -2,9 +2,18 @@ site_name: Istio 0 to 60 Labs
 repo_url: https://github.com/tetratelabs/istio-0to60
 theme:
   name: material
+  custom_dir: overrides
+  logo_light_mode: assets/tetrate-logo-white.png
+  logo_dark_mode: assets/tetrate-logo-black.png
   palette:
-    scheme: default
-  logo: assets/tetrate-logo-white.png
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline 
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
   features:
     - navigation.top
     - navigation.instant
