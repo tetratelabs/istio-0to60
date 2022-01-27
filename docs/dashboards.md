@@ -59,7 +59,7 @@ In order to have something to observe, we need to generate a load on our system.
 
 ### Install a load generator
 
-Install a simple load generating tool named `siege`.
+Install a simple load generating tool named [`siege`](https://github.com/JoeDog/siege){target=_blank}.
 
 We normally install `siege` with the `apt-get` package manager.
 However, given the cloud shell's ephemeral nature, anything installed outside our home directory will vanish after a session timeout.
