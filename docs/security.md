@@ -81,19 +81,19 @@ Another important layer of security is to define an authorization policy, in whi
 
 At the moment, any container can, for example, call the customers service or the web-frontend service.
 
-1. Capture the name of the sleep pod runnin in the default namespace
+1. Capture the name of the sleep pod running in the default namespace
 
     ```shell
     SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
     ```
 
-1. Call the customers service.
+1. Call the `customers` service.
 
     ```shell
     kubectl exec $SLEEP_POD -it -- curl customers
     ```
 
-1. Call the web-frontend service.
+1. Call the `web-frontend` service.
 
     ```shell
     kubectl exec $SLEEP_POD -it -- curl web-frontend
@@ -118,21 +118,22 @@ Study the below authorization policy.
 
 Can you come up with a similar authorization policy for `web-frontend`?
 
-- Use the `customers` authorization policy as a template
+- Use a copy of the `customers` authorization policy as a starting point
+- Give the resource an apt name
 - Revise the selector to match the `web-frontend` service
-- Revise the rule to match the principal for the ingress gateway
+- Revise the rule to match the principal of the ingress gateway
 
 !!! hint
 
-    The ingress gateway has its own identify.
+    The ingress gateway has its own identity.
 
-    Here is a command which can help you find the name of the service account associated with its identify:
+    Here is a command which can help you find the name of the service account associated with its identity:
 
     ```shell
     kubectl get pod -n istio-system -l app=istio-ingressgateway -o yaml | grep serviceAccountName
     ```
 
-    Use it together with the namespace that the ingress gateway is running in to specify the value for the `principals` field.
+    Use this service account name together with the namespace that the ingress gateway is running in to specify the value for the `principals` field.
 
 
 ### Test it

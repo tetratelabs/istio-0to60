@@ -1,8 +1,8 @@
 # Ingress
 
-The main objective of this lab is to expose the web frontend to the public internet.
+The objective of this lab is to expose the `web-frontend` service to the internet.
 
-## The ingress gateway
+## The Ingress gateway
 
 When you installed Istio, in addition to deploying istiod to Kubernetes, the installation also provisioned an Ingress Gateway.
 
@@ -12,7 +12,7 @@ View the corresponding Istio ingress gateway pod in the `istio-system` namespace
 kubectl get pod -n istio-system
 ```
 
-A corresponding LoadBalancer type service was also created:
+A corresponding _LoadBalancer_ type service was also created:
 
 ```shell
 kubectl get svc -n istio-system
@@ -28,9 +28,7 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
 
 ??? tip "A small investment"
 
-    Inevitably at some point our session will end, or we'll open a new terminal and the above variable will be out of scope.
-
-    We will be referencing `$GATEWAY_IP` in susequent labs.
+    When the cloud shell connection is severed, or when openeing a new terminal tab, `$GATEWAY_IP` will no longer be in scope.
 
     Ensure `GATEWAY_IP` is set each time we start a new shell:
 
@@ -38,15 +36,15 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
     echo "export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')" >> ~/.bashrc
     ```
 
-
-We could create a DNS A record for this IP address, but for the sake of simplicity, we will access anything we expose from the mesh by using the IP address directly.
+In normal circumstances we associate this IP address with a hostname via DNS.
+For the sake of simplicity, in this workshop we will use the gateway public IP address directly.
 
 ## Configuring ingress
 
-Configuring ingress with Istio is split into two parts:
+Configuring ingress with Istio is performed in two parts:
 
-- Define a `Gateway` custom resource that governs the specific host, port, and protocol to expose
-- Specify how requests should be routed with a `VirtualService` custom resource.
+1. Define a `Gateway` custom resource that governs the specific host, port, and protocol to expose
+1. Specify how requests should be routed with a `VirtualService` custom resource.
 
 ### Create a Gateway resource
 
@@ -98,7 +96,9 @@ Finally, verify that you can now access `web-frontend` from your web browser usi
 
 ## Candidate follow-on exercises
 
-- Consider creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.
+We will not explore ingress any further in this workshop.  Consider the following as indepenent exercises:
+
+- Creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.
 - [Configuring a TLS ingress gateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-a-single-host)
  
 

@@ -1,6 +1,7 @@
 # Traffic shifting
 
-Version 2 of the customers service has been developed and it's time to deploy it to production.
+Version 2 of the customers service has been developed, and it's time to deploy it to production.
+Whereas version 1 returned a list of customer names, version 2 also includes each customer's city.
 
 ## Deploying customers, v2
 
@@ -44,7 +45,7 @@ We can inform Istio that two distinct subsets of the `customers` service exist, 
 
 ### VirtualServices
 
-Armed with two distinct destinations, the `VirtualService` custom resource allows us to define a routing rule.
+Armed with two distinct destinations, the `VirtualService` custom resource allows us to define a routing rule that sends all traffic to the v1 subset.
 
 ```yaml linenums="1" title="customers-virtualservice.yaml"
 --8<-- "customers-virtualservice.yaml"
@@ -89,9 +90,9 @@ The graph should show all traffic going to v1.
 
 ## Route to customers, v2
 
-Being the cautious developers we are, our plan is to "check out v2" before customers do.
+We wish to proceed with caution.  Before customers can see version 2, we want to make sure that the service functions properly.
 
-## Expose debug traffic to v2
+## Expose "debug" traffic to v2
 
 Review this proposed updated routing specification.
 
@@ -99,7 +100,7 @@ Review this proposed updated routing specification.
 --8<-- "customers-v2-debug.yaml"
 ```
 
-We are telling Istio to check an HTTP header:  If the `user-agent` is set to `debug`, route to v2, otherwise route to v1.
+We are telling Istio to check an HTTP header:  if the `user-agent` is set to `debug`, route to v2, otherwise route to v1.
 
 Apply the above yaml to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.
 
@@ -109,13 +110,13 @@ kubectl apply -f customers-v2-debug.yaml
 
 ### Test it
 
-Open a browser and visit your $GATEWAY_IP.
+Open a browser and visit the application.
 
 ```shell
 GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-We can tell v1 and v2 apart in that v2 displays customers with two columns.
+We can tell v1 and v2 apart in that v2 displays both customer names and their city, in two columns.
 
 If you're using Chrome or Firefox, you can customize the `user-agent` header as follows:
 
@@ -127,7 +128,9 @@ If you're using Chrome or Firefox, you can customize the `user-agent` header as 
 
 Now refresh the page, and traffic should have been directed to v2.
 
-If you refresh the page a good dozen times and then wait ~15-30 seconds, you should be able to see some of that v2 traffic in Kiali too.
+!!! tip
+
+    If you refresh the page a good dozen times and then wait ~15-30 seconds, you should be able to see some of that v2 traffic in Kiali too.
 
 ## Canary
 
@@ -140,9 +143,9 @@ Start by siphoning 10% of traffic over to v2.
 ```
 
 Note above the `weight` field specifying 10 percent of traffic to v2.
-Kiali should now showing traffic going to both v1 and v2.
+Kiali should now show traffic going to both v1 and v2.
 
-In your browser:  undo the user agent customizations and refresh the page a bunch of times.  Most of the requests still go to v1.
+In your browser:  undo the user agent customization and refresh the page a bunch of times.  Most of the requests still go to v1.
 
 ## Check Grafana
 
@@ -152,7 +155,7 @@ Before we open the floodgates, we wish to determine how v2 is fairing.
 istioctl dashboard grafana
 ```
 
-In grafana, visit the Istio Workload Dashboard and specifically look at the customers v2 workload.
+In Grafana, visit the Istio Workload Dashboard and specifically look at the customers v2 workload.
 Look at the request rate and the incoming success rate, also the latencies.
 
 If all looks good, up the percentage from 90/10 to, say 50/50.

@@ -15,10 +15,10 @@ Let's summarize.  You have:
 
 Istio has many more features whose scope is beyond the 0 to 60 workshop, including but not limited to:
 
-- [ ] failure injection
-- [ ] circuit breakers
-- [ ] extensibility with WASM
-- [ ] egress gateways
+- [ ] Failure injection
+- [ ] Circuit breakers
+- [ ] Extensibility with WASM
+- [ ] Egress gateways
 - [ ] Istio deployment models
 
 We encourage you to dig deeper into the [Istio docs](https://istio.io/latest/docs/) yourself.

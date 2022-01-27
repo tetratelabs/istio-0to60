@@ -1,6 +1,6 @@
 # Observability
 
-In this lab we explore one of the main strengths of Istio: observability.
+This lab explores one of the main strengths of Istio: observability.
 
 The services in our mesh are automatically observable, without adding any burden on developers.
 
@@ -47,7 +47,7 @@ These addons are located in the `samples/addons/` folder of the distribution.
 
 The `istioctl` CLI provides convenience commands for accessing the web UIs for each dashboard.
 
-Take a moment to review the help output for the `istioctl dashboard` command:
+Take a moment to review the help information for the `istioctl dashboard` command:
 
 ```shell
 istioctl dashboard --help
@@ -61,11 +61,13 @@ In order to have something to observe, we need to generate a load on our system.
 
 Install a simple load generating tool named `siege`.
 
-We have two options:
+We normally install `siege` with the `apt-get` package manager.
+However, given the cloud shell's ephemeral nature, anything installed outside our home directory will vanish after a session timeout.
 
-1. Install with the package manager, `apt-get`.  The problem is that siege is installed outside your home directory, and in google cloud shell's ephemeral environment, it means you'll need to re-install it each time you start a new session.
+Alternatives:
 
 1. Install from source. It's a little more work, but does not exhibit the above-mentioned problem.
+1. Run the load generator from your laptop.  On a mac, using homebrew the command is `brew install siege`.
 
 Here are the steps to install from source:
 
@@ -140,10 +142,10 @@ The Kiali dashboard displays.
 
 Customize the view as follows:
 
-1. Select the `Graph` section from the sidebar.
-1. From the `Namespace` "pulldown" menu at the top of the screen, select the `default` namespace, the location where the application's pods are running.
-1. From the third _pulldown_ menu, select _App graph_.
-1. From the "Display" _pulldown_, toggle on _Traffic Animation_ and _Security_.
+1. Select the _Graph_ section from the sidebar.
+1. From the _Namespace_ "pulldown" menu at the top of the screen, select the `default` namespace, the location where the application's pods are running.
+1. From the third "pulldown" menu, select _App graph_.
+1. From the _Display_ "pulldown", toggle on _Traffic Animation_ and _Security_.
 1. From the footer, toggle the legend so that it is visible.  Take a moment to familiarize yourself with the legend.
 
 Observe the visualization and note the following:
@@ -152,7 +154,7 @@ Observe the visualization and note the following:
 - The lines connecting the services are green, indicating healthy requests
 - The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS
 
-Such visualizations are helpful in understanding the flow of requests in the mesh and in diagnosis.
+Such visualizations are helpful with understanding the flow of requests in the mesh, and with diagnosis.
 
 Feel free to spend more time exploring Kiali.
 
@@ -173,25 +175,25 @@ istioctl dashboard zipkin
 
 The zipkin dashboard displays.
 
-- Click on the red '+' button and select "serviceName".
+- Click on the red '+' button and select _serviceName_.
 - Select the service named `web-frontend.default` and click on the _Run Query_ button (lightblue) to the right.
 
 A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.
 
 Click the _Show_ button to the right of one of the traces.  The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.
 
-Such traces also help us make sense of the flow of requests in a microservice architecture.
+Distributed tracing also helps us make sense of the flow of requests in a microservice architecture.
 
 ### Zipkin Cleanup
 
-Close the Zipking dashboard.  Interrupt the `istioctl dashboard zipkin` command with ++ctrl+c++.
+Close the Zipkin dashboard.  Interrupt the `istioctl dashboard zipkin` command with ++ctrl+c++.
 
 
 ## Prometheus
 
-Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is usually termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.
+Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.
 
-With Istio, this is done automatically by envoy.
+With Istio, this is done automatically by the Envoy sidecar.
 
 ### Observe how Envoy exposes a Prometheus scrape endpoint
 
@@ -207,7 +209,7 @@ With Istio, this is done automatically by envoy.
     kubectl exec $CUSTOMERS_POD -it -- curl localhost:15090/stats/prometheus  | grep istio_requests
     ```
 
-    The list of metrics returned by the endpoint is rather lengthy, so we just peek at the "istio_requests" metric.  But the full response contains many more metrics.
+    The list of metrics returned by the endpoint is rather lengthy, so we just peek at "istio_requests" metric.  The full response contains many more metrics.
 
 ### Access the dashboard
 
@@ -221,7 +223,7 @@ With Istio, this is done automatically by envoy.
 
 1. Select the tab named "Graph" to obtain a graphical representation of this metric over time.
 
-    Note that you are looking it requests across the entire mesh, i.e. this includes both requests to `web-frontend` and to `customers`.
+    Note that you are looking at requests across the entire mesh, i.e. this includes both requests to `web-frontend` and to `customers`.
 
 2. As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:
 
@@ -229,7 +231,7 @@ With Istio, this is done automatically by envoy.
     istio_requests_total{response_code="200"}
     ```
 
-3. With respects to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:
+3. With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:
 
     ```text
     rate(istio_requests_total[5m])
