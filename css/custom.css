@@ -10,6 +10,10 @@
   --md-accent-fg-color: #F05623;
 }
 
+.gcp-blue {
+  color: #3870e0;
+}
+
 
 /* when pygments is enabled, the language class is suppressed for some strange reason,
   meaning this won't work / can't discriminate a shell block from any other block.
