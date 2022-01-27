@@ -517,25 +517,39 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 </code></pre></div>
 </li>
 <li>
-<p>Activate the top navigation menu (hamburger icon on the top left hand side of the page)</p>
-</li>
+<p>Generate a kubeconfig entry</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">With the user interface</label><label for="__tabbed_1_2">From the command line</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Activate the top navigation menu (hamburger icon on the top left hand side of the page)</li>
 <li>Locate and click on the product <em>Kubernetes Engine</em> (you may have to scroll down until you see it)</li>
 <li>Your pre-provisioned 3-node Kubernetes cluster should appear in the main view</li>
 <li>Click on that row's "three dot" menu and select the <em>Connect</em> option</li>
 <li>A dialog prompt will appear with instructions</li>
 <li>Copy the <code>gcloud</code> command shown and paste it in your cloud shell</li>
-<li>Click <em>Authorize</em> when prompted</li>
 </ol>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud container clusters get-credentials <span class="se">\</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">$(</span>gcloud container clusters list --format<span class="o">=</span><span class="s2">&quot;value(name)&quot;</span><span class="k">)</span> <span class="se">\</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    --zone us-central1-a <span class="se">\</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    --project <span class="k">$(</span>gcloud config get-value project<span class="k">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Click <em>Authorize</em> when prompted</p>
 <p>The console message will state that a <em>kubeconfig entry [was] generated for [your project]</em></p>
-<ol>
+</li>
 <li>
 <p>Verify that your Kubernetes context is set for your cluster</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl config get-contexts
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl config get-contexts
 </code></pre></div>
 </li>
 <li>
 <p>Run a token command such as <code>kubectl get node</code> or <code>kubectl get ns</code> to ensure that you can communicate with the Kubernetes API Server.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get ns
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get ns
 </code></pre></div>
 </li>
 </ol>
@@ -544,7 +558,7 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <p>The lab instructions reference Kubernetes yaml artifacts that you will need to apply to your cluster at specific points in time.</p>
 <p>You have the option of copying and pasting the yaml snippets directly from the lab instructions as you encounter them.</p>
 <p>Another option is to clone the <a href="https://github.com/tetratelabs/istio-0to60">GitHub repository for this workshop</a> from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named <code>artifacts</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git
 </code></pre></div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>Now that we have access to our environment and to our Kubernetes cluster, we can proceed to install Istio.</p>
