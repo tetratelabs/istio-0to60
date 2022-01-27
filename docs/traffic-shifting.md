@@ -102,7 +102,7 @@ Review this proposed updated routing specification.
 
 We are telling Istio to check an HTTP header:  if the `user-agent` is set to `debug`, route to v2, otherwise route to v1.
 
-Apply the above yaml to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.
+Open a new terminal and apply the above resource to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.
 
 ```{.shell .language-shell}
 kubectl apply -f customers-v2-debug.yaml
@@ -112,25 +112,27 @@ kubectl apply -f customers-v2-debug.yaml
 
 Open a browser and visit the application.
 
-```{.shell .language-shell}
-GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
-```
+??? tip "If you need it"
 
-We can tell v1 and v2 apart in that v2 displays both customer names and their city, in two columns.
+    ```{.shell .language-shell}
+    GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+    ```
+
+We can tell v1 and v2 apart in that v2 displays not only customer names but also their city (in two columns).
 
 If you're using Chrome or Firefox, you can customize the `user-agent` header as follows:
 
 1. Open the browser's developer tools
-2. Open the "three dots" menu, and select "more tools" -> "network conditions"
+2. Open the "three dots" menu, and select _More tools -> Network conditions_
 3. The network conditions panel will open
-4. Under "user agent", uncheck "Use browser default"
+4. Under _User agent_, uncheck _Use browser default_
 5. Select _Custom..._ and in the text field enter `debug`
 
-Now refresh the page, and traffic should have been directed to v2.
+Refresh the page; traffic should be directed to v2.
 
 !!! tip
 
-    If you refresh the page a good dozen times and then wait ~15-30 seconds, you should be able to see some of that v2 traffic in Kiali too.
+    If you refresh the page a good dozen times and then wait ~15-30 seconds, you should see some of that v2 traffic in Kiali.
 
 ## Canary
 
@@ -145,7 +147,10 @@ Start by siphoning 10% of traffic over to v2.
 Note above the `weight` field specifying 10 percent of traffic to v2.
 Kiali should now show traffic going to both v1 and v2.
 
-In your browser:  undo the user agent customization and refresh the page a bunch of times.  Most of the requests still go to v1.
+- Apply the above resource.
+- In your browser:  undo the user agent customization and refresh the page a bunch of times.
+
+Most of the requests still go to v1, but some are directed to v2.
 
 ## Check Grafana
 
@@ -169,5 +174,6 @@ Finally, switch all traffic over to v2.
 ```
 
 After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).
+Within a minute or so, the Kiali dashboard should also reflect the fact that all traffic is going to the customers v2 service.
 
 Though it no longers receives any traffic, we decide to leave v1 running a while longer before retiring it.

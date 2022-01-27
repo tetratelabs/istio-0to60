@@ -132,6 +132,10 @@ Launch the Kiali dashboard:
 istioctl dashboard kiali
 ```
 
+!!! warning
+
+    If the dashboard page fails to open, just click on the hyperlink in the console output.
+
 !!! note
 
     The `istioctl dashboard` command also blocks.

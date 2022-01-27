@@ -56,7 +56,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
         --8<-- "mtls-strict.yaml"
         ```
 
-    !!! tip
+    !!! info
 
         Strict mtls can be enabled globally by setting the namespace to the name of the Istio root namespace, which by default is `istio-system`
 
@@ -96,7 +96,7 @@ At the moment, any container can, for example, call the customers service or the
 1. Call the `web-frontend` service.
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -it -- curl web-frontend
+    kubectl exec $SLEEP_POD -it -- curl web-frontend | head
     ```
 
 Both calls succeed.
@@ -113,6 +113,11 @@ Study the below authorization policy.
 - The `selector` section specifies that the policy applies to the `customers` service.
 - Note how the rules have a "from: source: " section indicating who is allowed in.
 - The nomenclature for the value of the `principals` field comes from the [spiffe](https://spiffe.io/){target=_blank} standard.  Note how it captures the service account name and namespace associated with the `web-frontend` service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.
+
+Tasks:
+
+- [ ] Apply the policy to your cluster.
+- [ ] Verify that you are no longer to reach the customer pod from the sleep pod
 
 ### Challenge
 
