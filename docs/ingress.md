@@ -26,6 +26,19 @@ Assign it to an environment variable.
 GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
+??? tip "A small investment"
+
+    Inevitably at some point our session will end, or we'll open a new terminal and the above variable will be out of scope.
+
+    We will be referencing `$GATEWAY_IP` in susequent labs.
+
+    Ensure `GATEWAY_IP` is set each time we start a new shell:
+
+    ```shell
+    echo "export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')" >> ~/.bashrc
+    ```
+
+
 We could create a DNS A record for this IP address, but for the sake of simplicity, we will access anything we expose from the mesh by using the IP address directly.
 
 ## Configuring ingress
