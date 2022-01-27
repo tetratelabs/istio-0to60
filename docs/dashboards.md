@@ -8,10 +8,10 @@ The services in our mesh are automatically observable, without adding any burden
 
 The Istio distribution provides addons for a number of systems that together provide observability for the service mesh:
 
-- [Zipkin](https://zipkin.io/) or [Jaeger](https://www.jaegertracing.io/) for distributed tracing
-- [Prometheus](https://prometheus.io/) for metrics collection
-- [Grafana](https://grafana.com/) provides dashboards for monitoring, using Prometheus as the data source
-- [Kiali](https://kiali.io/) allows us to visualize the mesh
+- [Zipkin](https://zipkin.io/){target=_blank} or [Jaeger](https://www.jaegertracing.io/){target=_blank} for distributed tracing
+- [Prometheus](https://prometheus.io/){target=_blank} for metrics collection
+- [Grafana](https://grafana.com/){target=_blank} provides dashboards for monitoring, using Prometheus as the data source
+- [Kiali](https://kiali.io/){target=_blank} allows us to visualize the mesh
 
 These addons are located in the `samples/addons/` folder of the distribution.
 
@@ -237,7 +237,7 @@ With Istio, this is done automatically by the Envoy sidecar.
     rate(istio_requests_total[5m])
     ```
 
-There's much more to the Prometheus query language ([this](https://prometheus.io/docs/prometheus/latest/querying/basics/) may be a good place to start).
+There's much more to the Prometheus query language ([this](https://prometheus.io/docs/prometheus/latest/querying/basics/){target=_blank} may be a good place to start).
 
 Grafana consumes these metrics to produce graphs on our behalf.
 

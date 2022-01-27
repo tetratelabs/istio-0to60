@@ -112,7 +112,7 @@ Study the below authorization policy.
 
 - The `selector` section specifies that the policy applies to the `customers` service.
 - Note how the rules have a "from: source: " section indicating who is allowed in.
-- The nomenclature for the value of the `principals` field comes from the [spiffe](https://spiffe.io/) standard.  Note how it captures the service account name and namespace associated with the `web-frontend` service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.
+- The nomenclature for the value of the `principals` field comes from the [spiffe](https://spiffe.io/){target=_blank} standard.  Note how it captures the service account name and namespace associated with the `web-frontend` service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.
 
 ### Challenge
 

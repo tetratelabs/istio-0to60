@@ -6,7 +6,7 @@ Your instructor will demonstrate the process of accessing and configuring your e
 
 ## Log in to GCP
 
-1. Log in to [GCP](https://console.cloud.google.com/) using credentials provided by your instructor.
+1. Log in to [GCP](https://console.cloud.google.com/){target=_blank} using credentials provided by your instructor.
 1. Agree to the terms
 1. You will be prompted to select your country, click "Agree and continue"
 
@@ -90,7 +90,7 @@ The lab instructions reference Kubernetes yaml artifacts that you will need to a
 
 You have the option of copying and pasting the yaml snippets directly from the lab instructions as you encounter them.
 
-Another option is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60) from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named `artifacts`.
+Another option is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60){target=_blank} from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named `artifacts`.
 
 ```{.shell .language-shell}
 git clone https://github.com/tetratelabs/istio-0to60.git

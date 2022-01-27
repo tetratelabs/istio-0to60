@@ -68,7 +68,7 @@ With the CLI installed, proceed to install Istio to Kubernetes.
 
 1. When prompted, enter `y` to proceed to install Istio.
 
-Take a moment to learn more about [Istio installation profiles](https://istio.io/latest/docs/setup/additional-setup/config-profiles/).
+Take a moment to learn more about [Istio installation profiles](https://istio.io/latest/docs/setup/additional-setup/config-profiles/){target=_blank}.
 
 ## Verify that Istio is installed
 
