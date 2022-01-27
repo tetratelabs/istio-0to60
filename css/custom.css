@@ -2,13 +2,35 @@
 :root {
   /* 
   the primary fg color is used not only for the header bg color,
-  but also for the fg color of hyperlinks.
+    but also for the fg color of hyperlinks.
   making it black has the side effect of making links invisible.
-  so for now going back to the default primary color
+    so for now going back to the default primary color
   */
   /* --md-primary-fg-color: #000717; */
   --md-accent-fg-color: #F05623;
 }
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #F05623;
+  --md-footer-logo-slate:         block;
+  --md-footer-logo-default:         none;
+}
+
+[data-md-color-scheme="default"] {
+  --md-footer-logo-slate:         none;
+  --md-footer-logo-default:         block;
+}
+
+#logo_light_mode {
+  display: var(--md-footer-logo-default);
+}
+
+#logo_dark_mode {
+  display: var(--md-footer-logo-slate);
+}
+
+
+
 
 .gcp-blue {
   color: #3870e0;
@@ -17,5 +39,16 @@
 /*
 .highlight.language-shell code::before {
   content: '$ ';
+}
+*/
+
+/*
+requires adding <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> to the page
+but material icons were already bundled with mkdocs-material ?
+
+a[target]::after {
+  font-family: 'Material Icons';
+  content: "\e89e";
+  padding-left: 5px; 
 }
 */
