@@ -592,7 +592,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 </details>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Strict mtls can be enabled globally by setting the namespace to the name of the istio root namespace, which by default is <code>istio-system</code></p>
+<p>Strict mtls can be enabled globally by setting the namespace to the name of the Istio root namespace, which by default is <code>istio-system</code></p>
 </div>
 </li>
 <li>
@@ -626,7 +626,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 </li>
 </ol>
 <p>Both calls succeed.</p>
-<p>Let's to apply a policy in which <em>only <code>web-frontend</code> is allowed to call <code>customers</code></em>, and <em>only the ingress gateway can call <code>web-frontend</code></em>.</p>
+<p>We wish to apply a policy in which <em>only <code>web-frontend</code> is allowed to call <code>customers</code></em>, and <em>only the ingress gateway can call <code>web-frontend</code></em>.</p>
 <p>Study the below authorization policy.</p>
 <div class="admonition tldr">
 <p class="admonition-title">authz-policy-customers.yaml</p>

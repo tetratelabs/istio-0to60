@@ -475,7 +475,8 @@
 
 
 <h1 id="lab-environment">Lab environment<a class="headerlink" href="#lab-environment" title="Permanent link">&para;</a></h1>
-<p>An environment has been provisioned for you on Google Cloud Platform (GCP), consisting mainly of a Kubernetes cluster using Google Kubernetes Engine (GKE).</p>
+<p>An environment has been provisioned for you on Google Cloud Platform (GCP), consisting mainly of a Kubernetes cluster.</p>
+<p>Your instructor will demonstrate the process of accessing and configuring your environment, described below.</p>
 <h2 id="log-in-to-gcp">Log in to GCP<a class="headerlink" href="#log-in-to-gcp" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Log in to <a href="https://console.cloud.google.com/">GCP</a> using credentials provided by your instructor.</li>
@@ -486,8 +487,8 @@
 <p>Select the GCP project you have been assigned, as follows:</p>
 <ol>
 <li>Click the project selector "pulldown" menu from the top banner, which will open a popup dialog</li>
-<li>make sure the "Select from" Organization is set to <em>tetratelabs.com</em></li>
-<li>Select the tab named "All"</li>
+<li>Make sure the <em>Select from</em> organization is set to <em>tetratelabs.com</em></li>
+<li>Select the tab named <em>All</em></li>
 <li>You will see your GCP project name (istio-0to60..) listed under the organization tetratelabs.com</li>
 <li>Select the project from the list</li>
 </ol>
@@ -498,10 +499,10 @@
 <h2 id="launch-the-cloud-shell">Launch the Cloud Shell<a class="headerlink" href="#launch-the-cloud-shell" title="Permanent link">&para;</a></h2>
 <p>The Google Cloud Shell will serve as your terminal environment for these labs.</p>
 <ul>
-<li>Click the "Activate cloud shell" icon (top right); the icon looks like a shell prompt "&gt;_"</li>
-<li>A dialog may pop up, click "Continue"</li>
+<li>Click the <em>Activate cloud shell</em> icon (top right); the icon looks like a shell prompt "&gt;_"</li>
+<li>A dialog may pop up, click <em>Continue</em></li>
 <li>Your cloud shell terminal should appear at the bottom of the screen</li>
-<li>Feel free to expand the size of the cloud shell, or even open it in a separate window (there's a button in the terminal header, on the right)</li>
+<li>Feel free to expand the size of the cloud shell, or even open it in a separate window (locate the icon button in the terminal header, on the right)</li>
 </ul>
 <h2 id="configure-cluster-access">Configure cluster access<a class="headerlink" href="#configure-cluster-access" title="Permanent link">&para;</a></h2>
 <ol>
@@ -511,33 +512,33 @@
 </code></pre></div>
 </li>
 <li>
-<p>From the top navigation menu (hamburger icon on the top left hand side of the page),</p>
+<p>Activate the top navigation menu (hamburger icon on the top left hand side of the page)</p>
 </li>
-<li>Locate and click on the product "Kubernetes Engine" (you may have to scroll down until you see it)</li>
+<li>Locate and click on the product <em>Kubernetes Engine</em> (you may have to scroll down until you see it)</li>
 <li>Your pre-provisioned 3-node Kubernetes cluster should appear in the main view</li>
-<li>Click on that row's "three dot" menu and select the "Connect" option</li>
+<li>Click on that row's "three dot" menu and select the <em>Connect</em> option</li>
 <li>A dialog prompt will appear with instructions</li>
 <li>Copy the <code>gcloud</code> command shown and paste it in your cloud shell</li>
-<li>Click "authorize" when prompted</li>
+<li>Click <em>Authorize</em> when prompted</li>
 </ol>
-<p>You should see a message in the console that a <em>kubeconfig entry [was] generated for [your project]</em></p>
+<p>The console message will state that a <em>kubeconfig entry [was] generated for [your project]</em></p>
 <ol>
 <li>
-<p>Verify that your kubernetes context is set to your cluster</p>
+<p>Verify that your kubernetes context is set for your cluster</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl config get-contexts
 </code></pre></div>
 </li>
 <li>
-<p>Run a token command such as <code>kubectl get node</code> or <code>kubectl get ns</code> to ensure that you can communicate with the Kubernetes Api Server.</p>
+<p>Run a token command such as <code>kubectl get node</code> or <code>kubectl get ns</code> to ensure that you can communicate with the Kubernetes API Server.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get ns
 </code></pre></div>
 </li>
 </ol>
-<p>All instructions in subsequent labs assume you will be working from inside the Google Cloud Shell.</p>
+<p>All instructions in subsequent labs assume you will be working from the Google Cloud Shell.</p>
 <h2 id="artifacts">Artifacts<a class="headerlink" href="#artifacts" title="Permanent link">&para;</a></h2>
 <p>The lab instructions reference Kubernetes yaml artifacts that you will need to apply to your cluster at specific points in time.</p>
-<p>You have the option of copying and pasting the yaml directly from the lab instructions as you encounter them.</p>
-<p>Another, perhaps simpler method is to clone the <a href="https://github.com/tetratelabs/istio-0to60">GitHub repository for this workshop</a> to your Google Cloud Shell environment.  You will find all yaml artifacts in the subdirectory named <code>artifacts</code>.</p>
+<p>You have the option of copying and pasting the yaml snippets directly from the lab instructions as you encounter them.</p>
+<p>Another option is to clone the <a href="https://github.com/tetratelabs/istio-0to60">GitHub repository for this workshop</a> from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named <code>artifacts</code>.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git
 </code></pre></div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>

@@ -726,7 +726,7 @@
 <h3 id="check-that-traffic-routes-strictly-to-v1">Check that traffic routes strictly to v1<a class="headerlink" href="#check-that-traffic-routes-strictly-to-v1" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p>Let's bring back our friend <code>siege</code> to generate some traffic.</p>
+<p>Generate some traffic.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
 </code></pre></div>
 </li>
@@ -855,7 +855,7 @@ Kiali should now showing traffic going to both v1 and v2.</p>
 Look at the request rate and the incoming success rate, also the latencies.</p>
 <p>If all looks good, up the percentage from 90/10 to, say 50/50.</p>
 <p>Watch the request volume change (you may need to click on the "refresh dashboard" button in the upper right-hand corner).</p>
-<p>Finally, let's switch all traffic over to v2.</p>
+<p>Finally, switch all traffic over to v2.</p>
 <table class="highlighttable"><tr><th colspan="2" class="filename"><div class="highlight"><span class="filename">customers-virtualservice-final.yaml</span></div></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
