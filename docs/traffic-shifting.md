@@ -123,7 +123,7 @@ We can tell v1 and v2 apart in that v2 displays not only customer names but also
 If you're using Chrome or Firefox, you can customize the `user-agent` header as follows:
 
 1. Open the browser's developer tools
-2. Open the "three dots" menu, and select _More tools -> Network conditions_
+2. Open the "three dots" menu, and select _More tools --> Network conditions_
 3. The network conditions panel will open
 4. Under _User agent_, uncheck _Use browser default_
 5. Select _Custom..._ and in the text field enter `debug`

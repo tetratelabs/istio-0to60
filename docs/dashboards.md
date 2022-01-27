@@ -257,7 +257,7 @@ Grafana consumes these metrics to produce graphs on our behalf.
     istioctl dashboard grafana
     ```
 
-1. From the sidebar, select _Dashboards_ -> _Manage_
+1. From the sidebar, select _Dashboards_ --> _Manage_
 1. Click on the folder named _Istio_ to reveal pre-designed Istio-specific Grafana dashboards
 1. Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.
 1. Explore the Istio Service Dashboard.  First select the service `web-frontend` and inspect its metrics, then switch to the `customers` service and review its dashboard.

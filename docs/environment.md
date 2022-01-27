@@ -50,7 +50,7 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 
     === "With the user interface"
 
-        1. Activate the top navigation menu (hamburger icon on the top left hand side of the page)
+        1. Activate the top navigation menu (++context-menu++ icon on the top left hand side of the page)
         1. Locate and click on the product _Kubernetes Engine_ (you may have to scroll down until you see it)
         1. Your pre-provisioned 3-node Kubernetes cluster should appear in the main view
         1. Click on that row's "three dot" menu and select the _Connect_ option
