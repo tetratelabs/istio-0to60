@@ -665,7 +665,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <ul>
 <li>The <code>selector</code> section specifies that the policy applies to the <code>customers</code> service.</li>
 <li>Note how the rules have a "from: source: " section indicating who is allowed in.</li>
-<li>The nomenclature for the value of the <code>principals</code> field comes from the <a href="https://spiffe.io/">spiffe</a> standard.  Note how it captures the service account name and namespace associated with the <code>web-frontend</code> service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.</li>
+<li>The nomenclature for the value of the <code>principals</code> field comes from the <a href="https://spiffe.io/" target="_blank">spiffe</a> standard.  Note how it captures the service account name and namespace associated with the <code>web-frontend</code> service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.</li>
 </ul>
 <h3 id="challenge">Challenge<a class="headerlink" href="#challenge" title="Permanent link">&para;</a></h3>
 <p>Can you come up with a similar authorization policy for <code>web-frontend</code>?</p>
