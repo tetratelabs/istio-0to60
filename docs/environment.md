@@ -46,15 +46,29 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
     kubectl version --short
     ```
 
-1. Activate the top navigation menu (hamburger icon on the top left hand side of the page)
-1. Locate and click on the product _Kubernetes Engine_ (you may have to scroll down until you see it)
-1. Your pre-provisioned 3-node Kubernetes cluster should appear in the main view
-1. Click on that row's "three dot" menu and select the _Connect_ option
-1. A dialog prompt will appear with instructions
-1. Copy the `gcloud` command shown and paste it in your cloud shell
-1. Click _Authorize_ when prompted
+1. Generate a kubeconfig entry
 
-The console message will state that a _kubeconfig entry [was] generated for [your project]_
+    === "With the user interface"
+
+        1. Activate the top navigation menu (hamburger icon on the top left hand side of the page)
+        1. Locate and click on the product _Kubernetes Engine_ (you may have to scroll down until you see it)
+        1. Your pre-provisioned 3-node Kubernetes cluster should appear in the main view
+        1. Click on that row's "three dot" menu and select the _Connect_ option
+        1. A dialog prompt will appear with instructions
+        1. Copy the `gcloud` command shown and paste it in your cloud shell
+
+    === "From the command line"
+
+        ```shell
+        gcloud container clusters get-credentials \
+            $(gcloud container clusters list --format="value(name)") \
+            --zone us-central1-a \
+            --project $(gcloud config get-value project)
+        ```
+
+    Click _Authorize_ when prompted
+
+    The console message will state that a _kubeconfig entry [was] generated for [your project]_
 
 1. Verify that your Kubernetes context is set for your cluster
 
