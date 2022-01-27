@@ -504,6 +504,11 @@
 <li>Your cloud shell terminal should appear at the bottom of the screen</li>
 <li>Feel free to expand the size of the cloud shell, or even open it in a separate window (locate the icon button in the terminal header, on the right)</li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Your connection to the Cloud Shell gets severed after a period of inactivity.
+Click on the <em>Reconnect</em> button when this happens.</p>
+</div>
 <h2 id="configure-cluster-access">Configure cluster access<a class="headerlink" href="#configure-cluster-access" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
@@ -524,7 +529,7 @@
 <p>The console message will state that a <em>kubeconfig entry [was] generated for [your project]</em></p>
 <ol>
 <li>
-<p>Verify that your kubernetes context is set for your cluster</p>
+<p>Verify that your Kubernetes context is set for your cluster</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl config get-contexts
 </code></pre></div>
 </li>
