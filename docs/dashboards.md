@@ -251,7 +251,7 @@ Grafana consumes these metrics to produce graphs on our behalf.
 1. Click on the folder named _Istio_ to reveal pre-designed Istio-specific Grafana dashboards
 1. Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.
 1. Explore the Istio Service Dashboard.  First select the service `web-frontend` and inspect its metrics, then switch to the `customers` service and review its dashboard.
-1. Explore the Istio Workload Dashboard.  Select the `web-frontend` workload.  Look at Outbound Services and note the outbound requests to the customers service.  Select the `customres` workload and note that it makes no Oubtound Services calls.
+1. Explore the Istio Workload Dashboard.  Select the `web-frontend` workload.  Look at Outbound Services and note the outbound requests to the customers service.  Select the `customers` workload and note that it makes no Oubtound Services calls.
 
 Feel free to further explore these dashboards.
 

@@ -19,6 +19,7 @@ Select the GCP project you have been assigned, as follows:
 1. Select the project from the list
 
 Verify that your project is selected:
+
 - If you look in the banner now, you will see your selected project displayed.
 
 ## Launch the Cloud Shell
@@ -46,7 +47,7 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 1. Copy the `gcloud` command shown and paste it in your cloud shell
 1. Click "authorize" when prompted
 
-You should see a message in the console that a _kubeconfig entry was generated_
+You should see a message in the console that a _kubeconfig entry [was] generated for [your project]_
 
 1. Verify that your kubernetes context is set to your cluster
 

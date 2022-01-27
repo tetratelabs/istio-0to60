@@ -10,14 +10,16 @@ Let's summarize.  You have:
 - [x] Deployed an application
 - [x] Exposed the application to the internet (Ingress)
 - [x] Deployed and studied observability addons including Kiali, Zipkin, Prometheus, and Grafana
-- [x] Studied facets of service mesh security includint mutual tls and authorization policies
+- [x] Studied facets of service mesh security including mutual tls and authorization policies
 - [x] Performed a traffic shifting exercise
 
 Istio has many more features whose scope is beyond the 0 to 60 workshop, including but not limited to:
 
-- failure injection
-- circuit breakers
-- extensibility with wasm
+- [ ] failure injection
+- [ ] circuit breakers
+- [ ] extensibility with WASM
+- [ ] egress gateways
+- [ ] Istio deployment models
 
 We encourage you to dig deeper into the [Istio docs](https://istio.io/latest/docs/) yourself.
 
