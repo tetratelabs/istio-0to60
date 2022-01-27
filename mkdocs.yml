@@ -1,5 +1,5 @@
 site_name: Istio 0 to 60 Labs
-repo_url: https://github.com/squidfunk/mkdocs-material
+repo_url: https://github.com/tetratelabs/istio-0to60
 theme:
   name: material
   palette:
