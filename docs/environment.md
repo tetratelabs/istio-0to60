@@ -33,6 +33,11 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 - Your cloud shell terminal should appear at the bottom of the screen
 - Feel free to expand the size of the cloud shell, or even open it in a separate window (locate the icon button in the terminal header, on the right)
 
+!!! warning
+
+    Your connection to the Cloud Shell gets severed after a period of inactivity.
+    Click on the _Reconnect_ button when this happens.
+
 ## Configure cluster access
 
 1. Check that the `kubectl` CLI is installed
@@ -51,7 +56,7 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
 
 The console message will state that a _kubeconfig entry [was] generated for [your project]_
 
-1. Verify that your kubernetes context is set for your cluster
+1. Verify that your Kubernetes context is set for your cluster
 
     ```shell
     kubectl config get-contexts

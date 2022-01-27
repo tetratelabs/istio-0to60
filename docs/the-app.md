@@ -36,7 +36,7 @@ In this lab we will use automatic injection, which involves labeling the namespa
     kubectl get ns -Listio-injection
     ```
 
-You can list the mutating webhooks in your kubernetes cluster and confirm that the sidecar injector is present.
+You can list the mutating webhooks in your Kubernetes cluster and confirm that the sidecar injector is present.
 
 ```shell
 kubectl get mutatingwebhookconfigurations
@@ -46,7 +46,7 @@ If you have extra time, explore the `istioctl kube-inject` command.
 
 ## Deploy the application
 
-1. Study the two kubernetes yaml files: `web-frontend.yaml` and `customers.yaml`.
+1. Study the two Kubernetes yaml files: `web-frontend.yaml` and `customers.yaml`.
 
     ??? tldr "web-frontend.yaml"
         ```yaml linenums="1"
