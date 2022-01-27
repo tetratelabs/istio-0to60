@@ -18,7 +18,7 @@ These addons are located in the `samples/addons/` folder of the distribution.
 1. Navigate to the addons directory
 
     ```{.shell .language-shell}
-    cd ~/istio-1.12.2/samples/addons
+    cd ~/istio-{{istio.version}}/samples/addons
     ```
 
 1. Deploy each addon:

@@ -46,9 +46,10 @@ markdown_extensions:
       custom_checkbox: true
   - toc:
       permalink: true
-
-
-# consider these at some point..
-#  - pymdownx.betterem:
-#      smart_enable: all
-#  - pymdownx.smartsymbols
+plugins:
+  # see https://github.com/rosscdh/mkdocs-markdownextradata-plugin
+  - markdownextradata: {}
+  - search
+extra:
+  istio:
+    version: 1.12.2

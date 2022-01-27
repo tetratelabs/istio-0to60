@@ -14,7 +14,7 @@ In this lab you will install Istio.
 1. Navigate into the directory created by the above command.
 
     ```{.shell .language-shell}
-    cd istio-1.12.2
+    cd istio-{{istio.version}}
     ```
 
 
