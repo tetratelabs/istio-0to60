@@ -742,7 +742,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>Customize the view as follows:</p>
 <ol>
 <li>Select the <em>Graph</em> section from the sidebar.</li>
-<li>From the <em>Namespace</em> "pulldown" menu at the top of the screen, select the <code>default</code> namespace, the location where the application's pods are running.</li>
+<li>Under <em>Select Namespaces</em> (at the top of the page), select the <code>default</code> namespace, the location where the application's pods are running.</li>
 <li>From the third "pulldown" menu, select <em>App graph</em>.</li>
 <li>From the <em>Display</em> "pulldown", toggle on <em>Traffic Animation</em> and <em>Security</em>.</li>
 <li>From the footer, toggle the legend so that it is visible.  Take a moment to familiarize yourself with the legend.</li>
@@ -762,13 +762,16 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>Launch the Zipkin dashboard:</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>istioctl dashboard zipkin
 </code></pre></div>
-<p>The zipkin dashboard displays.</p>
+<p>The Zipkin dashboard displays.</p>
 <ul>
 <li>Click on the red '+' button and select <em>serviceName</em>.</li>
 <li>Select the service named <code>web-frontend.default</code> and click on the <em>Run Query</em> button (lightblue) to the right.</li>
 </ul>
 <p>A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.</p>
-<p>Click the <em>Show</em> button to the right of one of the traces.  The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.</p>
+<ul>
+<li>Click the <em>Show</em> button to the right of one of the traces having four (4) spans.</li>
+</ul>
+<p>The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.</p>
 <p>Distributed tracing also helps us make sense of the flow of requests in a microservice architecture.</p>
 <h3 id="zipkin-cleanup">Zipkin Cleanup<a class="headerlink" href="#zipkin-cleanup" title="Permanent link">&para;</a></h3>
 <p>Close the Zipkin dashboard.  Interrupt the <code>istioctl dashboard zipkin</code> command with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
@@ -800,7 +803,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>In the search field enter the metric named <code>istio_requests_total</code>, and click the <em>Execute</em> button (on the right).</p>
 </li>
 <li>
-<p>Select the tab named "Graph" to obtain a graphical representation of this metric over time.</p>
+<p>Select the tab named <em>Graph</em> to obtain a graphical representation of this metric over time.</p>
 <p>Note that you are looking at requests across the entire mesh, i.e. this includes both requests to <code>web-frontend</code> and to <code>customers</code>.</p>
 </li>
 <li>
@@ -816,6 +819,9 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </ol>
 <p>There's much more to the Prometheus query language (<a href="https://prometheus.io/docs/prometheus/latest/querying/basics/" target="_blank">this</a> may be a good place to start).</p>
 <p>Grafana consumes these metrics to produce graphs on our behalf.</p>
+<ul>
+<li>Close the Prometheus dashboard and terminal the corresponding <code>istioctl dashboard</code> command.</li>
+</ul>
 <h2 id="grafana">Grafana<a class="headerlink" href="#grafana" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
@@ -824,7 +830,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </code></pre></div>
 </li>
 <li>
-<p>From the sidebar, select <em>Dashboards</em> -&gt; <em>Manager</em></p>
+<p>From the sidebar, select <em>Dashboards</em> -&gt; <em>Manage</em></p>
 </li>
 <li>Click on the folder named <em>Istio</em> to reveal pre-designed Istio-specific Grafana dashboards</li>
 <li>Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.</li>

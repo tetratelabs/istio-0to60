@@ -560,6 +560,18 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <p>Another option is to clone the <a href="https://github.com/tetratelabs/istio-0to60" target="_blank">GitHub repository for this workshop</a> from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named <code>artifacts</code>.</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This workshop makes extensive use of the <code>kubectl</code> CLI.</p>
+<p>Consider configuring an alias to make typing a little easier.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cat <span class="s">&lt;&lt; EOF &gt;&gt; ~/.bashrc</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="s">source &lt;(kubectl completion bash)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s">alias k=kubectl</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s">complete -F __start_kubectl k</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="s">EOF</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nb">source</span> ~/.bashrc
+</code></pre></div>
+</div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>Now that we have access to our environment and to our Kubernetes cluster, we can proceed to install Istio.</p>
 
