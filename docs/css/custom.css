@@ -19,3 +19,14 @@
   content: '$ ';
 }
 */
+
+/*
+requires adding <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> to the page
+but material icons were already bundled with mkdocs-material ?
+
+a[target]::after {
+  font-family: 'Material Icons';
+  content: "\e89e";
+  padding-left: 5px; 
+}
+*/

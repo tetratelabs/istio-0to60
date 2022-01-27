@@ -48,9 +48,9 @@ markdown_extensions:
   - toc:
       permalink: true
 plugins:
-  # see https://github.com/rosscdh/mkdocs-markdownextradata-plugin
-  - markdownextradata: {}
   - search
+  # https://mkdocs-macros-plugin.readthedocs.io/en/latest/
+  - macros
 extra:
   istio:
     version: 1.12.2
