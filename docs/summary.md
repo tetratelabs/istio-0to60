@@ -19,6 +19,7 @@ Istio has many more features whose scope is beyond the 0 to 60 workshop, includi
 - [ ] Circuit breakers
 - [ ] Extensibility with WASM
 - [ ] Egress gateways
+- [ ] Onboarding VM Workloads
 - [ ] Istio deployment models
 
 We encourage you to dig deeper into the [Istio docs](https://istio.io/latest/docs/) yourself.
