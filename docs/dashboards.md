@@ -143,7 +143,7 @@ The Kiali dashboard displays.
 Customize the view as follows:
 
 1. Select the _Graph_ section from the sidebar.
-1. From the _Namespace_ "pulldown" menu at the top of the screen, select the `default` namespace, the location where the application's pods are running.
+1. Under _Select Namespaces_ (at the top of the page), select the `default` namespace, the location where the application's pods are running.
 1. From the third "pulldown" menu, select _App graph_.
 1. From the _Display_ "pulldown", toggle on _Traffic Animation_ and _Security_.
 1. From the footer, toggle the legend so that it is visible.  Take a moment to familiarize yourself with the legend.
@@ -173,14 +173,16 @@ Launch the Zipkin dashboard:
 istioctl dashboard zipkin
 ```
 
-The zipkin dashboard displays.
+The Zipkin dashboard displays.
 
 - Click on the red '+' button and select _serviceName_.
 - Select the service named `web-frontend.default` and click on the _Run Query_ button (lightblue) to the right.
 
 A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.
 
-Click the _Show_ button to the right of one of the traces.  The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.
+- Click the _Show_ button to the right of one of the traces having four (4) spans.
+
+The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.
 
 Distributed tracing also helps us make sense of the flow of requests in a microservice architecture.
 
@@ -221,7 +223,7 @@ With Istio, this is done automatically by the Envoy sidecar.
 
 1. In the search field enter the metric named `istio_requests_total`, and click the _Execute_ button (on the right).
 
-1. Select the tab named "Graph" to obtain a graphical representation of this metric over time.
+1. Select the tab named _Graph_ to obtain a graphical representation of this metric over time.
 
     Note that you are looking at requests across the entire mesh, i.e. this includes both requests to `web-frontend` and to `customers`.
 
@@ -241,6 +243,8 @@ There's much more to the Prometheus query language ([this](https://prometheus.io
 
 Grafana consumes these metrics to produce graphs on our behalf.
 
+- Close the Prometheus dashboard and terminal the corresponding `istioctl dashboard` command.
+
 ## Grafana
 
 1. Launch the Grafana dashboard
@@ -249,7 +253,7 @@ Grafana consumes these metrics to produce graphs on our behalf.
     istioctl dashboard grafana
     ```
 
-1. From the sidebar, select _Dashboards_ -> _Manager_
+1. From the sidebar, select _Dashboards_ -> _Manage_
 1. Click on the folder named _Istio_ to reveal pre-designed Istio-specific Grafana dashboards
 1. Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.
 1. Explore the Istio Service Dashboard.  First select the service `web-frontend` and inspect its metrics, then switch to the `customers` service and review its dashboard.

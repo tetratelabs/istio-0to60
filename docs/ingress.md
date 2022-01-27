@@ -28,7 +28,7 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
 
 ??? tip "A small investment"
 
-    When the cloud shell connection is severed, or when openeing a new terminal tab, `$GATEWAY_IP` will no longer be in scope.
+    When the cloud shell connection is severed, or when opening a new terminal tab, `$GATEWAY_IP` will no longer be in scope.
 
     Ensure `GATEWAY_IP` is set each time we start a new shell:
 

@@ -96,6 +96,22 @@ Another option is to clone the [GitHub repository for this workshop](https://git
 git clone https://github.com/tetratelabs/istio-0to60.git
 ```
 
+!!! tip
+
+    This workshop makes extensive use of the `kubectl` CLI.
+
+    Consider configuring an alias to make typing a little easier.
+
+    ```shell
+    cat << EOF >> ~/.bashrc
+    source <(kubectl completion bash)
+    alias k=kubectl
+    complete -F __start_kubectl k
+    EOF
+    source ~/.bashrc
+    ```
+
+
 ## Next
 
 Now that we have access to our environment and to our Kubernetes cluster, we can proceed to install Istio.

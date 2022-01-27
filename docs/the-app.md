@@ -42,7 +42,7 @@ You can list the mutating webhooks in your Kubernetes cluster and confirm that t
 kubectl get mutatingwebhookconfigurations
 ```
 
-If you have extra time, explore the `istioctl kube-inject` command.
+If you have extra time, explore the `istioctl kube-inject --help` command.
 
 ## Deploy the application
 
