@@ -381,10 +381,10 @@
       
         <li class="md-nav__item">
   <a href="#expose-debug-traffic-to-v2" class="md-nav__link">
-    Expose debug traffic to v2
+    Expose "debug" traffic to v2
   </a>
   
-    <nav class="md-nav" aria-label="Expose debug traffic to v2">
+    <nav class="md-nav" aria-label="Expose "debug" traffic to v2">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -519,10 +519,10 @@
       
         <li class="md-nav__item">
   <a href="#expose-debug-traffic-to-v2" class="md-nav__link">
-    Expose debug traffic to v2
+    Expose "debug" traffic to v2
   </a>
   
-    <nav class="md-nav" aria-label="Expose debug traffic to v2">
+    <nav class="md-nav" aria-label="Expose "debug" traffic to v2">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -569,7 +569,8 @@
 
 
 <h1 id="traffic-shifting">Traffic shifting<a class="headerlink" href="#traffic-shifting" title="Permanent link">&para;</a></h1>
-<p>Version 2 of the customers service has been developed and it's time to deploy it to production.</p>
+<p>Version 2 of the customers service has been developed, and it's time to deploy it to production.
+Whereas version 1 returned a list of customer names, version 2 also includes each customer's city.</p>
 <h2 id="deploying-customers-v2">Deploying customers, v2<a class="headerlink" href="#deploying-customers-v2" title="Permanent link">&para;</a></h2>
 <p>We wish to deploy the new service but aren't yet ready to direct traffic to it.</p>
 <p>It would be prudent to separate the task of deploying the new service from the task of directing traffic to it.</p>
@@ -624,7 +625,7 @@
 </li>
 </ol>
 <h3 id="virtualservices">VirtualServices<a class="headerlink" href="#virtualservices" title="Permanent link">&para;</a></h3>
-<p>Armed with two distinct destinations, the <code>VirtualService</code> custom resource allows us to define a routing rule.</p>
+<p>Armed with two distinct destinations, the <code>VirtualService</code> custom resource allows us to define a routing rule that sends all traffic to the v1 subset.</p>
 <table class="highlighttable"><tr><th colspan="2" class="filename"><div class="highlight"><span class="filename">customers-virtualservice.yaml</span></div></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
@@ -739,8 +740,8 @@
 <p>Take a look at the graph, and select the <code>default</code> namespace.</p>
 <p>The graph should show all traffic going to v1.</p>
 <h2 id="route-to-customers-v2">Route to customers, v2<a class="headerlink" href="#route-to-customers-v2" title="Permanent link">&para;</a></h2>
-<p>Being the cautious developers we are, our plan is to "check out v2" before customers do.</p>
-<h2 id="expose-debug-traffic-to-v2">Expose debug traffic to v2<a class="headerlink" href="#expose-debug-traffic-to-v2" title="Permanent link">&para;</a></h2>
+<p>We wish to proceed with caution.  Before customers can see version 2, we want to make sure that the service functions properly.</p>
+<h2 id="expose-debug-traffic-to-v2">Expose "debug" traffic to v2<a class="headerlink" href="#expose-debug-traffic-to-v2" title="Permanent link">&para;</a></h2>
 <p>Review this proposed updated routing specification.</p>
 <table class="highlighttable"><tr><th colspan="2" class="filename"><div class="highlight"><span class="filename">customers-v2-debug.yaml</span></div></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
@@ -785,15 +786,15 @@
 <a id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
-<p>We are telling Istio to check an HTTP header:  If the <code>user-agent</code> is set to <code>debug</code>, route to v2, otherwise route to v1.</p>
+<p>We are telling Istio to check an HTTP header:  if the <code>user-agent</code> is set to <code>debug</code>, route to v2, otherwise route to v1.</p>
 <p>Apply the above yaml to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl apply -f customers-v2-debug.yaml
 </code></pre></div>
 <h3 id="test-it">Test it<a class="headerlink" href="#test-it" title="Permanent link">&para;</a></h3>
-<p>Open a browser and visit your $GATEWAY_IP.</p>
+<p>Open a browser and visit the application.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
 </code></pre></div>
-<p>We can tell v1 and v2 apart in that v2 displays customers with two columns.</p>
+<p>We can tell v1 and v2 apart in that v2 displays both customer names and their city, in two columns.</p>
 <p>If you're using Chrome or Firefox, you can customize the <code>user-agent</code> header as follows:</p>
 <ol>
 <li>Open the browser's developer tools</li>
@@ -803,7 +804,10 @@
 <li>Select <em>Custom...</em> and in the text field enter <code>debug</code></li>
 </ol>
 <p>Now refresh the page, and traffic should have been directed to v2.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>If you refresh the page a good dozen times and then wait ~15-30 seconds, you should be able to see some of that v2 traffic in Kiali too.</p>
+</div>
 <h2 id="canary">Canary<a class="headerlink" href="#canary" title="Permanent link">&para;</a></h2>
 <p>Well, v2 looks good; we decide to expose the new version to the public, but we're still prudent.</p>
 <p>Start by siphoning 10% of traffic over to v2.</p>
@@ -845,13 +849,13 @@
 </code></pre></div>
 </td></tr></table>
 <p>Note above the <code>weight</code> field specifying 10 percent of traffic to v2.
-Kiali should now showing traffic going to both v1 and v2.</p>
-<p>In your browser:  undo the user agent customizations and refresh the page a bunch of times.  Most of the requests still go to v1.</p>
+Kiali should now show traffic going to both v1 and v2.</p>
+<p>In your browser:  undo the user agent customization and refresh the page a bunch of times.  Most of the requests still go to v1.</p>
 <h2 id="check-grafana">Check Grafana<a class="headerlink" href="#check-grafana" title="Permanent link">&para;</a></h2>
 <p>Before we open the floodgates, we wish to determine how v2 is fairing.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>istioctl dashboard grafana
 </code></pre></div>
-<p>In grafana, visit the Istio Workload Dashboard and specifically look at the customers v2 workload.
+<p>In Grafana, visit the Istio Workload Dashboard and specifically look at the customers v2 workload.
 Look at the request rate and the incoming success rate, also the latencies.</p>
 <p>If all looks good, up the percentage from 90/10 to, say 50/50.</p>
 <p>Watch the request volume change (you may need to click on the "refresh dashboard" button in the upper right-hand corner).</p>

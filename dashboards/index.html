@@ -635,7 +635,7 @@
 
 
 <h1 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h1>
-<p>In this lab we explore one of the main strengths of Istio: observability.</p>
+<p>This lab explores one of the main strengths of Istio: observability.</p>
 <p>The services in our mesh are automatically observable, without adding any burden on developers.</p>
 <h2 id="deploy-the-addons">Deploy the Addons<a class="headerlink" href="#deploy-the-addons" title="Permanent link">&para;</a></h2>
 <p>The Istio distribution provides addons for a number of systems that together provide observability for the service mesh:</p>
@@ -670,21 +670,19 @@
 </li>
 </ol>
 <p>The <code>istioctl</code> CLI provides convenience commands for accessing the web UIs for each dashboard.</p>
-<p>Take a moment to review the help output for the <code>istioctl dashboard</code> command:</p>
+<p>Take a moment to review the help information for the <code>istioctl dashboard</code> command:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>istioctl dashboard --help
 </code></pre></div>
 <h2 id="generate-a-load">Generate a load<a class="headerlink" href="#generate-a-load" title="Permanent link">&para;</a></h2>
 <p>In order to have something to observe, we need to generate a load on our system.</p>
 <h3 id="install-a-load-generator">Install a load generator<a class="headerlink" href="#install-a-load-generator" title="Permanent link">&para;</a></h3>
 <p>Install a simple load generating tool named <code>siege</code>.</p>
-<p>We have two options:</p>
+<p>We normally install <code>siege</code> with the <code>apt-get</code> package manager.
+However, given the cloud shell's ephemeral nature, anything installed outside our home directory will vanish after a session timeout.</p>
+<p>Alternatives:</p>
 <ol>
-<li>
-<p>Install with the package manager, <code>apt-get</code>.  The problem is that siege is installed outside your home directory, and in google cloud shell's ephemeral environment, it means you'll need to re-install it each time you start a new session.</p>
-</li>
-<li>
-<p>Install from source. It's a little more work, but does not exhibit the above-mentioned problem.</p>
-</li>
+<li>Install from source. It's a little more work, but does not exhibit the above-mentioned problem.</li>
+<li>Run the load generator from your laptop.  On a mac, using homebrew the command is <code>brew install siege</code>.</li>
 </ol>
 <p>Here are the steps to install from source:</p>
 <ol>
@@ -743,10 +741,10 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>The Kiali dashboard displays.</p>
 <p>Customize the view as follows:</p>
 <ol>
-<li>Select the <code>Graph</code> section from the sidebar.</li>
-<li>From the <code>Namespace</code> "pulldown" menu at the top of the screen, select the <code>default</code> namespace, the location where the application's pods are running.</li>
-<li>From the third <em>pulldown</em> menu, select <em>App graph</em>.</li>
-<li>From the "Display" <em>pulldown</em>, toggle on <em>Traffic Animation</em> and <em>Security</em>.</li>
+<li>Select the <em>Graph</em> section from the sidebar.</li>
+<li>From the <em>Namespace</em> "pulldown" menu at the top of the screen, select the <code>default</code> namespace, the location where the application's pods are running.</li>
+<li>From the third "pulldown" menu, select <em>App graph</em>.</li>
+<li>From the <em>Display</em> "pulldown", toggle on <em>Traffic Animation</em> and <em>Security</em>.</li>
 <li>From the footer, toggle the legend so that it is visible.  Take a moment to familiarize yourself with the legend.</li>
 </ol>
 <p>Observe the visualization and note the following:</p>
@@ -755,7 +753,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <li>The lines connecting the services are green, indicating healthy requests</li>
 <li>The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS</li>
 </ul>
-<p>Such visualizations are helpful in understanding the flow of requests in the mesh and in diagnosis.</p>
+<p>Such visualizations are helpful with understanding the flow of requests in the mesh, and with diagnosis.</p>
 <p>Feel free to spend more time exploring Kiali.</p>
 <p>We will revisit Kiali in a later lab to visualize traffic shifting such as when performing a blue-green or canary deployment.</p>
 <h3 id="kiali-cleanup">Kiali Cleanup<a class="headerlink" href="#kiali-cleanup" title="Permanent link">&para;</a></h3>
@@ -766,17 +764,17 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </code></pre></div>
 <p>The zipkin dashboard displays.</p>
 <ul>
-<li>Click on the red '+' button and select "serviceName".</li>
+<li>Click on the red '+' button and select <em>serviceName</em>.</li>
 <li>Select the service named <code>web-frontend.default</code> and click on the <em>Run Query</em> button (lightblue) to the right.</li>
 </ul>
 <p>A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.</p>
 <p>Click the <em>Show</em> button to the right of one of the traces.  The resulting view shows spans that are part of the trace, and more importantly how much time was spent within each span.  Such information can help diagnose slow requests and pin-point where the latency lies.</p>
-<p>Such traces also help us make sense of the flow of requests in a microservice architecture.</p>
+<p>Distributed tracing also helps us make sense of the flow of requests in a microservice architecture.</p>
 <h3 id="zipkin-cleanup">Zipkin Cleanup<a class="headerlink" href="#zipkin-cleanup" title="Permanent link">&para;</a></h3>
-<p>Close the Zipking dashboard.  Interrupt the <code>istioctl dashboard zipkin</code> command with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
+<p>Close the Zipkin dashboard.  Interrupt the <code>istioctl dashboard zipkin</code> command with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
 <h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Permanent link">&para;</a></h2>
-<p>Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is usually termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.</p>
-<p>With Istio, this is done automatically by envoy.</p>
+<p>Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.</p>
+<p>With Istio, this is done automatically by the Envoy sidecar.</p>
 <h3 id="observe-how-envoy-exposes-a-prometheus-scrape-endpoint">Observe how Envoy exposes a Prometheus scrape endpoint<a class="headerlink" href="#observe-how-envoy-exposes-a-prometheus-scrape-endpoint" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
@@ -788,7 +786,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>Run the following command:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -it -- curl localhost:15090/stats/prometheus  <span class="p">|</span> grep istio_requests
 </code></pre></div>
-<p>The list of metrics returned by the endpoint is rather lengthy, so we just peek at the "istio_requests" metric.  But the full response contains many more metrics.</p>
+<p>The list of metrics returned by the endpoint is rather lengthy, so we just peek at "istio_requests" metric.  The full response contains many more metrics.</p>
 </li>
 </ol>
 <h3 id="access-the-dashboard">Access the dashboard<a class="headerlink" href="#access-the-dashboard" title="Permanent link">&para;</a></h3>
@@ -803,7 +801,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </li>
 <li>
 <p>Select the tab named "Graph" to obtain a graphical representation of this metric over time.</p>
-<p>Note that you are looking it requests across the entire mesh, i.e. this includes both requests to <code>web-frontend</code> and to <code>customers</code>.</p>
+<p>Note that you are looking at requests across the entire mesh, i.e. this includes both requests to <code>web-frontend</code> and to <code>customers</code>.</p>
 </li>
 <li>
 <p>As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:</p>
@@ -811,7 +809,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </code></pre></div>
 </li>
 <li>
-<p>With respects to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
+<p>With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>rate(istio_requests_total[5m])
 </code></pre></div>
 </li>

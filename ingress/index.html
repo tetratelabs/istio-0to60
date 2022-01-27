@@ -281,7 +281,7 @@
       
         <li class="md-nav__item">
   <a href="#the-ingress-gateway" class="md-nav__link">
-    The ingress gateway
+    The Ingress gateway
   </a>
   
 </li>
@@ -423,7 +423,7 @@
       
         <li class="md-nav__item">
   <a href="#the-ingress-gateway" class="md-nav__link">
-    The ingress gateway
+    The Ingress gateway
   </a>
   
 </li>
@@ -487,13 +487,13 @@
 
 
 <h1 id="ingress">Ingress<a class="headerlink" href="#ingress" title="Permanent link">&para;</a></h1>
-<p>The main objective of this lab is to expose the web frontend to the public internet.</p>
-<h2 id="the-ingress-gateway">The ingress gateway<a class="headerlink" href="#the-ingress-gateway" title="Permanent link">&para;</a></h2>
+<p>The objective of this lab is to expose the <code>web-frontend</code> service to the internet.</p>
+<h2 id="the-ingress-gateway">The Ingress gateway<a class="headerlink" href="#the-ingress-gateway" title="Permanent link">&para;</a></h2>
 <p>When you installed Istio, in addition to deploying istiod to Kubernetes, the installation also provisioned an Ingress Gateway.</p>
 <p>View the corresponding Istio ingress gateway pod in the <code>istio-system</code> namespace.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl get pod -n istio-system
 </code></pre></div>
-<p>A corresponding LoadBalancer type service was also created:</p>
+<p>A corresponding <em>LoadBalancer</em> type service was also created:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get svc -n istio-system
 </code></pre></div>
 <p>Make a note of the external IP address for the load balancer.</p>
@@ -502,19 +502,19 @@
 </code></pre></div>
 <details class="tip">
 <summary>A small investment</summary>
-<p>Inevitably at some point our session will end, or we'll open a new terminal and the above variable will be out of scope.</p>
-<p>We will be referencing <code>$GATEWAY_IP</code> in susequent labs.</p>
+<p>When the cloud shell connection is severed, or when openeing a new terminal tab, <code>$GATEWAY_IP</code> will no longer be in scope.</p>
 <p>Ensure <code>GATEWAY_IP</code> is set each time we start a new shell:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span> <span class="s2">&quot;export GATEWAY_IP=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span><span class="s2">&quot;</span> &gt;&gt; ~/.bashrc
 </code></pre></div>
 </details>
-<p>We could create a DNS A record for this IP address, but for the sake of simplicity, we will access anything we expose from the mesh by using the IP address directly.</p>
+<p>In normal circumstances we associate this IP address with a hostname via DNS.
+For the sake of simplicity, in this workshop we will use the gateway public IP address directly.</p>
 <h2 id="configuring-ingress">Configuring ingress<a class="headerlink" href="#configuring-ingress" title="Permanent link">&para;</a></h2>
-<p>Configuring ingress with Istio is split into two parts:</p>
-<ul>
+<p>Configuring ingress with Istio is performed in two parts:</p>
+<ol>
 <li>Define a <code>Gateway</code> custom resource that governs the specific host, port, and protocol to expose</li>
 <li>Specify how requests should be routed with a <code>VirtualService</code> custom resource.</li>
-</ul>
+</ol>
 <h3 id="create-a-gateway-resource">Create a Gateway resource<a class="headerlink" href="#create-a-gateway-resource" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
@@ -621,8 +621,9 @@
 </ol>
 <p>Finally, verify that you can now access <code>web-frontend</code> from your web browser using the gateway IP address.</p>
 <h2 id="candidate-follow-on-exercises">Candidate follow-on exercises<a class="headerlink" href="#candidate-follow-on-exercises" title="Permanent link">&para;</a></h2>
+<p>We will not explore ingress any further in this workshop.  Consider the following as indepenent exercises:</p>
 <ul>
-<li>Consider creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.</li>
+<li>Creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.</li>
 <li><a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-a-single-host">Configuring a TLS ingress gateway</a></li>
 </ul>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>

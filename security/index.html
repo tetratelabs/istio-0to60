@@ -610,17 +610,17 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <p>At the moment, any container can, for example, call the customers service or the web-frontend service.</p>
 <ol>
 <li>
-<p>Capture the name of the sleep pod runnin in the default namespace</p>
+<p>Capture the name of the sleep pod running in the default namespace</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
 </code></pre></div>
 </li>
 <li>
-<p>Call the customers service.</p>
+<p>Call the <code>customers</code> service.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
 </code></pre></div>
 </li>
 <li>
-<p>Call the web-frontend service.</p>
+<p>Call the <code>web-frontend</code> service.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
 </code></pre></div>
 </li>
@@ -670,17 +670,18 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <h3 id="challenge">Challenge<a class="headerlink" href="#challenge" title="Permanent link">&para;</a></h3>
 <p>Can you come up with a similar authorization policy for <code>web-frontend</code>?</p>
 <ul>
-<li>Use the <code>customers</code> authorization policy as a template</li>
+<li>Use a copy of the <code>customers</code> authorization policy as a starting point</li>
+<li>Give the resource an apt name</li>
 <li>Revise the selector to match the <code>web-frontend</code> service</li>
-<li>Revise the rule to match the principal for the ingress gateway</li>
+<li>Revise the rule to match the principal of the ingress gateway</li>
 </ul>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>The ingress gateway has its own identify.</p>
-<p>Here is a command which can help you find the name of the service account associated with its identify:</p>
+<p>The ingress gateway has its own identity.</p>
+<p>Here is a command which can help you find the name of the service account associated with its identity:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl get pod -n istio-system -l <span class="nv">app</span><span class="o">=</span>istio-ingressgateway -o yaml <span class="p">|</span> grep serviceAccountName
 </code></pre></div>
-<p>Use it together with the namespace that the ingress gateway is running in to specify the value for the <code>principals</code> field.</p>
+<p>Use this service account name together with the namespace that the ingress gateway is running in to specify the value for the <code>principals</code> field.</p>
 </div>
 <h3 id="test-it">Test it<a class="headerlink" href="#test-it" title="Permanent link">&para;</a></h3>
 <p>Don't forget to verify that the policy is enforced.</p>

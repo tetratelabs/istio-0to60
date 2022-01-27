@@ -450,7 +450,7 @@
 <p>In this lab you will deploy an application to your mesh.</p>
 <ul>
 <li>
-<p>The application consists of two microservers, <code>web-frontend</code> and <code>customers</code>.</p>
+<p>The application consists of two microservices, <code>web-frontend</code> and <code>customers</code>.</p>
 <details class="info">
 <summary>Info</summary>
 <p>The official Istio docs canonical example is the <a href="https://istio.io/latest/docs/examples/bookinfo/">BookInfo aplpication</a>.</p>
@@ -458,10 +458,10 @@
 </details>
 </li>
 <li>
-<p>The <code>customers</code> service exposes a REST endpoint that returns a list of customers in JSON format.  The <code>web-frontend</code> calls <code>customers</code> retrieves the list, and uses the informationt to render the customer listing in HTML.</p>
+<p>The <code>customers</code> service exposes a REST endpoint that returns a list of customers in JSON format.  The <code>web-frontend</code> calls <code>customers</code> to retrieve the list, which it uses to render to HTML.</p>
 </li>
 <li>
-<p>The respective docker images for these services have already been built and pushed to a docker repository.</p>
+<p>The respective Docker images for these services have already been built and pushed to a Docker registry.</p>
 </li>
 <li>
 <p>You will deploy the application to the <code>default</code> Kubernetes namespace.</p>
@@ -699,14 +699,14 @@
 <ul>
 <li>Two pods are running, one for each service</li>
 <li>
-<p>Each pod consists of two containers, the one running the service image, plus the envoy sidecar</p>
+<p>Each pod consists of two containers, the one running the service image, plus the Envoy sidecar</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get pod
 </code></pre></div>
 </li>
 </ul>
 <h2 id="verify-access-to-each-service">Verify access to each service<a class="headerlink" href="#verify-access-to-each-service" title="Permanent link">&para;</a></h2>
 <p>We wish to deploy a pod that runs a <code>curl</code> image so we can verify that each service is reachable from within the cluster.
-The Istio distribution comes with a sample called <code>sleep</code> that will serve this purpose.</p>
+The Istio distribution provides a sample app called <code>sleep</code> that will serve this purpose.</p>
 <ol>
 <li>
 <p>Deploy <code>sleep</code> to the default namespace.</p>
@@ -855,7 +855,7 @@ The Istio distribution comes with a sample called <code>sleep</code> that will s
 </code></pre></div>
 </li>
 <li>
-<p>Use the <code>kubectl exec</code> command to call the <code>customer</code> service.</p>
+<p>Use the <code>kubectl exec</code> command to call the <code>customers</code> service.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
 </code></pre></div>
 <p>The console output should show a list of customers in JSON format.</p>
@@ -864,12 +864,12 @@ The Istio distribution comes with a sample called <code>sleep</code> that will s
 <p>Call the <code>web-frontend</code> service</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
 </code></pre></div>
-<p>The console output should show an HTML page listing customers using an HTML table.</p>
+<p>The console output should show an HTML page listing customers in an HTML table.</p>
 </li>
 </ol>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>In the next lab, we expose the <code>web-frontend</code> using an Istio Ingress Gateway.</p>
-<p>This will allow us to see this application in a web browser.</p>
+<p>This will allow us to access this application on the web.</p>
 
               
             </article>
