@@ -117,7 +117,7 @@ Study the below authorization policy.
 Tasks:
 
 - [ ] Apply the policy to your cluster.
-- [ ] Verify that you are no longer to reach the customer pod from the sleep pod
+- [ ] Verify that you are no longer able to reach the `customers` pod from the `sleep` pod
 
 ### Challenge
 
