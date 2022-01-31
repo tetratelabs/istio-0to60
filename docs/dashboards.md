@@ -197,7 +197,7 @@ Close the Zipkin dashboard.  Interrupt the `istioctl dashboard zipkin` command w
 
 ## Prometheus
 
-Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.
+Prometheus works by periodically calling a metrics endpoint against each running service (this endpoint is termed the "scrape" endpoint).  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.
 
 With Istio, this is done automatically by the Envoy sidecar.
 

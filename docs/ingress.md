@@ -96,7 +96,7 @@ Finally, verify that you can now access `web-frontend` from your web browser usi
 
 ## Candidate follow-on exercises
 
-We will not explore ingress any further in this workshop.  Consider the following as indepenent exercises:
+We will not explore ingress any further in this workshop.  Consider the following as independent exercises:
 
 - Creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.
 - [Configuring a TLS ingress gateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-a-single-host){target=_blank}
