@@ -50,7 +50,7 @@ Configuring ingress with Istio is performed in two parts:
 
 1. Review the following Gateway specification.
 
-    ??? tldr "gateway.yaml"
+    !!! tldr "gateway.yaml"
         ```yaml linenums="1"
         --8<-- "gateway.yaml"
         ```
