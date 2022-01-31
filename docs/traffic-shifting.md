@@ -51,7 +51,7 @@ Armed with two distinct destinations, the `VirtualService` custom resource allow
 --8<-- "customers-virtualservice.yaml"
 ```
 
-Note above how the route specifies subset v1.
+Above, note how the route specifies subset v1.
 
 1. Apply the virtual service to the cluster.
 
@@ -144,7 +144,7 @@ Start by siphoning 10% of traffic over to v2.
 --8<-- "customers-v2-canary.yaml"
 ```
 
-Note above the `weight` field specifying 10 percent of traffic to v2.
+Above, note the `weight` field specifying 10 percent of traffic to v2.
 Kiali should now show traffic going to both v1 and v2.
 
 - Apply the above resource.
