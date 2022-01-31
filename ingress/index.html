@@ -545,8 +545,8 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 <ol>
 <li>
 <p>Review the following Gateway specification.</p>
-<details class="tldr">
-<summary>gateway.yaml</summary>
+<div class="admonition tldr">
+<p class="admonition-title">gateway.yaml</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
@@ -578,7 +578,7 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 <a id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
-</details>
+</div>
 <p>Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address <code>$GATEWAY_IP</code> will match.</p>
 <p>The selector <em>istio: ingressgateway</em> ensures that this gateway resource binds to the physical ingress gateway.</p>
 </li>
