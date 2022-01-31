@@ -55,7 +55,7 @@ Configuring ingress with Istio is performed in two parts:
         --8<-- "gateway.yaml"
         ```
 
-    We specify the HTTP protocol, port 80, and the wildcard host value ensures a match against HTTP requests that reference the load balancer IP address `$GATEWAY_IP`.
+    Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address `$GATEWAY_IP` will match.
 
     The selector _istio: ingressgateway_ ensures that this gateway resource binds to the physical ingress gateway.
 
