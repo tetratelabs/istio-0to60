@@ -806,7 +806,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <h3 id="zipkin-cleanup">Zipkin Cleanup<a class="headerlink" href="#zipkin-cleanup" title="Permanent link">&para;</a></h3>
 <p>Close the Zipkin dashboard.  Interrupt the <code>istioctl dashboard zipkin</code> command with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
 <h2 id="prometheus">Prometheus<a class="headerlink" href="#prometheus" title="Permanent link">&para;</a></h2>
-<p>Prometheus works by periodically calling a metrics endpoint against each running service, this endpoint is termed the "scrape" endpoint.  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.</p>
+<p>Prometheus works by periodically calling a metrics endpoint against each running service (this endpoint is termed the "scrape" endpoint).  Developers normally have to instrument their applications to expose such an endpoint and return metrics information in the format the Prometheus expects.</p>
 <p>With Istio, this is done automatically by the Envoy sidecar.</p>
 <h3 id="observe-how-envoy-exposes-a-prometheus-scrape-endpoint">Observe how Envoy exposes a Prometheus scrape endpoint<a class="headerlink" href="#observe-how-envoy-exposes-a-prometheus-scrape-endpoint" title="Permanent link">&para;</a></h3>
 <ol>
