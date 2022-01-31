@@ -579,7 +579,7 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </code></pre></div>
 </td></tr></table>
 </details>
-<p>We specify the HTTP protocol, port 80, and the wildcard host value ensures a match against HTTP requests that reference the load balancer IP address <code>$GATEWAY_IP</code>.</p>
+<p>Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address <code>$GATEWAY_IP</code> will match.</p>
 <p>The selector <em>istio: ingressgateway</em> ensures that this gateway resource binds to the physical ingress gateway.</p>
 </li>
 <li>
