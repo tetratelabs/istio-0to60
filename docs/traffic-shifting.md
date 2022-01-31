@@ -176,4 +176,4 @@ Finally, switch all traffic over to v2.
 After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).
 Within a minute or so, the Kiali dashboard should also reflect the fact that all traffic is going to the customers v2 service.
 
-Though it no longers receives any traffic, we decide to leave v1 running a while longer before retiring it.
+Though it no longer receives any traffic, we decide to leave v1 running a while longer before retiring it.
