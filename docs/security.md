@@ -47,7 +47,7 @@ This is called _permissive mode_ and is specifically designed to allow services 
 
 ### Enable strict mode
 
-Istio provides the `PeerAuthentication` custom resource to define peer authenticaion policy.
+Istio provides the `PeerAuthentication` custom resource to define peer authentication policy.
 
 1. Apply the following peer authentication policy.
 
