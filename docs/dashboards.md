@@ -247,7 +247,7 @@ There's much more to the Prometheus query language ([this](https://prometheus.io
 
 Grafana consumes these metrics to produce graphs on our behalf.
 
-- Close the Prometheus dashboard and terminal the corresponding `istioctl dashboard` command.
+- Close the Prometheus dashboard and terminate the corresponding `istioctl dashboard` command.
 
 ## Grafana
 
