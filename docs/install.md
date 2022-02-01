@@ -8,7 +8,7 @@ In this lab you will install Istio.
 1. Run the following command from your home directory.
 
     ```{.shell .language-shell}
-    curl -L https://istio.io/downloadIstio | sh -
+    curl -L https://istio.io/downloadIstio | ISTIO_VERSION={{istio.version}} sh -
     ```
 
 1. Navigate into the directory created by the above command.
