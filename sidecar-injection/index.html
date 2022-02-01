@@ -13,7 +13,7 @@
     
     
       
-        <title>Sidecar injection demo - Istio 0 to 60 Labs</title>
+        <title>Deeper into sidecar injection - Istio 0 to 60 Labs</title>
       
     
     
@@ -63,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#deeper-into-sidecar-injection" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -91,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sidecar injection demo
+              Deeper into sidecar injection
             
           </span>
         </div>
@@ -341,25 +346,41 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/tetratelabs/istio-0to60/edit/master/docs/sidecar-injection-demo.md" title="Edit this page" class="md-content__button md-icon">
+<a href="https://github.com/tetratelabs/istio-0to60/edit/master/docs/sidecar-injection.md" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
 
-  <h1>Sidecar injection demo</h1>
-
-<details class="example">
-<summary>Deeper into sidecar injection</summary>
-<p><em>If you have extra time</em>, explore sidecar injection further with the following exercise.</p>
+<h1 id="deeper-into-sidecar-injection">Deeper into sidecar injection<a class="headerlink" href="#deeper-into-sidecar-injection" title="Permanent link">&para;</a></h1>
+<p>The following exercise explores sidecar injection further.</p>
 <ol>
 <li>
 <p>Start with a pod yaml:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl run mywebserver --image nginx --dry-run<span class="o">=</span>client -oyaml &gt; nginx-pod.yaml
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl run mywebserver --image nginx <span class="se">\</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  --dry-run<span class="o">=</span>client -oyaml &gt; nginx-pod.yaml
 </code></pre></div>
 </li>
 <li>
@@ -388,10 +409,8 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">&quot;Entrypoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="s2">&quot;/usr/local/bin/pilot-agent&quot;</span><span class="w"></span>
 </code></pre></div>
-</li>
-</ol>
 <p>We learn that <code>istio-iptables</code> is a <code>pilot-agent</code> subcommand.</p>
-<ol>
+</li>
 <li>
 <p>Create a separate namespace that is not labeled for automatic injection</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl create ns myns
@@ -404,11 +423,12 @@
 </li>
 <li>
 <p>Study the <code>pilot-agent istio-iptables</code> command's flag descriptions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl <span class="nb">exec</span> mywebserver -n myns -c istio-proxy -it -- pilot-agent istio-iptables --help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl <span class="nb">exec</span> mywebserver -n myns <span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  -c istio-proxy -it <span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  -- pilot-agent istio-iptables --help
 </code></pre></div>
 </li>
 </ol>
-</details>
 
               
             </article>
