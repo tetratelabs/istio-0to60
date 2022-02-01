@@ -92,8 +92,10 @@ You have the option of copying and pasting the yaml snippets directly from the l
 
 Another option is to clone the [GitHub repository for this workshop](https://github.com/tetratelabs/istio-0to60){target=_blank} from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named `artifacts`.
 
-```{.shell .language-shell}
-git clone https://github.com/tetratelabs/istio-0to60.git
+```shell
+git clone https://github.com/tetratelabs/istio-0to60.git && \
+  mv istio-0to60/artifacts . && \
+  rm -rf istio-0to60
 ```
 
 !!! tip
