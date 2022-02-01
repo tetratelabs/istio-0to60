@@ -43,10 +43,19 @@ The `istioctl` CLI is located in the `bin/` subdirectory.
     cp ./bin/istioctl ~/bin
     ```
 
-1. Add your home `bin` subdirectory to your PATH
+1. Add your home `bin` subdirectory to your `PATH`
 
-    ```{.shell .language-shell}
-    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+    ```shell
+    cat << EOF >> ~/.bashrc
+
+    export PATH="~/bin:\$PATH"
+
+    EOF
+    ```
+
+    And then:
+
+    ```shell
     source ~/.bashrc
     ```
 
