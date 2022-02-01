@@ -90,7 +90,7 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 
     ??? tldr "sleep.yaml"
         ```yaml linenums="1"
-        --8<-- "sleep/sleep.yaml"
+        --8<-- "sleep.yaml"
         ```
 
     ```{.shell .language-shell}
