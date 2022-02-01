@@ -512,202 +512,257 @@
 <p>You can list the mutating webhooks in your Kubernetes cluster and confirm that the sidecar injector is present.</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get mutatingwebhookconfigurations
 </code></pre></div>
-<p>If you have extra time, explore the <code>istioctl kube-inject --help</code> command.</p>
+<details class="example">
+<summary>Optional: Deeper into sidecar injection</summary>
+<p><em>If you have extra time</em>, explore sidecar injection further with the following exercise.</p>
+<ol>
+<li>
+<p>Start with a pod yaml:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl run mywebserver --image nginx --dry-run<span class="o">=</span>client -oyaml &gt; nginx-pod.yaml
+</code></pre></div>
+</li>
+<li>
+<p>Generate the full sidecar-injected manifest:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>istioctl kube-inject -f ./nginx-pod.yaml &gt; injected.yaml
+</code></pre></div>
+</li>
+<li>
+<p>Review the <code>injected.yaml</code> init-container <code>args</code> field:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>istio-iptables
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>-p <span class="s2">&quot;15001&quot;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>-z <span class="s2">&quot;15006&quot;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>-u <span class="s2">&quot;1337&quot;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>-m REDIRECT
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>-i <span class="s1">&#39;*&#39;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>-x <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>-b <span class="s1">&#39;*&#39;</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>-d <span class="m">15090</span>,15021,15020
+</code></pre></div>
+</li>
+<li>
+<p>Pull the container image and inspect it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>docker pull docker.io/istio/proxyv2:1.12.2
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>docker inspect 1c377f13f99f <span class="p">|</span> grep Entrypoint -A <span class="m">1</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">&quot;Entrypoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="s2">&quot;/usr/local/bin/pilot-agent&quot;</span><span class="w"></span>
+</code></pre></div>
+</li>
+</ol>
+<p>We learn that <code>istio-iptables</code> is a <code>pilot-agent</code> subcommand.</p>
+<ol>
+<li>
+<p>Create a separate namespace that is not labeled for automatic injection</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl create ns myns
+</code></pre></div>
+</li>
+<li>
+<p>Apply the injected yaml</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl apply -f injected.yaml -n myns
+</code></pre></div>
+</li>
+<li>
+<p>Study the <code>pilot-agent istio-iptables</code> command's flag descriptions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl <span class="nb">exec</span> mywebserver -n myns -c istio-proxy -it -- pilot-agent istio-iptables --help
+</code></pre></div>
+</li>
+</ol>
+</details>
 <h2 id="deploy-the-application">Deploy the application<a class="headerlink" href="#deploy-the-application" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
 <p>Study the two Kubernetes yaml files: <code>web-frontend.yaml</code> and <code>customers.yaml</code>.</p>
 <details class="tldr">
 <summary>web-frontend.yaml</summary>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-3-10">10</a></span>
-<span class="normal"><a href="#__codelineno-3-11">11</a></span>
-<span class="normal"><a href="#__codelineno-3-12">12</a></span>
-<span class="normal"><a href="#__codelineno-3-13">13</a></span>
-<span class="normal"><a href="#__codelineno-3-14">14</a></span>
-<span class="normal"><a href="#__codelineno-3-15">15</a></span>
-<span class="normal"><a href="#__codelineno-3-16">16</a></span>
-<span class="normal"><a href="#__codelineno-3-17">17</a></span>
-<span class="normal"><a href="#__codelineno-3-18">18</a></span>
-<span class="normal"><a href="#__codelineno-3-19">19</a></span>
-<span class="normal"><a href="#__codelineno-3-20">20</a></span>
-<span class="normal"><a href="#__codelineno-3-21">21</a></span>
-<span class="normal"><a href="#__codelineno-3-22">22</a></span>
-<span class="normal"><a href="#__codelineno-3-23">23</a></span>
-<span class="normal"><a href="#__codelineno-3-24">24</a></span>
-<span class="normal"><a href="#__codelineno-3-25">25</a></span>
-<span class="normal"><a href="#__codelineno-3-26">26</a></span>
-<span class="normal"><a href="#__codelineno-3-27">27</a></span>
-<span class="normal"><a href="#__codelineno-3-28">28</a></span>
-<span class="normal"><a href="#__codelineno-3-29">29</a></span>
-<span class="normal"><a href="#__codelineno-3-30">30</a></span>
-<span class="normal"><a href="#__codelineno-3-31">31</a></span>
-<span class="normal"><a href="#__codelineno-3-32">32</a></span>
-<span class="normal"><a href="#__codelineno-3-33">33</a></span>
-<span class="normal"><a href="#__codelineno-3-34">34</a></span>
-<span class="normal"><a href="#__codelineno-3-35">35</a></span>
-<span class="normal"><a href="#__codelineno-3-36">36</a></span>
-<span class="normal"><a href="#__codelineno-3-37">37</a></span>
-<span class="normal"><a href="#__codelineno-3-38">38</a></span>
-<span class="normal"><a href="#__codelineno-3-39">39</a></span>
-<span class="normal"><a href="#__codelineno-3-40">40</a></span>
-<span class="normal"><a href="#__codelineno-3-41">41</a></span>
-<span class="normal"><a href="#__codelineno-3-42">42</a></span>
-<span class="normal"><a href="#__codelineno-3-43">43</a></span>
-<span class="normal"><a href="#__codelineno-3-44">44</a></span>
-<span class="normal"><a href="#__codelineno-3-45">45</a></span>
-<span class="normal"><a href="#__codelineno-3-46">46</a></span>
-<span class="normal"><a href="#__codelineno-3-47">47</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
-<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gcr.io/tetratelabs/web-frontend:1.0.0</span><span class="w"></span>
-<a id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">          </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span><span class="w"></span>
-<a id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span><span class="w"></span>
-<a id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w">          </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
-<a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">          </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CUSTOMER_SERVICE_URL</span><span class="w"></span>
-<a id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="w">              </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://customers.default.svc.cluster.local&quot;</span><span class="w"></span>
-<a id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
-<a id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-38" name="__codelineno-3-38"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-39" name="__codelineno-3-39"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-40" name="__codelineno-3-40"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-41" name="__codelineno-3-41"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-42" name="__codelineno-3-42"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
-<a id="__codelineno-3-44" name="__codelineno-3-44"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-3-45" name="__codelineno-3-45"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
-<a id="__codelineno-3-46" name="__codelineno-3-46"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
-<a id="__codelineno-3-47" name="__codelineno-3-47"></a><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-11-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-11-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-11-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-11-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-11-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-11-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-11-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-11-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-11-10">10</a></span>
+<span class="normal"><a href="#__codelineno-11-11">11</a></span>
+<span class="normal"><a href="#__codelineno-11-12">12</a></span>
+<span class="normal"><a href="#__codelineno-11-13">13</a></span>
+<span class="normal"><a href="#__codelineno-11-14">14</a></span>
+<span class="normal"><a href="#__codelineno-11-15">15</a></span>
+<span class="normal"><a href="#__codelineno-11-16">16</a></span>
+<span class="normal"><a href="#__codelineno-11-17">17</a></span>
+<span class="normal"><a href="#__codelineno-11-18">18</a></span>
+<span class="normal"><a href="#__codelineno-11-19">19</a></span>
+<span class="normal"><a href="#__codelineno-11-20">20</a></span>
+<span class="normal"><a href="#__codelineno-11-21">21</a></span>
+<span class="normal"><a href="#__codelineno-11-22">22</a></span>
+<span class="normal"><a href="#__codelineno-11-23">23</a></span>
+<span class="normal"><a href="#__codelineno-11-24">24</a></span>
+<span class="normal"><a href="#__codelineno-11-25">25</a></span>
+<span class="normal"><a href="#__codelineno-11-26">26</a></span>
+<span class="normal"><a href="#__codelineno-11-27">27</a></span>
+<span class="normal"><a href="#__codelineno-11-28">28</a></span>
+<span class="normal"><a href="#__codelineno-11-29">29</a></span>
+<span class="normal"><a href="#__codelineno-11-30">30</a></span>
+<span class="normal"><a href="#__codelineno-11-31">31</a></span>
+<span class="normal"><a href="#__codelineno-11-32">32</a></span>
+<span class="normal"><a href="#__codelineno-11-33">33</a></span>
+<span class="normal"><a href="#__codelineno-11-34">34</a></span>
+<span class="normal"><a href="#__codelineno-11-35">35</a></span>
+<span class="normal"><a href="#__codelineno-11-36">36</a></span>
+<span class="normal"><a href="#__codelineno-11-37">37</a></span>
+<span class="normal"><a href="#__codelineno-11-38">38</a></span>
+<span class="normal"><a href="#__codelineno-11-39">39</a></span>
+<span class="normal"><a href="#__codelineno-11-40">40</a></span>
+<span class="normal"><a href="#__codelineno-11-41">41</a></span>
+<span class="normal"><a href="#__codelineno-11-42">42</a></span>
+<span class="normal"><a href="#__codelineno-11-43">43</a></span>
+<span class="normal"><a href="#__codelineno-11-44">44</a></span>
+<span class="normal"><a href="#__codelineno-11-45">45</a></span>
+<span class="normal"><a href="#__codelineno-11-46">46</a></span>
+<span class="normal"><a href="#__codelineno-11-47">47</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
+<a id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
+<a id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<a id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-24" name="__codelineno-11-24"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-26" name="__codelineno-11-26"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gcr.io/tetratelabs/web-frontend:1.0.0</span><span class="w"></span>
+<a id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="w">          </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span><span class="w"></span>
+<a id="__codelineno-11-28" name="__codelineno-11-28"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span><span class="w"></span>
+<a id="__codelineno-11-29" name="__codelineno-11-29"></a><span class="w">          </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-30" name="__codelineno-11-30"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
+<a id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="w">          </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CUSTOMER_SERVICE_URL</span><span class="w"></span>
+<a id="__codelineno-11-33" name="__codelineno-11-33"></a><span class="w">              </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://customers.default.svc.cluster.local&quot;</span><span class="w"></span>
+<a id="__codelineno-11-34" name="__codelineno-11-34"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-11-35" name="__codelineno-11-35"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
+<a id="__codelineno-11-36" name="__codelineno-11-36"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-11-37" name="__codelineno-11-37"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-38" name="__codelineno-11-38"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-39" name="__codelineno-11-39"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-40" name="__codelineno-11-40"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-41" name="__codelineno-11-41"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-42" name="__codelineno-11-42"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-43" name="__codelineno-11-43"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span><span class="w"></span>
+<a id="__codelineno-11-44" name="__codelineno-11-44"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-11-45" name="__codelineno-11-45"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-11-46" name="__codelineno-11-46"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-11-47" name="__codelineno-11-47"></a><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
 </details>
 <details class="tldr">
 <summary>customers.yaml</summary>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-4-10">10</a></span>
-<span class="normal"><a href="#__codelineno-4-11">11</a></span>
-<span class="normal"><a href="#__codelineno-4-12">12</a></span>
-<span class="normal"><a href="#__codelineno-4-13">13</a></span>
-<span class="normal"><a href="#__codelineno-4-14">14</a></span>
-<span class="normal"><a href="#__codelineno-4-15">15</a></span>
-<span class="normal"><a href="#__codelineno-4-16">16</a></span>
-<span class="normal"><a href="#__codelineno-4-17">17</a></span>
-<span class="normal"><a href="#__codelineno-4-18">18</a></span>
-<span class="normal"><a href="#__codelineno-4-19">19</a></span>
-<span class="normal"><a href="#__codelineno-4-20">20</a></span>
-<span class="normal"><a href="#__codelineno-4-21">21</a></span>
-<span class="normal"><a href="#__codelineno-4-22">22</a></span>
-<span class="normal"><a href="#__codelineno-4-23">23</a></span>
-<span class="normal"><a href="#__codelineno-4-24">24</a></span>
-<span class="normal"><a href="#__codelineno-4-25">25</a></span>
-<span class="normal"><a href="#__codelineno-4-26">26</a></span>
-<span class="normal"><a href="#__codelineno-4-27">27</a></span>
-<span class="normal"><a href="#__codelineno-4-28">28</a></span>
-<span class="normal"><a href="#__codelineno-4-29">29</a></span>
-<span class="normal"><a href="#__codelineno-4-30">30</a></span>
-<span class="normal"><a href="#__codelineno-4-31">31</a></span>
-<span class="normal"><a href="#__codelineno-4-32">32</a></span>
-<span class="normal"><a href="#__codelineno-4-33">33</a></span>
-<span class="normal"><a href="#__codelineno-4-34">34</a></span>
-<span class="normal"><a href="#__codelineno-4-35">35</a></span>
-<span class="normal"><a href="#__codelineno-4-36">36</a></span>
-<span class="normal"><a href="#__codelineno-4-37">37</a></span>
-<span class="normal"><a href="#__codelineno-4-38">38</a></span>
-<span class="normal"><a href="#__codelineno-4-39">39</a></span>
-<span class="normal"><a href="#__codelineno-4-40">40</a></span>
-<span class="normal"><a href="#__codelineno-4-41">41</a></span>
-<span class="normal"><a href="#__codelineno-4-42">42</a></span>
-<span class="normal"><a href="#__codelineno-4-43">43</a></span>
-<span class="normal"><a href="#__codelineno-4-44">44</a></span>
-<span class="normal"><a href="#__codelineno-4-45">45</a></span>
-<span class="normal"><a href="#__codelineno-4-46">46</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
-<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
-<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
-<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v1</span><span class="w"></span>
-<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<a id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">      </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-4-25" name="__codelineno-4-25"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-26" name="__codelineno-4-26"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-28" name="__codelineno-4-28"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gcr.io/tetratelabs/customers:1.0.0</span><span class="w"></span>
-<a id="__codelineno-4-29" name="__codelineno-4-29"></a><span class="w">          </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span><span class="w"></span>
-<a id="__codelineno-4-30" name="__codelineno-4-30"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">svc</span><span class="w"></span>
-<a id="__codelineno-4-31" name="__codelineno-4-31"></a><span class="w">          </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-32" name="__codelineno-4-32"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span><span class="w"></span>
-<a id="__codelineno-4-33" name="__codelineno-4-33"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-4-34" name="__codelineno-4-34"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
-<a id="__codelineno-4-35" name="__codelineno-4-35"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-4-36" name="__codelineno-4-36"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-37" name="__codelineno-4-37"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-38" name="__codelineno-4-38"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-39" name="__codelineno-4-39"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-40" name="__codelineno-4-40"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-41" name="__codelineno-4-41"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-42" name="__codelineno-4-42"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-4-43" name="__codelineno-4-43"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-4-44" name="__codelineno-4-44"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
-<a id="__codelineno-4-45" name="__codelineno-4-45"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
-<a id="__codelineno-4-46" name="__codelineno-4-46"></a><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span><span class="w"></span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-12-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-12-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-12-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-12-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-12-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-12-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-12-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-12-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-12-10">10</a></span>
+<span class="normal"><a href="#__codelineno-12-11">11</a></span>
+<span class="normal"><a href="#__codelineno-12-12">12</a></span>
+<span class="normal"><a href="#__codelineno-12-13">13</a></span>
+<span class="normal"><a href="#__codelineno-12-14">14</a></span>
+<span class="normal"><a href="#__codelineno-12-15">15</a></span>
+<span class="normal"><a href="#__codelineno-12-16">16</a></span>
+<span class="normal"><a href="#__codelineno-12-17">17</a></span>
+<span class="normal"><a href="#__codelineno-12-18">18</a></span>
+<span class="normal"><a href="#__codelineno-12-19">19</a></span>
+<span class="normal"><a href="#__codelineno-12-20">20</a></span>
+<span class="normal"><a href="#__codelineno-12-21">21</a></span>
+<span class="normal"><a href="#__codelineno-12-22">22</a></span>
+<span class="normal"><a href="#__codelineno-12-23">23</a></span>
+<span class="normal"><a href="#__codelineno-12-24">24</a></span>
+<span class="normal"><a href="#__codelineno-12-25">25</a></span>
+<span class="normal"><a href="#__codelineno-12-26">26</a></span>
+<span class="normal"><a href="#__codelineno-12-27">27</a></span>
+<span class="normal"><a href="#__codelineno-12-28">28</a></span>
+<span class="normal"><a href="#__codelineno-12-29">29</a></span>
+<span class="normal"><a href="#__codelineno-12-30">30</a></span>
+<span class="normal"><a href="#__codelineno-12-31">31</a></span>
+<span class="normal"><a href="#__codelineno-12-32">32</a></span>
+<span class="normal"><a href="#__codelineno-12-33">33</a></span>
+<span class="normal"><a href="#__codelineno-12-34">34</a></span>
+<span class="normal"><a href="#__codelineno-12-35">35</a></span>
+<span class="normal"><a href="#__codelineno-12-36">36</a></span>
+<span class="normal"><a href="#__codelineno-12-37">37</a></span>
+<span class="normal"><a href="#__codelineno-12-38">38</a></span>
+<span class="normal"><a href="#__codelineno-12-39">39</a></span>
+<span class="normal"><a href="#__codelineno-12-40">40</a></span>
+<span class="normal"><a href="#__codelineno-12-41">41</a></span>
+<span class="normal"><a href="#__codelineno-12-42">42</a></span>
+<span class="normal"><a href="#__codelineno-12-43">43</a></span>
+<span class="normal"><a href="#__codelineno-12-44">44</a></span>
+<span class="normal"><a href="#__codelineno-12-45">45</a></span>
+<span class="normal"><a href="#__codelineno-12-46">46</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
+<a id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
+<a id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v1</span><span class="w"></span>
+<a id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-15" name="__codelineno-12-15"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<a id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-18" name="__codelineno-12-18"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="w">      </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-12-20" name="__codelineno-12-20"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-21" name="__codelineno-12-21"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-22" name="__codelineno-12-22"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-23" name="__codelineno-12-23"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-24" name="__codelineno-12-24"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-12-25" name="__codelineno-12-25"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-26" name="__codelineno-12-26"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-27" name="__codelineno-12-27"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-28" name="__codelineno-12-28"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gcr.io/tetratelabs/customers:1.0.0</span><span class="w"></span>
+<a id="__codelineno-12-29" name="__codelineno-12-29"></a><span class="w">          </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span><span class="w"></span>
+<a id="__codelineno-12-30" name="__codelineno-12-30"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">svc</span><span class="w"></span>
+<a id="__codelineno-12-31" name="__codelineno-12-31"></a><span class="w">          </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-32" name="__codelineno-12-32"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span><span class="w"></span>
+<a id="__codelineno-12-33" name="__codelineno-12-33"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-12-34" name="__codelineno-12-34"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
+<a id="__codelineno-12-35" name="__codelineno-12-35"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-12-36" name="__codelineno-12-36"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-37" name="__codelineno-12-37"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-38" name="__codelineno-12-38"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-39" name="__codelineno-12-39"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-40" name="__codelineno-12-40"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-41" name="__codelineno-12-41"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-42" name="__codelineno-12-42"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-12-43" name="__codelineno-12-43"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-12-44" name="__codelineno-12-44"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-12-45" name="__codelineno-12-45"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-12-46" name="__codelineno-12-46"></a><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
 </details>
@@ -715,9 +770,9 @@
 </li>
 <li>
 <p>Apply the two files to your Kubernetes cluster.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl apply -f customers.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl apply -f customers.yaml
 </code></pre></div>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f web-frontend.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl apply -f web-frontend.yaml
 </code></pre></div>
 </li>
 </ol>
@@ -726,7 +781,7 @@
 <li>Two pods are running, one for each service</li>
 <li>
 <p>Each pod consists of two containers, the one running the service image, plus the Envoy sidecar</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get pod
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl get pod
 </code></pre></div>
 </li>
 </ul>
@@ -738,157 +793,157 @@ The Istio distribution provides a sample app called <code>sleep</code> that will
 <p>Deploy <code>sleep</code> to the default namespace.</p>
 <details class="tldr">
 <summary>sleep.yaml</summary>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-8-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-8-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-8-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-8-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-8-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-8-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-8-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-8-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-8-10">10</a></span>
-<span class="normal"><a href="#__codelineno-8-11">11</a></span>
-<span class="normal"><a href="#__codelineno-8-12">12</a></span>
-<span class="normal"><a href="#__codelineno-8-13">13</a></span>
-<span class="normal"><a href="#__codelineno-8-14">14</a></span>
-<span class="normal"><a href="#__codelineno-8-15">15</a></span>
-<span class="normal"><a href="#__codelineno-8-16">16</a></span>
-<span class="normal"><a href="#__codelineno-8-17">17</a></span>
-<span class="normal"><a href="#__codelineno-8-18">18</a></span>
-<span class="normal"><a href="#__codelineno-8-19">19</a></span>
-<span class="normal"><a href="#__codelineno-8-20">20</a></span>
-<span class="normal"><a href="#__codelineno-8-21">21</a></span>
-<span class="normal"><a href="#__codelineno-8-22">22</a></span>
-<span class="normal"><a href="#__codelineno-8-23">23</a></span>
-<span class="normal"><a href="#__codelineno-8-24">24</a></span>
-<span class="normal"><a href="#__codelineno-8-25">25</a></span>
-<span class="normal"><a href="#__codelineno-8-26">26</a></span>
-<span class="normal"><a href="#__codelineno-8-27">27</a></span>
-<span class="normal"><a href="#__codelineno-8-28">28</a></span>
-<span class="normal"><a href="#__codelineno-8-29">29</a></span>
-<span class="normal"><a href="#__codelineno-8-30">30</a></span>
-<span class="normal"><a href="#__codelineno-8-31">31</a></span>
-<span class="normal"><a href="#__codelineno-8-32">32</a></span>
-<span class="normal"><a href="#__codelineno-8-33">33</a></span>
-<span class="normal"><a href="#__codelineno-8-34">34</a></span>
-<span class="normal"><a href="#__codelineno-8-35">35</a></span>
-<span class="normal"><a href="#__codelineno-8-36">36</a></span>
-<span class="normal"><a href="#__codelineno-8-37">37</a></span>
-<span class="normal"><a href="#__codelineno-8-38">38</a></span>
-<span class="normal"><a href="#__codelineno-8-39">39</a></span>
-<span class="normal"><a href="#__codelineno-8-40">40</a></span>
-<span class="normal"><a href="#__codelineno-8-41">41</a></span>
-<span class="normal"><a href="#__codelineno-8-42">42</a></span>
-<span class="normal"><a href="#__codelineno-8-43">43</a></span>
-<span class="normal"><a href="#__codelineno-8-44">44</a></span>
-<span class="normal"><a href="#__codelineno-8-45">45</a></span>
-<span class="normal"><a href="#__codelineno-8-46">46</a></span>
-<span class="normal"><a href="#__codelineno-8-47">47</a></span>
-<span class="normal"><a href="#__codelineno-8-48">48</a></span>
-<span class="normal"><a href="#__codelineno-8-49">49</a></span>
-<span class="normal"><a href="#__codelineno-8-50">50</a></span>
-<span class="normal"><a href="#__codelineno-8-51">51</a></span>
-<span class="normal"><a href="#__codelineno-8-52">52</a></span>
-<span class="normal"><a href="#__codelineno-8-53">53</a></span>
-<span class="normal"><a href="#__codelineno-8-54">54</a></span>
-<span class="normal"><a href="#__codelineno-8-55">55</a></span>
-<span class="normal"><a href="#__codelineno-8-56">56</a></span>
-<span class="normal"><a href="#__codelineno-8-57">57</a></span>
-<span class="normal"><a href="#__codelineno-8-58">58</a></span>
-<span class="normal"><a href="#__codelineno-8-59">59</a></span>
-<span class="normal"><a href="#__codelineno-8-60">60</a></span>
-<span class="normal"><a href="#__codelineno-8-61">61</a></span>
-<span class="normal"><a href="#__codelineno-8-62">62</a></span>
-<span class="normal"><a href="#__codelineno-8-63">63</a></span>
-<span class="normal"><a href="#__codelineno-8-64">64</a></span>
-<span class="normal"><a href="#__codelineno-8-65">65</a></span>
-<span class="normal"><a href="#__codelineno-8-66">66</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Copyright Istio Authors</span><span class="w"></span>
-<a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="c1">#</span><span class="w"></span>
-<a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="c1">#   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><span class="w"></span>
-<a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1">#   you may not use this file except in compliance with the License.</span><span class="w"></span>
-<a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="c1">#   You may obtain a copy of the License at</span><span class="w"></span>
-<a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="c1">#</span><span class="w"></span>
-<a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1">#       http://www.apache.org/licenses/LICENSE-2.0</span><span class="w"></span>
-<a id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="c1">#</span><span class="w"></span>
-<a id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="c1">#   Unless required by applicable law or agreed to in writing, software</span><span class="w"></span>
-<a id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="c1">#   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><span class="w"></span>
-<a id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="c1">#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><span class="w"></span>
-<a id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="c1">#   See the License for the specific language governing permissions and</span><span class="w"></span>
-<a id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="c1">#   limitations under the License.</span><span class="w"></span>
-<a id="__codelineno-8-14" name="__codelineno-8-14"></a>
-<a id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="c1">##################################################################################################</span><span class="w"></span>
-<a id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="c1"># Sleep service</span><span class="w"></span>
-<a id="__codelineno-8-17" name="__codelineno-8-17"></a><span class="c1">##################################################################################################</span><span class="w"></span>
-<a id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
-<a id="__codelineno-8-20" name="__codelineno-8-20"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-21" name="__codelineno-8-21"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-8-23" name="__codelineno-8-23"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
-<a id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
-<a id="__codelineno-8-25" name="__codelineno-8-25"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-28" name="__codelineno-8-28"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-29" name="__codelineno-8-29"></a><span class="w">    </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-30" name="__codelineno-8-30"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-31" name="__codelineno-8-31"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-32" name="__codelineno-8-32"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
-<a id="__codelineno-8-33" name="__codelineno-8-33"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
-<a id="__codelineno-8-34" name="__codelineno-8-34"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-35" name="__codelineno-8-35"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-36" name="__codelineno-8-36"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-8-37" name="__codelineno-8-37"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
-<a id="__codelineno-8-38" name="__codelineno-8-38"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
-<a id="__codelineno-8-39" name="__codelineno-8-39"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-40" name="__codelineno-8-40"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-41" name="__codelineno-8-41"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-42" name="__codelineno-8-42"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
-<a id="__codelineno-8-43" name="__codelineno-8-43"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-44" name="__codelineno-8-44"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-45" name="__codelineno-8-45"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-46" name="__codelineno-8-46"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-47" name="__codelineno-8-47"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-48" name="__codelineno-8-48"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-49" name="__codelineno-8-49"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-50" name="__codelineno-8-50"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-51" name="__codelineno-8-51"></a><span class="w">      </span><span class="nt">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-<a id="__codelineno-8-52" name="__codelineno-8-52"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-53" name="__codelineno-8-53"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-54" name="__codelineno-8-54"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
-<a id="__codelineno-8-55" name="__codelineno-8-55"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curlimages/curl</span><span class="w"></span>
-<a id="__codelineno-8-56" name="__codelineno-8-56"></a><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/bin/sleep&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3650d&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
-<a id="__codelineno-8-57" name="__codelineno-8-57"></a><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IfNotPresent</span><span class="w"></span>
-<a id="__codelineno-8-58" name="__codelineno-8-58"></a><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-59" name="__codelineno-8-59"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/sleep/tls</span><span class="w"></span>
-<a id="__codelineno-8-60" name="__codelineno-8-60"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span><span class="w"></span>
-<a id="__codelineno-8-61" name="__codelineno-8-61"></a><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-62" name="__codelineno-8-62"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span><span class="w"></span>
-<a id="__codelineno-8-63" name="__codelineno-8-63"></a><span class="w">        </span><span class="nt">secret</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-8-64" name="__codelineno-8-64"></a><span class="w">          </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep-secret</span><span class="w"></span>
-<a id="__codelineno-8-65" name="__codelineno-8-65"></a><span class="w">          </span><span class="nt">optional</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<a id="__codelineno-8-66" name="__codelineno-8-66"></a><span class="nn">---</span><span class="w"></span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-16-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-16-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-16-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-16-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-16-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-16-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-16-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-16-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-16-10">10</a></span>
+<span class="normal"><a href="#__codelineno-16-11">11</a></span>
+<span class="normal"><a href="#__codelineno-16-12">12</a></span>
+<span class="normal"><a href="#__codelineno-16-13">13</a></span>
+<span class="normal"><a href="#__codelineno-16-14">14</a></span>
+<span class="normal"><a href="#__codelineno-16-15">15</a></span>
+<span class="normal"><a href="#__codelineno-16-16">16</a></span>
+<span class="normal"><a href="#__codelineno-16-17">17</a></span>
+<span class="normal"><a href="#__codelineno-16-18">18</a></span>
+<span class="normal"><a href="#__codelineno-16-19">19</a></span>
+<span class="normal"><a href="#__codelineno-16-20">20</a></span>
+<span class="normal"><a href="#__codelineno-16-21">21</a></span>
+<span class="normal"><a href="#__codelineno-16-22">22</a></span>
+<span class="normal"><a href="#__codelineno-16-23">23</a></span>
+<span class="normal"><a href="#__codelineno-16-24">24</a></span>
+<span class="normal"><a href="#__codelineno-16-25">25</a></span>
+<span class="normal"><a href="#__codelineno-16-26">26</a></span>
+<span class="normal"><a href="#__codelineno-16-27">27</a></span>
+<span class="normal"><a href="#__codelineno-16-28">28</a></span>
+<span class="normal"><a href="#__codelineno-16-29">29</a></span>
+<span class="normal"><a href="#__codelineno-16-30">30</a></span>
+<span class="normal"><a href="#__codelineno-16-31">31</a></span>
+<span class="normal"><a href="#__codelineno-16-32">32</a></span>
+<span class="normal"><a href="#__codelineno-16-33">33</a></span>
+<span class="normal"><a href="#__codelineno-16-34">34</a></span>
+<span class="normal"><a href="#__codelineno-16-35">35</a></span>
+<span class="normal"><a href="#__codelineno-16-36">36</a></span>
+<span class="normal"><a href="#__codelineno-16-37">37</a></span>
+<span class="normal"><a href="#__codelineno-16-38">38</a></span>
+<span class="normal"><a href="#__codelineno-16-39">39</a></span>
+<span class="normal"><a href="#__codelineno-16-40">40</a></span>
+<span class="normal"><a href="#__codelineno-16-41">41</a></span>
+<span class="normal"><a href="#__codelineno-16-42">42</a></span>
+<span class="normal"><a href="#__codelineno-16-43">43</a></span>
+<span class="normal"><a href="#__codelineno-16-44">44</a></span>
+<span class="normal"><a href="#__codelineno-16-45">45</a></span>
+<span class="normal"><a href="#__codelineno-16-46">46</a></span>
+<span class="normal"><a href="#__codelineno-16-47">47</a></span>
+<span class="normal"><a href="#__codelineno-16-48">48</a></span>
+<span class="normal"><a href="#__codelineno-16-49">49</a></span>
+<span class="normal"><a href="#__codelineno-16-50">50</a></span>
+<span class="normal"><a href="#__codelineno-16-51">51</a></span>
+<span class="normal"><a href="#__codelineno-16-52">52</a></span>
+<span class="normal"><a href="#__codelineno-16-53">53</a></span>
+<span class="normal"><a href="#__codelineno-16-54">54</a></span>
+<span class="normal"><a href="#__codelineno-16-55">55</a></span>
+<span class="normal"><a href="#__codelineno-16-56">56</a></span>
+<span class="normal"><a href="#__codelineno-16-57">57</a></span>
+<span class="normal"><a href="#__codelineno-16-58">58</a></span>
+<span class="normal"><a href="#__codelineno-16-59">59</a></span>
+<span class="normal"><a href="#__codelineno-16-60">60</a></span>
+<span class="normal"><a href="#__codelineno-16-61">61</a></span>
+<span class="normal"><a href="#__codelineno-16-62">62</a></span>
+<span class="normal"><a href="#__codelineno-16-63">63</a></span>
+<span class="normal"><a href="#__codelineno-16-64">64</a></span>
+<span class="normal"><a href="#__codelineno-16-65">65</a></span>
+<span class="normal"><a href="#__codelineno-16-66">66</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Copyright Istio Authors</span><span class="w"></span>
+<a id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="c1">#   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><span class="w"></span>
+<a id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="c1">#   you may not use this file except in compliance with the License.</span><span class="w"></span>
+<a id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="c1">#   You may obtain a copy of the License at</span><span class="w"></span>
+<a id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="c1">#       http://www.apache.org/licenses/LICENSE-2.0</span><span class="w"></span>
+<a id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="c1">#</span><span class="w"></span>
+<a id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="c1">#   Unless required by applicable law or agreed to in writing, software</span><span class="w"></span>
+<a id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="c1">#   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><span class="w"></span>
+<a id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="c1">#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><span class="w"></span>
+<a id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="c1">#   See the License for the specific language governing permissions and</span><span class="w"></span>
+<a id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="c1">#   limitations under the License.</span><span class="w"></span>
+<a id="__codelineno-16-14" name="__codelineno-16-14"></a>
+<a id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="c1"># Sleep service</span><span class="w"></span>
+<a id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="c1">##################################################################################################</span><span class="w"></span>
+<a id="__codelineno-16-18" name="__codelineno-16-18"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-16-19" name="__codelineno-16-19"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span><span class="w"></span>
+<a id="__codelineno-16-20" name="__codelineno-16-20"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-21" name="__codelineno-16-21"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-22" name="__codelineno-16-22"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-16-23" name="__codelineno-16-23"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+<a id="__codelineno-16-24" name="__codelineno-16-24"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span><span class="w"></span>
+<a id="__codelineno-16-25" name="__codelineno-16-25"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-26" name="__codelineno-16-26"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-27" name="__codelineno-16-27"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-28" name="__codelineno-16-28"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-29" name="__codelineno-16-29"></a><span class="w">    </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-30" name="__codelineno-16-30"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-31" name="__codelineno-16-31"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-32" name="__codelineno-16-32"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-16-33" name="__codelineno-16-33"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-16-34" name="__codelineno-16-34"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-35" name="__codelineno-16-35"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-36" name="__codelineno-16-36"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-16-37" name="__codelineno-16-37"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w"></span>
+<a id="__codelineno-16-38" name="__codelineno-16-38"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w"></span>
+<a id="__codelineno-16-39" name="__codelineno-16-39"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-40" name="__codelineno-16-40"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-41" name="__codelineno-16-41"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-42" name="__codelineno-16-42"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"></span>
+<a id="__codelineno-16-43" name="__codelineno-16-43"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-44" name="__codelineno-16-44"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-45" name="__codelineno-16-45"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-46" name="__codelineno-16-46"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-47" name="__codelineno-16-47"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-48" name="__codelineno-16-48"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-49" name="__codelineno-16-49"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-50" name="__codelineno-16-50"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-51" name="__codelineno-16-51"></a><span class="w">      </span><span class="nt">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<a id="__codelineno-16-52" name="__codelineno-16-52"></a><span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-53" name="__codelineno-16-53"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-54" name="__codelineno-16-54"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="w"></span>
+<a id="__codelineno-16-55" name="__codelineno-16-55"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curlimages/curl</span><span class="w"></span>
+<a id="__codelineno-16-56" name="__codelineno-16-56"></a><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/bin/sleep&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3650d&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<a id="__codelineno-16-57" name="__codelineno-16-57"></a><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IfNotPresent</span><span class="w"></span>
+<a id="__codelineno-16-58" name="__codelineno-16-58"></a><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-59" name="__codelineno-16-59"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/sleep/tls</span><span class="w"></span>
+<a id="__codelineno-16-60" name="__codelineno-16-60"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span><span class="w"></span>
+<a id="__codelineno-16-61" name="__codelineno-16-61"></a><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-62" name="__codelineno-16-62"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret-volume</span><span class="w"></span>
+<a id="__codelineno-16-63" name="__codelineno-16-63"></a><span class="w">        </span><span class="nt">secret</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-16-64" name="__codelineno-16-64"></a><span class="w">          </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sleep-secret</span><span class="w"></span>
+<a id="__codelineno-16-65" name="__codelineno-16-65"></a><span class="w">          </span><span class="nt">optional</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<a id="__codelineno-16-66" name="__codelineno-16-66"></a><span class="nn">---</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
 </details>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl apply -f sleep.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl apply -f sleep.yaml
 </code></pre></div>
 </li>
 <li>
 <p>Capture the name of the sleep pod to an environment variable</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
 </code></pre></div>
 </li>
 <li>
 <p>Use the <code>kubectl exec</code> command to call the <code>customers</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
 </code></pre></div>
 <p>The console output should show a list of customers in JSON format.</p>
 </li>
 <li>
 <p>Call the <code>web-frontend</code> service</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend
 </code></pre></div>
 <p>The console output should show an HTML page listing customers in an HTML table.</p>
 </li>
