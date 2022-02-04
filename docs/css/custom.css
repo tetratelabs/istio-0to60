@@ -17,6 +17,7 @@
 }
 
 [data-md-color-scheme="default"] {
+  --md-primary-fg-color: #F05623;
   --md-footer-logo-slate:         none;
   --md-footer-logo-default:         block;
 }
