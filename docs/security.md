@@ -72,7 +72,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 kubectl exec -n otherns $SLEEP_POD -it -- curl customers.default
 ```
 
-The console output should indicate that the connection was reset by peer.
+The console output should indicate that the _connection was reset by peer_.
 
 
 ## Security in depth
