@@ -630,7 +630,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <h3 id="verify-that-plain-text-requests-are-no-longer-permitted">Verify that plain-text requests are no longer permitted<a class="headerlink" href="#verify-that-plain-text-requests-are-no-longer-permitted" title="Permanent link">&para;</a></h3>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl <span class="nb">exec</span> -n otherns <span class="nv">$SLEEP_POD</span> -it -- curl customers.default
 </code></pre></div>
-<p>The console output should indicate that the connection was reset by peer.</p>
+<p>The console output should indicate that the <em>connection was reset by peer</em>.</p>
 <h2 id="security-in-depth">Security in depth<a class="headerlink" href="#security-in-depth" title="Permanent link">&para;</a></h2>
 <p>Another important layer of security is to define an authorization policy, in which we allow only specific services to communicate with other services.</p>
 <p>At the moment, any container can, for example, call the customers service or the web-frontend service.</p>
