@@ -73,7 +73,7 @@ Confirm that:
 
 !!! question "How did each pod end up with two containers?"
 
-    Istio install a Kubernetes object known as a [mutating webhook admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/){ target=_blank }: logic that intercepts Kubernetes object creation requests and that has the permission to alter (mutate) what ends up stored in etcd (the pod spec).
+    Istio installs a Kubernetes object known as a [mutating webhook admission controller](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/){ target=_blank }: logic that intercepts Kubernetes object creation requests and that has the permission to alter (mutate) what ends up stored in etcd (the pod spec).
 
     You can list the mutating webhooks in your Kubernetes cluster and confirm that the sidecar injector is present.
 
