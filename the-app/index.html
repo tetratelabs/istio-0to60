@@ -728,7 +728,7 @@
 </ul>
 <div class="admonition question">
 <p class="admonition-title">How did each pod end up with two containers?</p>
-<p>Istio install a Kubernetes object known as a <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/" target="_blank">mutating webhook admission controller</a>: logic that intercepts Kubernetes object creation requests and that has the permission to alter (mutate) what ends up stored in etcd (the pod spec).</p>
+<p>Istio installs a Kubernetes object known as a <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/" target="_blank">mutating webhook admission controller</a>: logic that intercepts Kubernetes object creation requests and that has the permission to alter (mutate) what ends up stored in etcd (the pod spec).</p>
 <p>You can list the mutating webhooks in your Kubernetes cluster and confirm that the sidecar injector is present.</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl get mutatingwebhookconfigurations
 </code></pre></div>
