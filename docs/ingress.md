@@ -33,7 +33,11 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
     Ensure `GATEWAY_IP` is set each time we start a new shell:
 
     ```{.shell .language-shell}
-    echo "export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')" >> ~/.bashrc
+    cat << EOF >> ~/.bashrc
+
+    export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+    EOF
     ```
 
 In normal circumstances we associate this IP address with a hostname via DNS.
