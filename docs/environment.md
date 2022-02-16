@@ -62,7 +62,7 @@ The Google Cloud Shell will serve as your terminal environment for these labs.
         ```{.shell .language-shell}
         gcloud container clusters get-credentials \
             $(gcloud container clusters list --format="value(name)") \
-            --zone us-central1-a \
+            --zone $(gcloud container clusters list --format="value(location)") \
             --project $(gcloud config get-value project)
         ```
 
