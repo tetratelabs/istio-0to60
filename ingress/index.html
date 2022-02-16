@@ -530,7 +530,11 @@
 <summary>A small investment</summary>
 <p>When the cloud shell connection is severed, or when opening a new terminal tab, <code>$GATEWAY_IP</code> will no longer be in scope.</p>
 <p>Ensure <code>GATEWAY_IP</code> is set each time we start a new shell:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span> <span class="s2">&quot;export GATEWAY_IP=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span><span class="s2">&quot;</span> &gt;&gt; ~/.bashrc
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cat <span class="s">&lt;&lt; EOF &gt;&gt; ~/.bashrc</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s">export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">EOF</span>
 </code></pre></div>
 </details>
 <p>In normal circumstances we associate this IP address with a hostname via DNS.
