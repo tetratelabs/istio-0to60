@@ -6,7 +6,7 @@ In this lab you will deploy an application to your mesh.
 
     ??? info
 
-        The official Istio docs canonical example is the [BookInfo aplpication](https://istio.io/latest/docs/examples/bookinfo/){target=_blank}.
+        The official Istio docs canonical example is the [BookInfo application](https://istio.io/latest/docs/examples/bookinfo/){target=_blank}.
 
         For this workshop we felt that an application involving fewer microservices would be more clear.
 
