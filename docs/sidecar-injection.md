@@ -32,7 +32,7 @@ The following exercise explores sidecar injection further.
 1. Pull the container image and inspect it:
 
     ```shell
-    docker pull docker.io/istio/proxyv2:1.13.2
+    docker pull docker.io/istio/proxyv2:{{istio.version}}
     docker inspect ee87b1ddd5b4 | grep Entrypoint -A 1
     ```
 
