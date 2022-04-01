@@ -19,28 +19,27 @@ The following exercise explores sidecar injection further.
 
     ```shell
     istio-iptables
-    -p "15001"
-    -z "15006"
-    -u "1337"
-    -m REDIRECT
-    -i '*'
-    -x ""
-    -b '*'
-    -d 15090,15021,15020
+        -p "15001"
+        -z "15006"
+        -u "1337"
+        -m REDIRECT
+        -i '*'
+        -x ""
+        -b '*'
+        -d 15090,15021,15020
     ```
 
 1. Pull the container image and inspect it:
 
     ```shell
-    docker pull docker.io/istio/proxyv2:1.12.2
-    docker inspect 1c377f13f99f | grep Entrypoint -A 1
+    docker pull docker.io/istio/proxyv2:1.13.2
+    docker inspect ee87b1ddd5b4 | grep Entrypoint -A 1
     ```
 
     ```json
     "Entrypoint": [
         "/usr/local/bin/pilot-agent"
     ```
-
 
     We learn that `istio-iptables` is a `pilot-agent` subcommand.
 
