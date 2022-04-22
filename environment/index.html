@@ -262,6 +262,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#log-in-to-gcp" class="md-nav__link">
     Log in to GCP
   </a>
@@ -443,6 +450,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    Options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#log-in-to-gcp" class="md-nav__link">
     Log in to GCP
   </a>
@@ -503,8 +517,51 @@
 
 
 <h1 id="lab-environment">Lab environment<a class="headerlink" href="#lab-environment" title="Permanent link">&para;</a></h1>
-<p>An environment has been provisioned for you on Google Cloud Platform (GCP), consisting mainly of a Kubernetes cluster.</p>
-<p>Your instructor will demonstrate the process of accessing and configuring your environment, described below.</p>
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>If you brought your own Kubernetes cluster:</p>
+<ul>
+<li>
+<p>Kubernetes versions 1.16 through 1.23 should all work.  Feel free to check the Istio <a href="https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases" target="_blank">support status of Istio releases page</a> for version 1.13.2.</p>
+</li>
+<li>
+<p>We recommend a 3-worker node cluster of machine type "n1-standard-2" or similar, though a smaller cluster will likely work just fine.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you have your own public cloud account:</p>
+<ul>
+<li>
+<p>On GCP, the following command should provision a GKE cluster of adequate size for the workshop:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gcloud container clusters create my-istio-cluster <span class="se">\</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>--cluster-version latest <span class="se">\</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>--machine-type <span class="s2">&quot;n1-standard-2&quot;</span> <span class="se">\</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>--num-nodes <span class="s2">&quot;3&quot;</span> <span class="se">\</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>--network <span class="s2">&quot;default&quot;</span>
+</code></pre></div>
+</li>
+<li>
+<p>Feel free to provision a K8S cluster on any infrastructure of your choosing.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you received Google credentials from the workshop instructors:</p>
+<ul>
+<li>A Kubernetes cluster has already been provisioned for you</li>
+<li>Your instructor will demonstrate the process of accessing and configuring your environment, described below.</li>
+<li>The instructions below explain in detail how to access your account, select your project, and launch the cloud shell</li>
+</ul>
+</li>
+</ol>
+<p>Be sure to:</p>
+<ul>
+<li>Configure your <code>kubeconfig</code> file to point to your cluster.</li>
+<li>Follow the instructions <a href="#artifacts">at the bottom of this page</a> to download the artifacts you will need for the upcoming labs.</li>
+</ul>
+<p>If you are bringing your own Kubernetes cluster, please skip ahead to the <a href="#artifacts">artifacts</a> section at the bottom of this page.</p>
 <h2 id="log-in-to-gcp">Log in to GCP<a class="headerlink" href="#log-in-to-gcp" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Log in to <a href="https://console.cloud.google.com/" target="_blank">GCP</a> using credentials provided by your instructor.</li>
@@ -541,7 +598,7 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <ol>
 <li>
 <p>Check that the <code>kubectl</code> CLI is installed</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl version --short
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl version --short
 </code></pre></div>
 </li>
 <li>
@@ -559,10 +616,10 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 </ol>
 </div>
 <div class="tabbed-block">
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud container clusters get-credentials <span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">$(</span>gcloud container clusters list --format<span class="o">=</span><span class="s2">&quot;value(name)&quot;</span><span class="k">)</span> <span class="se">\</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    --zone <span class="k">$(</span>gcloud container clusters list --format<span class="o">=</span><span class="s2">&quot;value(location)&quot;</span><span class="k">)</span> <span class="se">\</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    --project <span class="k">$(</span>gcloud config get-value project<span class="k">)</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>gcloud container clusters get-credentials <span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">$(</span>gcloud container clusters list --format<span class="o">=</span><span class="s2">&quot;value(name)&quot;</span><span class="k">)</span> <span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    --zone <span class="k">$(</span>gcloud container clusters list --format<span class="o">=</span><span class="s2">&quot;value(location)&quot;</span><span class="k">)</span> <span class="se">\</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    --project <span class="k">$(</span>gcloud config get-value project<span class="k">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -572,12 +629,12 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 </li>
 <li>
 <p>Verify that your Kubernetes context is set for your cluster</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl config get-contexts
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl config get-contexts
 </code></pre></div>
 </li>
 <li>
 <p>Run a token command such as <code>kubectl get node</code> or <code>kubectl get ns</code> to ensure that you can communicate with the Kubernetes API Server.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get ns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl get ns
 </code></pre></div>
 </li>
 </ol>
@@ -586,23 +643,23 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <p>The lab instructions reference Kubernetes yaml artifacts that you will need to apply to your cluster at specific points in time.</p>
 <p>You have the option of copying and pasting the yaml snippets directly from the lab instructions as you encounter them.</p>
 <p>Another option is to clone the <a href="https://github.com/tetratelabs/istio-0to60" target="_blank">GitHub repository for this workshop</a> from the Cloud Shell.  You will find all yaml artifacts in the subdirectory named <code>artifacts</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git <span class="o">&amp;&amp;</span> <span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  mv istio-0to60/artifacts . <span class="o">&amp;&amp;</span> <span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  rm -rf istio-0to60
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git clone https://github.com/tetratelabs/istio-0to60.git <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  mv istio-0to60/artifacts . <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  rm -rf istio-0to60
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>This workshop makes extensive use of the <code>kubectl</code> CLI.</p>
 <p>Consider configuring an alias to make typing a little easier.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cat <span class="s">&lt;&lt; EOF &gt;&gt; ~/.bashrc</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s">source &lt;(kubectl completion bash)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s">alias k=kubectl</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="s">complete -F __start_kubectl k</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="s">EOF</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nb">source</span> ~/.bashrc
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cat <span class="s">&lt;&lt; EOF &gt;&gt; ~/.bashrc</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="s">source &lt;(kubectl completion bash)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="s">alias k=kubectl</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="s">complete -F __start_kubectl k</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="s">EOF</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="nb">source</span> ~/.bashrc
 </code></pre></div>
 </div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
