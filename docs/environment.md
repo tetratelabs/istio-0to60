@@ -1,8 +1,41 @@
 # Lab environment
 
-An environment has been provisioned for you on Google Cloud Platform (GCP), consisting mainly of a Kubernetes cluster.
+## Options
 
-Your instructor will demonstrate the process of accessing and configuring your environment, described below.
+1. If you brought your own Kubernetes cluster:
+
+    - Kubernetes versions 1.16 through 1.23 should all work.  Feel free to check the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for version {{istio.version}}.
+
+    - We recommend a 3-worker node cluster of machine type "n1-standard-2" or similar, though a smaller cluster will likely work just fine.
+
+2. If you have your own public cloud account:
+
+    - On GCP, the following command should provision a GKE cluster of adequate size for the workshop:
+
+        ```shell
+        gcloud container clusters create my-istio-cluster \
+        --cluster-version latest \
+        --machine-type "n1-standard-2" \
+        --num-nodes "3" \
+        --network "default"
+        ```
+
+    - Feel free to provision a K8S cluster on any infrastructure of your choosing.
+
+3. If you received Google credentials from the workshop instructors:
+
+    - A Kubernetes cluster has already been provisioned for you
+    - Your instructor will demonstrate the process of accessing and configuring your environment, described below.
+    - The instructions below explain in detail how to access your account, select your project, and launch the cloud shell
+
+
+Be sure to:
+
+- Configure your `kubeconfig` file to point to your cluster.
+- Follow the instructions [at the bottom of this page](#artifacts) to download the artifacts you will need for the upcoming labs.
+
+
+If you are bringing your own Kubernetes cluster, please skip ahead to the [artifacts](#artifacts) section at the bottom of this page.
 
 ## Log in to GCP
 
