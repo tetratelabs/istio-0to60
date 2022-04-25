@@ -14,10 +14,10 @@
 
         ```shell
         gcloud container clusters create my-istio-cluster \
-        --cluster-version latest \
-        --machine-type "n1-standard-2" \
-        --num-nodes "3" \
-        --network "default"
+          --cluster-version latest \
+          --machine-type "n1-standard-2" \
+          --num-nodes "3" \
+          --network "default"
         ```
 
     - Feel free to provision a K8S cluster on any infrastructure of your choosing.
