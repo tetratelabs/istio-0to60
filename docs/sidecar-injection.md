@@ -33,7 +33,7 @@ The following exercise explores sidecar injection further.
 
     ```shell
     docker pull docker.io/istio/proxyv2:{{istio.version}}
-    docker inspect ee87b1ddd5b4 | grep Entrypoint -A 1
+    docker inspect istio/proxyv2:{{istio.version}} | grep Entrypoint -A 1
     ```
 
     ```json

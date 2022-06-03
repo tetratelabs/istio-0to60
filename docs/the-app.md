@@ -114,10 +114,10 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 1. Call the `web-frontend` service
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -it -- curl web-frontend
+    kubectl exec $SLEEP_POD -it -- curl web-frontend | head
     ```
 
-    The console output should show an HTML page listing customers in an HTML table.
+    The console output should show the start of an HTML page listing customers in an HTML table.
 
 ## Next
 
