@@ -231,13 +231,13 @@ With Istio, this is done automatically by the Envoy sidecar.
 
     Note that you are looking at requests across the entire mesh, i.e. this includes both requests to `web-frontend` and to `customers`.
 
-2. As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:
+1. As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:
 
     ```text
     istio_requests_total{response_code="200"}
     ```
 
-3. With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:
+1. With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:
 
     ```text
     rate(istio_requests_total[5m])
