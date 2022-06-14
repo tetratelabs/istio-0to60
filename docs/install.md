@@ -65,6 +65,8 @@ Verify that `istioctl` is installed with:
 istioctl version
 ```
 
+The output should indicate that the version is {{istio.version}}.
+
 With the CLI installed, proceed to install Istio to Kubernetes.
 
 ## Install Istio
