@@ -69,6 +69,18 @@ The output should indicate that the version is {{istio.version}}.
 
 With the CLI installed, proceed to install Istio to Kubernetes.
 
+## Pre-check
+
+The `istioctl` CLI provides a convenient `precheck` command that can be used to "_inspect a Kubernetes cluster for Istio install and upgrade requirements._"
+
+To verify whether it is safe to install Istio on your Kubernetes cluster, run:
+
+```shell
+istioctl x precheck
+```
+
+Make sure that the output of the above command returns a green "checkmark" stating that no issues were found when checking the cluster.
+
 ## Install Istio
 
 1. Istio can be installed directly with the CLI:
@@ -82,6 +94,18 @@ With the CLI installed, proceed to install Istio to Kubernetes.
 Take a moment to learn more about [Istio installation profiles](https://istio.io/latest/docs/setup/additional-setup/config-profiles/){target=_blank}.
 
 ## Verify that Istio is installed
+
+Post-installation, Istio provides the command `verify-install`: it runs a series of checks to ensure that the installation was successful and complete.
+
+Go ahead and run it:
+
+```shell
+istioctl verify-install
+```
+
+Inspect the output and confirm that the it states that "_✔ Istio is installed and verified successfully._"
+
+Keep probing:
 
 1. List Kubernetes namespaces and note the new namespace `istio-system`
 
