@@ -292,6 +292,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pre-check" class="md-nav__link">
+    Pre-check
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install-istio_1" class="md-nav__link">
     Install Istio
   </a>
@@ -451,6 +458,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pre-check" class="md-nav__link">
+    Pre-check
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install-istio_1" class="md-nav__link">
     Install Istio
   </a>
@@ -541,11 +555,17 @@
 </code></pre></div>
 <p>The output should indicate that the version is 1.14.3.</p>
 <p>With the CLI installed, proceed to install Istio to Kubernetes.</p>
+<h2 id="pre-check">Pre-check<a class="headerlink" href="#pre-check" title="Permanent link">&para;</a></h2>
+<p>The <code>istioctl</code> CLI provides a convenient <code>precheck</code> command that can be used to "<em>inspect a Kubernetes cluster for Istio install and upgrade requirements.</em>"</p>
+<p>To verify whether it is safe to install Istio on your Kubernetes cluster, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>istioctl x precheck
+</code></pre></div>
+<p>Make sure that the output of the above command returns a green "checkmark" stating that no issues were found when checking the cluster.</p>
 <h2 id="install-istio_1">Install Istio<a class="headerlink" href="#install-istio_1" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
 <p>Istio can be installed directly with the CLI:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>istioctl install
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>istioctl install
 </code></pre></div>
 </li>
 <li>
@@ -554,15 +574,21 @@
 </ol>
 <p>Take a moment to learn more about <a href="https://istio.io/latest/docs/setup/additional-setup/config-profiles/" target="_blank">Istio installation profiles</a>.</p>
 <h2 id="verify-that-istio-is-installed">Verify that Istio is installed<a class="headerlink" href="#verify-that-istio-is-installed" title="Permanent link">&para;</a></h2>
+<p>Post-installation, Istio provides the command <code>verify-install</code>: it runs a series of checks to ensure that the installation was successful and complete.</p>
+<p>Go ahead and run it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>istioctl verify-install
+</code></pre></div>
+<p>Inspect the output and confirm that the it states that "<em>✔ Istio is installed and verified successfully.</em>"</p>
+<p>Keep probing:</p>
 <ol>
 <li>
 <p>List Kubernetes namespaces and note the new namespace <code>istio-system</code></p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl get ns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl get ns
 </code></pre></div>
 </li>
 <li>
 <p>Verify that the <code>istiod</code> controller pod is running in that namespace</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl get pod -n istio-system
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl get pod -n istio-system
 </code></pre></div>
 </li>
 <li>
