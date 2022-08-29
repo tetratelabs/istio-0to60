@@ -8,7 +8,7 @@
 
     - We recommend a 3-worker node cluster of machine type "n1-standard-2" or similar, though a smaller cluster will likely work just fine.
 
-2. If you have your own public cloud account:
+1. If you have your own public cloud account:
 
     - On GCP, the following command should provision a GKE cluster of adequate size for the workshop:
 
@@ -22,12 +22,15 @@
 
     - Feel free to provision a K8S cluster on any infrastructure of your choosing.
 
-3. If you received Google credentials from the workshop instructors:
+1. If you received Google credentials from the workshop instructors:
 
     - A Kubernetes cluster has already been provisioned for you
     - Your instructor will demonstrate the process of accessing and configuring your environment, described below.
     - The instructions below explain in detail how to access your account, select your project, and launch the cloud shell
 
+1. Killercoda:  If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from [here](https://killercoda.com/eitansuez/).
+
+    If you choose this option, please disregard the remaining instructions below.
 
 Be sure to:
 
