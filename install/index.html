@@ -509,12 +509,12 @@
 <ol>
 <li>
 <p>Run the following command from your home directory.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl -L https://istio.io/downloadIstio <span class="p">|</span> <span class="nv">ISTIO_VERSION</span><span class="o">=</span><span class="m">1</span>.14.3 sh -
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl -L https://istio.io/downloadIstio <span class="p">|</span> <span class="nv">ISTIO_VERSION</span><span class="o">=</span><span class="m">1</span>.15.0 sh -
 </code></pre></div>
 </li>
 <li>
 <p>Navigate into the directory created by the above command.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span> istio-1.14.3
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span> istio-1.15.0
 </code></pre></div>
 </li>
 </ol>
@@ -553,7 +553,7 @@
 <p>Verify that <code>istioctl</code> is installed with:</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>istioctl version
 </code></pre></div>
-<p>The output should indicate that the version is 1.14.3.</p>
+<p>The output should indicate that the version is 1.15.0.</p>
 <p>With the CLI installed, proceed to install Istio to Kubernetes.</p>
 <h2 id="pre-check">Pre-check<a class="headerlink" href="#pre-check" title="Permanent link">&para;</a></h2>
 <p>The <code>istioctl</code> CLI provides a convenient <code>precheck</code> command that can be used to "<em>inspect a Kubernetes cluster for Istio install and upgrade requirements.</em>"</p>
