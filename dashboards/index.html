@@ -820,8 +820,12 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </li>
 <li>
 <p>Run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -it -- curl localhost:15090/stats/prometheus  <span class="p">|</span> grep istio_requests
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -i -- curl -s localhost:15020/stats/prometheus  <span class="p">|</span> grep istio_requests
 </code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Why port 15020?</p>
+<p>See <a href="https://istio.io/latest/docs/ops/deployment/requirements/#ports-used-by-istio" target="_blank">Ports used by Istio</a> sidecar proxy.</p>
+</div>
 <p>The list of metrics returned by the endpoint is rather lengthy, so we just peek at "istio_requests" metric.  The full response contains many more metrics.</p>
 </li>
 </ol>
