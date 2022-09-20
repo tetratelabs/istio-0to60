@@ -212,8 +212,13 @@ With Istio, this is done automatically by the Envoy sidecar.
 1. Run the following command:
 
     ```{.shell .language-shell}
-    kubectl exec $CUSTOMERS_POD -it -- curl localhost:15090/stats/prometheus  | grep istio_requests
+    kubectl exec $CUSTOMERS_POD -i -- curl -s localhost:15020/stats/prometheus  | grep istio_requests
     ```
+
+    !!! info "Why port 15020?"
+
+        See [Ports used by Istio](https://istio.io/latest/docs/ops/deployment/requirements/#ports-used-by-istio){target=_blank} sidecar proxy.
+
 
     The list of metrics returned by the endpoint is rather lengthy, so we just peek at "istio_requests" metric.  The full response contains many more metrics.
 
