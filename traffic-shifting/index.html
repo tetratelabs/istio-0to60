@@ -769,7 +769,7 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <p>We wish to proceed with caution.  Before customers can see version 2, we want to make sure that the service functions properly.</p>
 <h2 id="expose-debug-traffic-to-v2">Expose "debug" traffic to v2<a class="headerlink" href="#expose-debug-traffic-to-v2" title="Permanent link">&para;</a></h2>
 <p>Review this proposed updated routing specification.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-v2-debug.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-vs-debug.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
@@ -813,7 +813,7 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 </code></pre></div></td></tr></table></div>
 <p>We are telling Istio to check an HTTP header:  if the <code>user-agent</code> is set to <code>debug</code>, route to v2, otherwise route to v1.</p>
 <p>Open a new terminal and apply the above resource to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl apply -f customers-v2-debug.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl apply -f customers-vs-debug.yaml
 </code></pre></div>
 <h3 id="test-it">Test it<a class="headerlink" href="#test-it" title="Permanent link">&para;</a></h3>
 <p>Open a browser and visit the application.</p>
@@ -839,7 +839,7 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <h2 id="canary">Canary<a class="headerlink" href="#canary" title="Permanent link">&para;</a></h2>
 <p>Well, v2 looks good; we decide to expose the new version to the public, but we're still prudent.</p>
 <p>Start by siphoning 10% of traffic over to v2.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-v2-canary.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-vs-canary.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-12-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-12-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-12-4"> 4</a></span>
