@@ -75,7 +75,7 @@ Configuring ingress with Istio is performed in two parts:
 
 1. Review the following VirtualService specification.
 
-    ??? tldr "web-frontend-virtualservice.yaml"
+    ???+ tldr "web-frontend-virtualservice.yaml"
         ```yaml linenums="1"
         --8<-- "web-frontend-virtualservice.yaml"
         ```
