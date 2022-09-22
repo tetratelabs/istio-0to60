@@ -212,7 +212,7 @@ With Istio, this is done automatically by the Envoy sidecar.
 1. Run the following command:
 
     ```{.shell .language-shell}
-    kubectl exec $CUSTOMERS_POD -i -- curl -s localhost:15020/stats/prometheus  | grep istio_requests
+    kubectl exec $CUSTOMERS_POD -- curl -s localhost:15020/stats/prometheus  | grep istio_requests
     ```
 
     !!! info "Why port 15020?"
