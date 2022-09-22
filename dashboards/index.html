@@ -820,7 +820,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </li>
 <li>
 <p>Run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -i -- curl -s localhost:15020/stats/prometheus  <span class="p">|</span> grep istio_requests
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -- curl -s localhost:15020/stats/prometheus  <span class="p">|</span> grep istio_requests
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why port 15020?</p>

@@ -885,13 +885,13 @@ The Istio distribution provides a sample app called <code>sleep</code> that will
 </li>
 <li>
 <p>Use the <code>kubectl exec</code> command to call the <code>customers</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -- curl -s customers
 </code></pre></div>
 <p>The console output should show a list of customers in JSON format.</p>
 </li>
 <li>
 <p>Call the <code>web-frontend</code> service</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -it -- curl web-frontend <span class="p">|</span> head
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -- curl -s web-frontend <span class="p">|</span> head
 </code></pre></div>
 <p>The console output should show the start of an HTML page listing customers in an HTML table.</p>
 </li>
