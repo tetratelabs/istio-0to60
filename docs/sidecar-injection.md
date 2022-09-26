@@ -54,7 +54,7 @@ Here is the salient part:
 
 ```yaml linenums="1"
   - name: istio-proxy
-    image: docker.io/istio/proxyv2:1.15.0
+    image: docker.io/istio/proxyv2:{{istio.version}}
     args:
     - proxy
     - sidecar
@@ -153,7 +153,7 @@ Here is the relevant section:
 ```yaml
   initContainers:
   - name: istio-init
-    image: docker.io/istio/proxyv2:1.15.0
+    image: docker.io/istio/proxyv2:{{istio.version}}
     args:
     - istio-iptables
     - -p
