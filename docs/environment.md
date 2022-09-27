@@ -38,8 +38,7 @@
     k3d cluster create my-istio-cluster \
         --api-port 6443 \
         --k3s-arg "--disable=traefik@server:0" \
-        --port 80:80@loadbalancer \
-        --port 443:443@loadbalancer
+        --port 80:80@loadbalancer
     ```
 
 Be sure to:
