@@ -37,7 +37,7 @@ We can test whether a mesh workload, such as the customers service, will allow a
 
     ```{.shell .language-shell}
     SLEEP_POD=$(kubectl get pod -l app=sleep -n otherns -ojsonpath='{.items[0].metadata.name}')
-    kubectl exec -n otherns $SLEEP_POD -it -- curl customers.default
+    kubectl exec -n otherns $SLEEP_POD -- curl -s customers.default
     ```
 
 The output should look like a list of customers in JSON format.
@@ -69,7 +69,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 ### Verify that plain-text requests are no longer permitted
 
 ```{.shell .language-shell}
-kubectl exec -n otherns $SLEEP_POD -it -- curl customers.default
+kubectl exec -n otherns $SLEEP_POD -- curl -s customers.default
 ```
 
 The console output should indicate that the _connection was reset by peer_.
@@ -90,13 +90,13 @@ At the moment, any container can, for example, call the customers service or the
 1. Call the `customers` service.
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -it -- curl customers
+    kubectl exec $SLEEP_POD -- curl -s customers
     ```
 
 1. Call the `web-frontend` service.
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -it -- curl web-frontend | head
+    kubectl exec $SLEEP_POD -- curl -s web-frontend | head
     ```
 
 Both calls succeed.
