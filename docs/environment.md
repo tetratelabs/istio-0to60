@@ -6,7 +6,7 @@
 
     - Kubernetes versions 1.16 through 1.24 should all work.  Feel free to consult the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for version {{istio.version}}.
 
-    - We recommend a 3-worker node cluster of machine type "n1-standard-2" or similar, though a smaller cluster will likely work just fine.
+    - We recommend a 3-worker node cluster of machine type "e2-standard-2" or similar, though a smaller cluster will likely work just fine.
 
     If you have your own public cloud account:
 
@@ -15,7 +15,7 @@
         ```shell
         gcloud container clusters create my-istio-cluster \
           --cluster-version latest \
-          --machine-type "n1-standard-2" \
+          --machine-type "e2-standard-2" \
           --num-nodes "3" \
           --network "default"
         ```
