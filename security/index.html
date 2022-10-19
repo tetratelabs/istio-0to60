@@ -644,11 +644,6 @@
 <p>The output should look like a list of customers in JSON format.</p>
 <p>We conclude that Istio is configured by default to allow plain-text request.
 This is called <em>permissive mode</em> and is specifically designed to allow services that have not yet fully onboarded onto the mesh to participate.</p>
-<div class="admonition question">
-<p class="admonition-title">Challenge</p>
-<p>Above, you were asked to create a namespace without marking it for sidecar injection in order to effectively have a client that can call other services without employing mutual TLS.</p>
-<p>Can you find another way of achieving the same result?  Can a client be configured explicitly to not use mTLS?</p>
-</div>
 <h3 id="enable-strict-mode">Enable strict mode<a class="headerlink" href="#enable-strict-mode" title="Permanent link">&para;</a></h3>
 <p>Istio provides the <code>PeerAuthentication</code> custom resource to define peer authentication policy.</p>
 <ol>
