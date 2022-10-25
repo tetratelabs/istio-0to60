@@ -69,7 +69,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 ### Verify that plain-text requests are no longer permitted
 
 ```{.shell .language-shell}
-kubectl exec -n otherns $SLEEP_POD -- curl -s customers.default
+kubectl exec -n otherns $SLEEP_POD -- curl customers.default
 ```
 
 The console output should indicate that the _connection was reset by peer_.
