@@ -730,7 +730,7 @@
 <ol>
 <li>
 <p>Navigate to the addons directory</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span> ~/istio-1.17.2/samples/addons
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span> ~/istio-1.18.2/samples/addons
 </code></pre></div>
 </li>
 <li>
@@ -866,13 +866,8 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <h3 id="observe-how-envoy-exposes-a-prometheus-scrape-endpoint">Observe how Envoy exposes a Prometheus scrape endpoint<a class="headerlink" href="#observe-how-envoy-exposes-a-prometheus-scrape-endpoint" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
-<p>Capture the customers pod name to a variable.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nv">CUSTOMERS_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>customers -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
-</code></pre></div>
-</li>
-<li>
 <p>Run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$CUSTOMERS_POD</span> -- curl -s localhost:15020/stats/prometheus  <span class="p">|</span> grep istio_requests
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus  <span class="p">|</span> grep istio_requests
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why port 15020?</p>
@@ -885,7 +880,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <ol>
 <li>
 <p>Start the prometheus dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>istioctl dashboard prometheus
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>istioctl dashboard prometheus
 </code></pre></div>
 </li>
 <li>
@@ -897,12 +892,12 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </li>
 <li>
 <p>As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>istio_requests_total{response_code=&quot;200&quot;}
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>istio_requests_total{response_code=&quot;200&quot;}
 </code></pre></div>
 </li>
 <li>
 <p>With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>rate(istio_requests_total[5m])
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>rate(istio_requests_total[5m])
 </code></pre></div>
 </li>
 </ol>
@@ -915,7 +910,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <ol>
 <li>
 <p>Launch the Grafana dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>istioctl dashboard grafana
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>istioctl dashboard grafana
 </code></pre></div>
 </li>
 <li>

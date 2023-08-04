@@ -931,19 +931,14 @@ The Istio distribution provides a sample app called <code>sleep</code> that will
 </code></pre></div>
 </li>
 <li>
-<p>Capture the name of the sleep pod to an environment variable</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">SLEEP_POD</span><span class="o">=</span><span class="k">$(</span>kubectl get pod -l <span class="nv">app</span><span class="o">=</span>sleep -ojsonpath<span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
-</code></pre></div>
-</li>
-<li>
 <p>Use the <code>kubectl exec</code> command to call the <code>customers</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -- curl -s customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl <span class="nb">exec</span> deploy/sleep -- curl -s customers
 </code></pre></div>
 <p>The console output should show a list of customers in JSON format.</p>
 </li>
 <li>
 <p>Call the <code>web-frontend</code> service</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> <span class="nv">$SLEEP_POD</span> -- curl -s web-frontend <span class="p">|</span> head
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> deploy/sleep -- curl -s web-frontend <span class="p">|</span> head
 </code></pre></div>
 <p>The console output should show the start of an HTML page listing customers in an HTML table.</p>
 </li>
