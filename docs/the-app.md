@@ -97,16 +97,10 @@ The Istio distribution provides a sample app called `sleep` that will serve this
     kubectl apply -f sleep.yaml
     ```
 
-1. Capture the name of the sleep pod to an environment variable
-
-    ```{.shell .language-shell}
-    SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
-    ```
-
 1. Use the `kubectl exec` command to call the `customers` service.
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -- curl -s customers
+    kubectl exec deploy/sleep -- curl -s customers
     ```
 
     The console output should show a list of customers in JSON format.
@@ -114,7 +108,7 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 1. Call the `web-frontend` service
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -- curl -s web-frontend | head
+    kubectl exec deploy/sleep -- curl -s web-frontend | head
     ```
 
     The console output should show the start of an HTML page listing customers in an HTML table.

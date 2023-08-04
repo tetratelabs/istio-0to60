@@ -203,16 +203,10 @@ With Istio, this is done automatically by the Envoy sidecar.
 
 ### Observe how Envoy exposes a Prometheus scrape endpoint
 
-1. Capture the customers pod name to a variable.
-
-    ```{.shell .language-shell}
-    CUSTOMERS_POD=$(kubectl get pod -l app=customers -ojsonpath='{.items[0].metadata.name}')
-    ```
-
 1. Run the following command:
 
     ```{.shell .language-shell}
-    kubectl exec $CUSTOMERS_POD -- curl -s localhost:15020/stats/prometheus  | grep istio_requests
+    kubectl exec svc/customers -- curl -s localhost:15020/stats/prometheus  | grep istio_requests
     ```
 
     !!! info "Why port 15020?"

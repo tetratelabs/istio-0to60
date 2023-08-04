@@ -36,8 +36,7 @@ We can test whether a mesh workload, such as the customers service, will allow a
 1. Call the customer service from that pod:
 
     ```{.shell .language-shell}
-    SLEEP_POD=$(kubectl get pod -l app=sleep -n otherns -ojsonpath='{.items[0].metadata.name}')
-    kubectl exec -n otherns $SLEEP_POD -- curl -s customers.default
+    kubectl exec -n otherns deploy/sleep -- curl -s customers.default
     ```
 
 The output should look like a list of customers in JSON format.
@@ -69,7 +68,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 ### Verify that plain-text requests are no longer permitted
 
 ```{.shell .language-shell}
-kubectl exec -n otherns $SLEEP_POD -- curl customers.default
+kubectl exec -n otherns deploy/sleep -- curl customers.default
 ```
 
 The console output should indicate that the _connection was reset by peer_.
@@ -81,22 +80,16 @@ Another important layer of security is to define an authorization policy, in whi
 
 At the moment, any container can, for example, call the customers service or the web-frontend service.
 
-1. Capture the name of the sleep pod running in the default namespace
-
-    ```{.shell .language-shell}
-    SLEEP_POD=$(kubectl get pod -l app=sleep -ojsonpath='{.items[0].metadata.name}')
-    ```
-
 1. Call the `customers` service.
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -- curl -s customers
+    kubectl exec deploy/sleep -- curl -s customers
     ```
 
 1. Call the `web-frontend` service.
 
     ```{.shell .language-shell}
-    kubectl exec $SLEEP_POD -- curl -s web-frontend | head
+    kubectl exec deploy/sleep -- curl -s web-frontend | head
     ```
 
 Both calls succeed.
