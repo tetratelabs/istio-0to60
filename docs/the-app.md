@@ -4,11 +4,11 @@ In this lab you will deploy an application to your mesh.
 
 - The application consists of two microservices, `web-frontend` and `customers`.
 
-    ??? info
+    !!! note "Aside"
 
         The official Istio docs canonical example is the [BookInfo application](https://istio.io/latest/docs/examples/bookinfo/){target=_blank}.
 
-        For this workshop we felt that an application involving fewer microservices would be more clear.
+        For this workshop, we felt that an application involving fewer microservices would be more clear.
 
 - The `customers` service exposes a REST endpoint that returns a list of customers in JSON format.  The `web-frontend` calls `customers` to retrieve the list, which it uses to render to HTML.
 

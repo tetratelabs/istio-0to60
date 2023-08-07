@@ -22,7 +22,7 @@ In this lab you will install Istio.
 
 The `istioctl` CLI is located in the `bin/` subdirectory.
 
-!!! note
+!!! note ":material-console:{.gcp-blue} Workaround for the Google Cloud Shell"
 
     Cloud Shell only preserves files located inside your home directory across sessions.
 

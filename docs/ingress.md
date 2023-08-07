@@ -26,7 +26,7 @@ Assign it to an environment variable.
 GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-??? tip "A small investment"
+??? tip ":material-console:{.gcp-blue} A small investment"
 
     When the cloud shell connection is severed, or when opening a new terminal tab, `$GATEWAY_IP` will no longer be in scope.
 
@@ -39,6 +39,10 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
 
     EOF
     ```
+
+??? warning "When using K3D"
+
+    If you have opted to run Kubernetes directly on your local machine with K3D, use "localhost" in lieu of the cited Gateway IP address.
 
 In normal circumstances we associate this IP address with a hostname via DNS.
 For the sake of simplicity, in this workshop we will use the gateway public IP address directly.
