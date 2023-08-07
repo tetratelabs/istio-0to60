@@ -88,7 +88,7 @@ The container name is `istio-proxy` and the docker image is `istio/proxyv2`.
     ],
     ```
 
-    We learn that the name of the command is `pilot-agent`.
+    We learn that the name of the command is [`pilot-agent`](https://istio.io/latest/docs/reference/commands/pilot-agent/){target=_blank}.
 
 By extracting the arguments from the yaml, we can reconstitute the full command executed inside the sidecar container:
 
