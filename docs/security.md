@@ -6,51 +6,51 @@ In this lab we explore some of the security features of the Istio service mesh.
 
 By default, Istio is configured such that when a service is deployed onto the mesh, it will take advantage of mutual TLS:
 
-- the service is given an identity as a function of its associated service account and namespace
-- an x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services
+- Workloads are given an identity as a function of their associated service account and namespace.
+- An x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services.
 
 In the [observability](dashboards.md#kiali) lab, we looked at the Kiali dashboard and noted the lock icons indicating that traffic was secured with mTLS.
 
 ### Can a workload receive plain-text requests?
 
-We can test whether a mesh workload, such as the customers service, will allow a plain-text request as follows:
+We can test whether a mesh workload, such as the `customers` service, will allow a plain-text request as follows:
 
 1. Create a separate namespace that is not configured with automatic injection.
 
     ```{.shell .language-shell}
-    kubectl create ns otherns
+    kubectl create ns other-ns
     ```
 
 1. Deploy `sleep` to that namespace
 
     ```{.shell .language-shell}
-    kubectl apply -f sleep.yaml -n otherns
+    kubectl apply -f sleep.yaml -n other-ns
     ```
 
 1. Verify that the sleep pod has no sidecars:
 
     ```{.shell .language-shell}
-    kubectl get pod -n otherns
+    kubectl get pod -n other-ns
     ```
 
 1. Call the customer service from that pod:
 
     ```{.shell .language-shell}
-    kubectl exec -n otherns deploy/sleep -- curl -s customers.default
+    kubectl exec -n other-ns deploy/sleep -- curl -s customers.default
     ```
 
-The output should look like a list of customers in JSON format.
+The output is a JSON-formatted list of customers.
 
 We conclude that Istio is configured by default to allow plain-text request.
-This is called _permissive mode_ and is specifically designed to allow services that have not yet fully onboarded onto the mesh to participate.
+This is called _permissive mode_ and is specifically designed to allow services that have not yet fully on-boarded onto the mesh to participate.
 
 ### Enable strict mode
 
-Istio provides the `PeerAuthentication` custom resource to define peer authentication policy.
+Istio provides the `PeerAuthentication` custom resource to specify peer authentication policy.
 
-1. Apply the following peer authentication policy.
+1. Review the following policy.
 
-    ??? tldr "mtls-strict.yaml"
+    !!! tldr "mtls-strict.yaml"
         ```yaml linenums="1"
         --8<-- "mtls-strict.yaml"
         ```
@@ -58,6 +58,12 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
     !!! info
 
         Strict mtls can be enabled globally by setting the namespace to the name of the Istio root namespace, which by default is `istio-system`
+
+1. Apply the `PeerAuthentication` resource to the cluster.
+
+    ```{.shell .language-shell}
+    kubectl apply -f mtls-strict.yaml
+    ```
 
 1. Verify that the peer authentication has been applied.
 
@@ -68,7 +74,7 @@ Istio provides the `PeerAuthentication` custom resource to define peer authentic
 ### Verify that plain-text requests are no longer permitted
 
 ```{.shell .language-shell}
-kubectl exec -n otherns deploy/sleep -- curl customers.default
+kubectl exec -n other-ns deploy/sleep -- curl customers.default
 ```
 
 The console output should indicate that the _connection was reset by peer_.
@@ -105,7 +111,7 @@ Study the below authorization policy.
 
 - The `selector` section specifies that the policy applies to the `customers` service.
 - Note how the rules have a "from: source: " section indicating who is allowed in.
-- The nomenclature for the value of the `principals` field comes from the [spiffe](https://spiffe.io/docs/latest/spiffe-about/overview/){target=_blank} standard.  Note how it captures the service account name and namespace associated with the `web-frontend` service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.
+- The nomenclature for the value of the `principals` field comes from the [spiffe](https://spiffe.io/docs/latest/spiffe-about/overview/){target=_blank} standard.  Note how it captures the service account name and namespace associated with the `web-frontend` service.  This identity is associated with the x.509 certificate used by each service when making secure mtls calls to one another.
 
 Tasks:
 
@@ -143,4 +149,4 @@ Don't forget to verify that the policy is enforced.
 
 ## Next
 
-In the next lab we show how to use Istio's traffic management features to upgrade the customers service with zero downtime.
+In the next lab we show how to use Istio's traffic management features to upgrade the `customers` service with zero downtime.
