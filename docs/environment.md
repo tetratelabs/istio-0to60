@@ -2,7 +2,9 @@
 
 ## Options
 
-1. If you brought your own Kubernetes cluster:
+=== "BYO K8S"
+
+    If you brought your own Kubernetes cluster:
 
     - Istio version {{istio.version}} officially supports Kubernetes versions 1.24 - 1.27.  Feel free to consult the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for more information.
 
@@ -22,17 +24,23 @@
 
     - Feel free to provision a K8S cluster on any infrastructure of your choosing.
 
-1. If you received Google credentials from the workshop instructors:
+=== "GCP"
+
+    If you received Google credentials from the workshop instructors:
 
     - A Kubernetes cluster has already been provisioned for you.
     - Your instructor will demonstrate the process of accessing and configuring your environment, described below.
     - The instructions below explain in detail how to access your account, select your project, and launch the cloud shell.
 
-1. Killercoda:  If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from [here](https://killercoda.com/eitansuez/).
+=== "Killercoda"
+
+    If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from [here](https://killercoda.com/eitansuez/).
 
     If you choose this option, please disregard this page's remaining instructions.
 
-1. Local:  Yet another option is to run a Kubernetes cluster on your local machine using Minikube, Kind, or similar tooling.  This option entails minimum resource (cpu and memory) requirements *and* you will need to ensure that ingress to loadbalancer-type services functions.  Here is a recipe for creating a local Kubernetes cluster with [k3d](https://k3d.io/):
+=== "Local"
+
+    Yet another option is to run a Kubernetes cluster on your local machine using Minikube, Kind, or similar tooling.  This option entails minimum resource (cpu and memory) requirements *and* you will need to ensure that ingress to loadbalancer-type services functions.  Here is a recipe for creating a local Kubernetes cluster with [k3d](https://k3d.io/):
 
     ```shell
     k3d cluster create my-istio-cluster \
@@ -40,6 +48,7 @@
         --k3s-arg "--disable=traefik@server:0" \
         --port 80:80@loadbalancer
     ```
+
 
 Be sure to:
 
