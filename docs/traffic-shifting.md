@@ -205,4 +205,6 @@ Within a minute or so, the Kiali dashboard should also reflect the fact that all
 
 Though it no longer receives any traffic, we decide to leave v1 running a while longer before retiring it.
 
-If you wish to go further, investigate [Flagger](https://flagger.app/){target=_blank}, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  [Here](https://github.com/eitansuez/istio-flagger) is an exploration of Flagger with Istio and its `bookinfo` sample application.
+## Going further
+
+Investigate [Flagger](https://flagger.app/){target=_blank}, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  [Here](https://github.com/eitansuez/istio-flagger) is an exploration of Flagger with Istio and its `bookinfo` sample application.
