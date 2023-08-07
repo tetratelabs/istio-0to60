@@ -10,7 +10,7 @@ Let's summarize.  You have:
 - [x] Deployed an application
 - [x] Exposed the application to the internet (Ingress)
 - [x] Deployed and studied observability addons including Kiali, Zipkin, Prometheus, and Grafana
-- [x] Studied facets of service mesh security including mutual tls and authorization policies
+- [x] Studied facets of service mesh security including mutual TLS and authorization policies
 - [x] Performed a traffic shifting exercise
 
 Istio has many more features whose scope is beyond the 0 to 60 workshop, including but not limited to:

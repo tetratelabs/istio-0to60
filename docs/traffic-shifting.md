@@ -19,7 +19,7 @@ Verify this with:
 kubectl get pod -Lapp,version
 ```
 
-Note the selector on the customers service:
+Note the selector on the `customers` service in the output to the following command:
 
 ```{.shell .language-shell}
 kubectl get svc customers -o wide
@@ -74,9 +74,17 @@ Apply the following Kubernetes deployment to the cluster.
 
 1. Generate some traffic.
 
-    ```{.shell .language-shell}
-    siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
-    ```
+    === "With siege"
+
+        ```{.shell .language-shell}
+        siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
+        ```
+
+    === "With bash"
+
+        ```{.shell .language-shell}
+        while true; do curl -I http://$GATEWAY_IP/; sleep 0.5; done
+        ```
 
 1. Open a separate terminal and launch the Kiali dashboard
 
@@ -102,7 +110,7 @@ Review this proposed updated routing specification.
 
 We are telling Istio to check an HTTP header:  if the `user-agent` is set to `debug`, route to v2, otherwise route to v1.
 
-Open a new terminal and apply the above resource to the cluster; it will overwrite the currently defined virtualservice as both yamls use the same resource name.
+Open a new terminal and apply the above resource to the cluster; it will overwrite the currently defined VirtualService as both yaml files use the same resource name.
 
 ```{.shell .language-shell}
 kubectl apply -f customers-vs-debug.yaml
@@ -120,19 +128,35 @@ Open a browser and visit the application.
 
 We can tell v1 and v2 apart in that v2 displays not only customer names but also their city (in two columns).
 
-If you're using Chrome or Firefox, you can customize the `user-agent` header as follows:
+The `user-agent` header can be included in a request in a number of ways:
 
-1. Open the browser's developer tools
-2. Open the "three dots" menu, and select _More tools --> Network conditions_
-3. The network conditions panel will open
-4. Under _User agent_, uncheck _Use browser default_
-5. Select _Custom..._ and in the text field enter `debug`
+=== "Developer Tools"
 
-Refresh the page; traffic should be directed to v2.
+    If you're using Chrome or Firefox, you can customize the `user-agent` header as follows:
+
+    1. Open the browser's developer tools
+    2. Open the "three dots" menu, and select _More tools --> Network conditions_
+    3. The network conditions panel will open
+    4. Under _User agent_, uncheck _Use browser default_
+    5. Select _Custom..._ and in the text field enter `debug`
+
+    Refresh the page; traffic should be directed to v2.
+
+=== "`curl`"
+
+    ```{.shell .language-shell}
+    curl -H "user-agent: debug" http://$GATEWAY_IP
+    ```
+
+=== "Using a custom browser extension"
+
+    Check out [modheader](https://modheader.com/){target=_blank}, a convenient browser extension for modifying HTTP headers in-browser.
+
 
 !!! tip
 
-    If you refresh the page a good dozen times and then wait ~15-30 seconds, you should see some of that v2 traffic in Kiali.
+    If you refresh the page a good dozen times and then wait ~15-30 seconds, you should see some of that v2 traffic appear in Kiali.
+
 
 ## Canary
 
@@ -144,17 +168,20 @@ Start by siphoning 10% of traffic over to v2.
 --8<-- "customers-vs-canary.yaml"
 ```
 
-Above, note the `weight` field specifying 10 percent of traffic to v2.
+Above, note the `weight` field specifying 10 percent of traffic to subset `v2`.
 Kiali should now show traffic going to both v1 and v2.
 
 - Apply the above resource.
-- In your browser:  undo the user agent customization and refresh the page a bunch of times.
+- In your browser:  undo the injection of the `user-agent` header, and refresh the page a bunch of times.
 
-Most of the requests still go to v1, but some are directed to v2.
+In Kiali, under the _Display_ pulldown menu, you can turn on traffic distribution, to see how much traffic is sent to each subset.
+
+Most of the requests still go to v1, but some (10%) are directed to v2.
+
 
 ## Check Grafana
 
-Before we open the floodgates, we wish to determine how v2 is fairing.
+Before we open the floodgates, we wish to determine how v2 is faring.
 
 ```{.shell .language-shell}
 istioctl dashboard grafana
@@ -177,3 +204,5 @@ After you apply the above yaml, go to your browser and make sure all requests la
 Within a minute or so, the Kiali dashboard should also reflect the fact that all traffic is going to the customers v2 service.
 
 Though it no longer receives any traffic, we decide to leave v1 running a while longer before retiring it.
+
+If you wish to go further, investigate [Flagger](https://flagger.app/){target=_blank}, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  [Here](https://github.com/eitansuez/istio-flagger) is an exploration of Flagger with Istio and its `bookinfo` sample application.
