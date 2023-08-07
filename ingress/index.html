@@ -582,7 +582,7 @@
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl get svc -n istio-system istio-ingressgateway -ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
 </code></pre></div>
 <details class="tip">
-<summary>A small investment</summary>
+<summary><span class="twemoji gcp-blue"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 19V7H4v12h16m0-16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16m-7 14v-2h5v2h-5m-3.42-4L5.57 9H8.4l3.3 3.3c.39.39.39 1.03 0 1.42L8.42 17H5.59l3.99-4Z"/></svg></span> A small investment</summary>
 <p>When the cloud shell connection is severed, or when opening a new terminal tab, <code>$GATEWAY_IP</code> will no longer be in scope.</p>
 <p>Ensure <code>GATEWAY_IP</code> is set each time we start a new shell:</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cat <span class="s">&lt;&lt; EOF &gt;&gt; ~/.bashrc</span>
@@ -591,6 +591,10 @@
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">EOF</span>
 </code></pre></div>
+</details>
+<details class="warning">
+<summary>When using K3D</summary>
+<p>If you have opted to run Kubernetes directly on your local machine with K3D, use "localhost" in lieu of the cited Gateway IP address.</p>
 </details>
 <p>In normal circumstances we associate this IP address with a hostname via DNS.
 For the sake of simplicity, in this workshop we will use the gateway public IP address directly.</p>
