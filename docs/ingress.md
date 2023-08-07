@@ -4,7 +4,7 @@ The objective of this lab is to expose the `web-frontend` service to the interne
 
 ## The Ingress gateway
 
-When you installed Istio, in addition to deploying istiod to Kubernetes, the installation also provisioned an Ingress Gateway.
+When you installed Istio, in addition to deploying `istiod` to Kubernetes, the installation also provisioned an Ingress Gateway.
 
 View the corresponding Istio ingress gateway pod in the `istio-system` namespace.
 
