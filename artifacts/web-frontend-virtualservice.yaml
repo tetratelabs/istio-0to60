@@ -5,12 +5,12 @@ metadata:
   name: web-frontend
 spec:
   hosts:
-    - "*"
+  - "*"
   gateways:
-    - frontend-gateway
+  - frontend-gateway
   http:
-    - route:
-        - destination:
-            host: web-frontend.default.svc.cluster.local
-            port:
-              number: 80
+  - route:
+    - destination:
+        host: web-frontend.default.svc.cluster.local
+        port:
+          number: 80
