@@ -612,44 +612,44 @@
 <h2 id="mutual-tls">Mutual TLS<a class="headerlink" href="#mutual-tls" title="Permanent link">&para;</a></h2>
 <p>By default, Istio is configured such that when a service is deployed onto the mesh, it will take advantage of mutual TLS:</p>
 <ul>
-<li>the service is given an identity as a function of its associated service account and namespace</li>
-<li>an x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services</li>
+<li>Workloads are given an identity as a function of their associated service account and namespace.</li>
+<li>An x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services.</li>
 </ul>
 <p>In the <a href="../dashboards/#kiali">observability</a> lab, we looked at the Kiali dashboard and noted the lock icons indicating that traffic was secured with mTLS.</p>
 <h3 id="can-a-workload-receive-plain-text-requests">Can a workload receive plain-text requests?<a class="headerlink" href="#can-a-workload-receive-plain-text-requests" title="Permanent link">&para;</a></h3>
-<p>We can test whether a mesh workload, such as the customers service, will allow a plain-text request as follows:</p>
+<p>We can test whether a mesh workload, such as the <code>customers</code> service, will allow a plain-text request as follows:</p>
 <ol>
 <li>
 <p>Create a separate namespace that is not configured with automatic injection.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl create ns otherns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl create ns other-ns
 </code></pre></div>
 </li>
 <li>
 <p>Deploy <code>sleep</code> to that namespace</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl apply -f sleep.yaml -n otherns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl apply -f sleep.yaml -n other-ns
 </code></pre></div>
 </li>
 <li>
 <p>Verify that the sleep pod has no sidecars:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get pod -n otherns
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get pod -n other-ns
 </code></pre></div>
 </li>
 <li>
 <p>Call the customer service from that pod:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl <span class="nb">exec</span> -n otherns deploy/sleep -- curl -s customers.default
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl <span class="nb">exec</span> -n other-ns deploy/sleep -- curl -s customers.default
 </code></pre></div>
 </li>
 </ol>
-<p>The output should look like a list of customers in JSON format.</p>
+<p>The output is a JSON-formatted list of customers.</p>
 <p>We conclude that Istio is configured by default to allow plain-text request.
-This is called <em>permissive mode</em> and is specifically designed to allow services that have not yet fully onboarded onto the mesh to participate.</p>
+This is called <em>permissive mode</em> and is specifically designed to allow services that have not yet fully on-boarded onto the mesh to participate.</p>
 <h3 id="enable-strict-mode">Enable strict mode<a class="headerlink" href="#enable-strict-mode" title="Permanent link">&para;</a></h3>
-<p>Istio provides the <code>PeerAuthentication</code> custom resource to define peer authentication policy.</p>
+<p>Istio provides the <code>PeerAuthentication</code> custom resource to specify peer authentication policy.</p>
 <ol>
 <li>
-<p>Apply the following peer authentication policy.</p>
-<details class="tldr">
-<summary>mtls-strict.yaml</summary>
+<p>Review the following policy.</p>
+<div class="admonition tldr">
+<p class="admonition-title">mtls-strict.yaml</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
 <span class="normal"><a href="#__codelineno-4-2">2</a></span>
 <span class="normal"><a href="#__codelineno-4-3">3</a></span>
@@ -668,20 +668,25 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">  </span><span class="nt">mtls</span><span class="p">:</span><span class="w"></span>
 <a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STRICT</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
-</details>
+</div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>Strict mtls can be enabled globally by setting the namespace to the name of the Istio root namespace, which by default is <code>istio-system</code></p>
 </div>
 </li>
 <li>
+<p>Apply the <code>PeerAuthentication</code> resource to the cluster.</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl apply -f mtls-strict.yaml
+</code></pre></div>
+</li>
+<li>
 <p>Verify that the peer authentication has been applied.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl get peerauthentication
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl get peerauthentication
 </code></pre></div>
 </li>
 </ol>
 <h3 id="verify-that-plain-text-requests-are-no-longer-permitted">Verify that plain-text requests are no longer permitted<a class="headerlink" href="#verify-that-plain-text-requests-are-no-longer-permitted" title="Permanent link">&para;</a></h3>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl <span class="nb">exec</span> -n otherns deploy/sleep -- curl customers.default
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl <span class="nb">exec</span> -n other-ns deploy/sleep -- curl customers.default
 </code></pre></div>
 <p>The console output should indicate that the <em>connection was reset by peer</em>.</p>
 <h2 id="security-in-depth">Security in depth<a class="headerlink" href="#security-in-depth" title="Permanent link">&para;</a></h2>
@@ -690,12 +695,12 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <ol>
 <li>
 <p>Call the <code>customers</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl <span class="nb">exec</span> deploy/sleep -- curl -s customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl <span class="nb">exec</span> deploy/sleep -- curl -s customers
 </code></pre></div>
 </li>
 <li>
 <p>Call the <code>web-frontend</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl <span class="nb">exec</span> deploy/sleep -- curl -s web-frontend <span class="p">|</span> head
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl <span class="nb">exec</span> deploy/sleep -- curl -s web-frontend <span class="p">|</span> head
 </code></pre></div>
 </li>
 </ol>
@@ -704,41 +709,41 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <p>Study the below authorization policy.</p>
 <div class="admonition tldr">
 <p class="admonition-title">authz-policy-customers.yaml</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-9-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-9-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-9-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-9-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-9-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-9-10">10</a></span>
-<span class="normal"><a href="#__codelineno-9-11">11</a></span>
-<span class="normal"><a href="#__codelineno-9-12">12</a></span>
-<span class="normal"><a href="#__codelineno-9-13">13</a></span>
-<span class="normal"><a href="#__codelineno-9-14">14</a></span>
-<span class="normal"><a href="#__codelineno-9-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nn">---</span><span class="w"></span>
-<a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security.istio.io/v1beta1</span><span class="w"></span>
-<a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AuthorizationPolicy</span><span class="w"></span>
-<a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">allowed-customers-clients</span><span class="w"></span>
-<a id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
-<a id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
-<a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">  </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALLOW</span><span class="w"></span>
-<a id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">source</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w">        </span><span class="nt">principals</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;cluster.local/ns/default/sa/web-frontend&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-10-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-10-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-10-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-10-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-10-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-10-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-10-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-10-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-10-10">10</a></span>
+<span class="normal"><a href="#__codelineno-10-11">11</a></span>
+<span class="normal"><a href="#__codelineno-10-12">12</a></span>
+<span class="normal"><a href="#__codelineno-10-13">13</a></span>
+<span class="normal"><a href="#__codelineno-10-14">14</a></span>
+<span class="normal"><a href="#__codelineno-10-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security.istio.io/v1beta1</span><span class="w"></span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AuthorizationPolicy</span><span class="w"></span>
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">allowed-customers-clients</span><span class="w"></span>
+<a id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<a id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span><span class="w"></span>
+<a id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w">  </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALLOW</span><span class="w"></span>
+<a id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">source</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="w">        </span><span class="nt">principals</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;cluster.local/ns/default/sa/web-frontend&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
 </div>
 <ul>
 <li>The <code>selector</code> section specifies that the policy applies to the <code>customers</code> service.</li>
 <li>Note how the rules have a "from: source: " section indicating who is allowed in.</li>
-<li>The nomenclature for the value of the <code>principals</code> field comes from the <a href="https://spiffe.io/docs/latest/spiffe-about/overview/" target="_blank">spiffe</a> standard.  Note how it captures the service account name and namespace associated with the <code>web-frontend</code> service.  This identify is associated with the x.509 certificate used by each service when making secure mtls calls to one another.</li>
+<li>The nomenclature for the value of the <code>principals</code> field comes from the <a href="https://spiffe.io/docs/latest/spiffe-about/overview/" target="_blank">spiffe</a> standard.  Note how it captures the service account name and namespace associated with the <code>web-frontend</code> service.  This identity is associated with the x.509 certificate used by each service when making secure mtls calls to one another.</li>
 </ul>
 <p>Tasks:</p>
 <ul class="task-list">
@@ -757,7 +762,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <p class="admonition-title">Hint</p>
 <p>The ingress gateway has its own identity.</p>
 <p>Here is a command which can help you find the name of the service account associated with its identity:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl get pod -n istio-system -l <span class="nv">app</span><span class="o">=</span>istio-ingressgateway -o yaml <span class="p">|</span> grep serviceAccountName
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl get pod -n istio-system -l <span class="nv">app</span><span class="o">=</span>istio-ingressgateway -o yaml <span class="p">|</span> grep serviceAccountName
 </code></pre></div>
 <p>Use this service account name together with the namespace that the ingress gateway is running in to specify the value for the <code>principals</code> field.</p>
 </div>
@@ -768,7 +773,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <li>The console output should contain the message <em>RBAC: access denied</em>.</li>
 </ul>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
-<p>In the next lab we show how to use Istio's traffic management features to upgrade the customers service with zero downtime.</p>
+<p>In the next lab we show how to use Istio's traffic management features to upgrade the <code>customers</code> service with zero downtime.</p>
 
 
 
