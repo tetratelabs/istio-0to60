@@ -717,7 +717,7 @@
 
 <h1 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h1>
 <p>This lab explores one of the main strengths of Istio: observability.</p>
-<p>The services in our mesh are automatically observable, without adding any burden on developers.</p>
+<p>The services in our mesh are automatically made observable, without adding any burden on devops teams.</p>
 <h2 id="deploy-the-addons">Deploy the Addons<a class="headerlink" href="#deploy-the-addons" title="Permanent link">&para;</a></h2>
 <p>The Istio distribution provides addons for a number of systems that together provide observability for the service mesh:</p>
 <ul>
@@ -735,11 +735,11 @@
 </li>
 <li>
 <p>Deploy each addon:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl apply -f extras/zipkin.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl apply -f prometheus.yaml
 </code></pre></div>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl apply -f prometheus.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl apply -f grafana.yaml
 </code></pre></div>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl apply -f grafana.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl apply -f extras/zipkin.yaml
 </code></pre></div>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl apply -f kiali.yaml
 </code></pre></div>
@@ -761,10 +761,10 @@
 <p>We normally install <code>siege</code> with the <code>apt-get</code> package manager.
 However, given the cloud shell's ephemeral nature, anything installed outside our home directory will vanish after a session timeout.</p>
 <p>Alternatives:</p>
-<ol>
-<li>Install from source. It's a little more work, but does not exhibit the above-mentioned problem.</li>
-<li>Run the load generator from your laptop.  On a mac, using homebrew the command is <code>brew install siege</code>.</li>
-</ol>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Install from source</label><label for="__tabbed_1_2">Run the load generator locally</label><label for="__tabbed_1_3">Use a bash command instead</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Install from source. It's a little more work, but does not exhibit the above-mentioned problem.</p>
 <p>Here are the steps to install from source:</p>
 <ol>
 <li>
@@ -797,12 +797,23 @@ However, given the cloud shell's ephemeral nature, anything installed outside ou
 </li>
 </ol>
 <p>Feel free to delete (or preserve) the downloaded tar file and source code.</p>
+</div>
+<div class="tabbed-block">
+<p>Run the load generator from your laptop.  On a mac, using homebrew the command is <code>brew install siege</code>.</p>
+</div>
+<div class="tabbed-block">
+<p>Instead of <code>siege</code> use a simple bash <code>while</code> loop to make repeated <code>curl</code> requests to the app:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">while</span> true<span class="p">;</span> <span class="k">do</span> curl -I http://<span class="nv">$GATEWAY_IP</span><span class="p">;</span> sleep <span class="m">0</span>.5<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h3 id="generate-a-load_1">Generate a load<a class="headerlink" href="#generate-a-load_1" title="Permanent link">&para;</a></h3>
 <p>With <code>siege</code> now installed, familiarize yourself with the command and its options.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>siege --help
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>siege --help
 </code></pre></div>
 <p>Run the following command to generate a mild load against the application.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -811,7 +822,7 @@ It may be simplest to leave it running, and open a separate terminal in your clo
 </div>
 <h2 id="kiali">Kiali<a class="headerlink" href="#kiali" title="Permanent link">&para;</a></h2>
 <p>Launch the Kiali dashboard:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>istioctl dashboard kiali
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>istioctl dashboard kiali
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -821,7 +832,7 @@ It may be simplest to leave it running, and open a separate terminal in your clo
 <p class="admonition-title">Note</p>
 <p>The <code>istioctl dashboard</code> command also blocks.
 Leave it running until you're finished using the dashboard, at which time 
-pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span> can interrupt the process and put you back at the terminal prompt.</p>
+press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span> to interrupt the process and get back to the terminal prompt.</p>
 </div>
 <p>The Kiali dashboard displays.</p>
 <p>Customize the view as follows:</p>
@@ -834,9 +845,9 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </ol>
 <p>Observe the visualization and note the following:</p>
 <ul>
-<li>We can see traffic coming in through the ingress gateway to the <code>web-frontend</code>, and the subsequent calls from the <code>web-frontend</code> to the <code>customers</code> service</li>
-<li>The lines connecting the services are green, indicating healthy requests</li>
-<li>The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS</li>
+<li>We can see traffic coming in through the ingress gateway to the <code>web-frontend</code>, and the subsequent calls from the <code>web-frontend</code> to the <code>customers</code> service.</li>
+<li>The lines connecting the services are green, indicating healthy requests.</li>
+<li>The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS.</li>
 </ul>
 <p>Such visualizations are helpful with understanding the flow of requests in the mesh, and with diagnosis.</p>
 <p>Feel free to spend more time exploring Kiali.</p>
@@ -845,12 +856,12 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <p>Close the Kiali dashboard.  Interrupt the <code>istioctl dashboard kiali</code> command by pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
 <h2 id="zipkin">Zipkin<a class="headerlink" href="#zipkin" title="Permanent link">&para;</a></h2>
 <p>Launch the Zipkin dashboard:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>istioctl dashboard zipkin
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>istioctl dashboard zipkin
 </code></pre></div>
 <p>The Zipkin dashboard displays.</p>
 <ul>
 <li>Click on the red '+' button and select <em>serviceName</em>.</li>
-<li>Select the service named <code>web-frontend.default</code> and click on the <em>Run Query</em> button (lightblue) to the right.</li>
+<li>Select the service named <code>web-frontend.default</code> and click on the <em>Run Query</em> button (lightblue) on the right.</li>
 </ul>
 <p>A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.</p>
 <ul>
@@ -867,7 +878,8 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <ol>
 <li>
 <p>Run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus  <span class="p">|</span> grep istio_requests
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus <span class="se">\</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  <span class="p">|</span> grep istio_requests
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why port 15020?</p>
@@ -880,7 +892,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <ol>
 <li>
 <p>Start the prometheus dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>istioctl dashboard prometheus
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>istioctl dashboard prometheus
 </code></pre></div>
 </li>
 <li>
@@ -892,12 +904,12 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 </li>
 <li>
 <p>As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>istio_requests_total{response_code=&quot;200&quot;}
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>istio_requests_total{response_code=&quot;200&quot;}
 </code></pre></div>
 </li>
 <li>
 <p>With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>rate(istio_requests_total[5m])
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>rate(istio_requests_total[5m])
 </code></pre></div>
 </li>
 </ol>
@@ -910,7 +922,7 @@ pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kb
 <ol>
 <li>
 <p>Launch the Grafana dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>istioctl dashboard grafana
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>istioctl dashboard grafana
 </code></pre></div>
 </li>
 <li>
