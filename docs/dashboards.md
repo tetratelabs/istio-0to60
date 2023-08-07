@@ -2,7 +2,7 @@
 
 This lab explores one of the main strengths of Istio: observability.
 
-The services in our mesh are automatically observable, without adding any burden on developers.
+The services in our mesh are automatically made observable, without adding any burden on devops teams.
 
 ## Deploy the Addons
 
@@ -24,15 +24,15 @@ These addons are located in the `samples/addons/` folder of the distribution.
 1. Deploy each addon:
 
     ```{.shell .language-shell}
-    kubectl apply -f extras/zipkin.yaml
-    ```
-
-    ```{.shell .language-shell}
     kubectl apply -f prometheus.yaml
     ```
 
     ```{.shell .language-shell}
     kubectl apply -f grafana.yaml
+    ```
+
+    ```{.shell .language-shell}
+    kubectl apply -f extras/zipkin.yaml
     ```
 
     ```{.shell .language-shell}
@@ -66,44 +66,59 @@ However, given the cloud shell's ephemeral nature, anything installed outside ou
 
 Alternatives:
 
-1. Install from source. It's a little more work, but does not exhibit the above-mentioned problem.
-1. Run the load generator from your laptop.  On a mac, using homebrew the command is `brew install siege`.
+=== "Install from source"
 
-Here are the steps to install from source:
+    Install from source. It's a little more work, but does not exhibit the above-mentioned problem.
 
-1. Fetch the package
+    Here are the steps to install from source:
+
+    1. Fetch the package
+
+        ```{.shell .language-shell}
+        wget http://download.joedog.org/siege/siege-latest.tar.gz
+        ```
+
+    1. Unpack it
+
+        ```{.shell .language-shell}
+        tar -xzf siege-latest.tar.gz
+        ```
+
+    1. Navigate into the siege subdirectory with `cd siege`++tab++
+
+    1. Run the `configure` script, and request that siege get installed inside your home directory
+
+        ```{.shell .language-shell}
+        ./configure --prefix=$HOME
+        ```
+
+    1. Build the code
+
+        ```{.shell .language-shell}
+        make
+        ```
+
+    1. Finally, install (copies the binary to `~/bin`)
+
+        ```{.shell .language-shell}
+        make install
+        ```
+
+    Feel free to delete (or preserve) the downloaded tar file and source code.
+
+=== "Run the load generator locally"
+
+    Run the load generator from your laptop.  On a mac, using homebrew the command is `brew install siege`.
+
+=== "Use a bash command instead"
+
+
+    Instead of `siege` use a simple bash `while` loop to make repeated `curl` requests to the app:
 
     ```{.shell .language-shell}
-    wget http://download.joedog.org/siege/siege-latest.tar.gz
+    while true; do curl -I http://$GATEWAY_IP; sleep 0.5; done
     ```
 
-1. Unpack it
-
-    ```{.shell .language-shell}
-    tar -xzf siege-latest.tar.gz
-    ```
-
-1. Navigate into the siege subdirectory with `cd siege`++tab++
-
-1. Run the `configure` script, and request that siege get installed inside your home directory
-
-    ```{.shell .language-shell}
-    ./configure --prefix=$HOME
-    ```
-
-1. Build the code
-
-    ```{.shell .language-shell}
-    make
-    ```
-
-1. Finally, install (copies the binary to `~/bin`)
-
-    ```{.shell .language-shell}
-    make install
-    ```
-
-Feel free to delete (or preserve) the downloaded tar file and source code.
 
 ### Generate a load
 
@@ -140,7 +155,7 @@ istioctl dashboard kiali
 
     The `istioctl dashboard` command also blocks.
     Leave it running until you're finished using the dashboard, at which time 
-    pressing ++ctrl+c++ can interrupt the process and put you back at the terminal prompt.
+    press ++ctrl+c++ to interrupt the process and get back to the terminal prompt.
 
 The Kiali dashboard displays.
 
@@ -154,9 +169,9 @@ Customize the view as follows:
 
 Observe the visualization and note the following:
 
-- We can see traffic coming in through the ingress gateway to the `web-frontend`, and the subsequent calls from the `web-frontend` to the `customers` service
-- The lines connecting the services are green, indicating healthy requests
-- The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS
+- We can see traffic coming in through the ingress gateway to the `web-frontend`, and the subsequent calls from the `web-frontend` to the `customers` service.
+- The lines connecting the services are green, indicating healthy requests.
+- The small lock icon on each edge in the graph indicates that the traffic is secured with mutual TLS.
 
 Such visualizations are helpful with understanding the flow of requests in the mesh, and with diagnosis.
 
@@ -180,7 +195,7 @@ istioctl dashboard zipkin
 The Zipkin dashboard displays.
 
 - Click on the red '+' button and select _serviceName_.
-- Select the service named `web-frontend.default` and click on the _Run Query_ button (lightblue) to the right.
+- Select the service named `web-frontend.default` and click on the _Run Query_ button (lightblue) on the right.
 
 A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.
 
@@ -206,7 +221,8 @@ With Istio, this is done automatically by the Envoy sidecar.
 1. Run the following command:
 
     ```{.shell .language-shell}
-    kubectl exec svc/customers -- curl -s localhost:15020/stats/prometheus  | grep istio_requests
+    kubectl exec svc/customers -- curl -s localhost:15020/stats/prometheus \
+      | grep istio_requests
     ```
 
     !!! info "Why port 15020?"
