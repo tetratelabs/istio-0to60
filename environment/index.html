@@ -571,8 +571,9 @@
 
 <h1 id="lab-environment">Lab environment<a class="headerlink" href="#lab-environment" title="Permanent link">&para;</a></h1>
 <h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">BYO K8S</label><label for="__tabbed_1_2">GCP</label><label for="__tabbed_1_3">Killercoda</label><label for="__tabbed_1_4">Local</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <p>If you brought your own Kubernetes cluster:</p>
 <ul>
 <li>
@@ -597,28 +598,29 @@
 <p>Feel free to provision a K8S cluster on any infrastructure of your choosing.</p>
 </li>
 </ul>
-</li>
-<li>
+</div>
+<div class="tabbed-block">
 <p>If you received Google credentials from the workshop instructors:</p>
 <ul>
 <li>A Kubernetes cluster has already been provisioned for you.</li>
 <li>Your instructor will demonstrate the process of accessing and configuring your environment, described below.</li>
 <li>The instructions below explain in detail how to access your account, select your project, and launch the cloud shell.</li>
 </ul>
-</li>
-<li>
-<p>Killercoda:  If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from <a href="https://killercoda.com/eitansuez/">here</a>.</p>
+</div>
+<div class="tabbed-block">
+<p>If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from <a href="https://killercoda.com/eitansuez/">here</a>.</p>
 <p>If you choose this option, please disregard this page's remaining instructions.</p>
-</li>
-<li>
-<p>Local:  Yet another option is to run a Kubernetes cluster on your local machine using Minikube, Kind, or similar tooling.  This option entails minimum resource (cpu and memory) requirements <em>and</em> you will need to ensure that ingress to loadbalancer-type services functions.  Here is a recipe for creating a local Kubernetes cluster with <a href="https://k3d.io/">k3d</a>:</p>
+</div>
+<div class="tabbed-block">
+<p>Yet another option is to run a Kubernetes cluster on your local machine using Minikube, Kind, or similar tooling.  This option entails minimum resource (cpu and memory) requirements <em>and</em> you will need to ensure that ingress to loadbalancer-type services functions.  Here is a recipe for creating a local Kubernetes cluster with <a href="https://k3d.io/">k3d</a>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>k3d cluster create my-istio-cluster <span class="se">\</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    --api-port <span class="m">6443</span> <span class="se">\</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    --k3s-arg <span class="s2">&quot;--disable=traefik@server:0&quot;</span> <span class="se">\</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    --port <span class="m">80</span>:80@loadbalancer
 </code></pre></div>
-</li>
-</ol>
+</div>
+</div>
+</div>
 <p>Be sure to:</p>
 <ul>
 <li>Configure your <code>kubeconfig</code> file to point to your cluster.</li>
@@ -666,7 +668,7 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 </li>
 <li>
 <p>Generate a kubeconfig entry</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">With the user interface</label><label for="__tabbed_1_2">From the command line</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">With the user interface</label><label for="__tabbed_2_2">From the command line</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ol>
