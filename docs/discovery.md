@@ -1,4 +1,4 @@
-# Service discovery, load balancing, and routing
+# Service discovery and load balancing
 
 This lab explores service discovery and load balancing in Istio.
 
@@ -119,11 +119,11 @@ istioctl proxy-config cluster deploy/sleep \
   --fqdn helloworld.default.svc.cluster.local -o yaml | grep lbPolicy
 ```
 
-## Routing
+## Traffic distribution
 
 We can go a step further and control how much traffic to send to version v1 and how much to v2.
 
-First we define the two subsets, v1 and v2:
+First, define the two subsets, v1 and v2:
 
 ```yaml linenums="1" title="helloworld-dr.yaml"
 --8<-- "discovery/helloworld-dr.yaml"
@@ -138,7 +138,8 @@ kubectl apply -f helloworld-dr.yaml
 If we now inspect the list of clusters, note that there's one for each subset:
 
 ```shell
-istioctl proxy-config cluster deploy/sleep --fqdn helloworld.default.svc.cluster.local
+istioctl proxy-config cluster deploy/sleep \
+  --fqdn helloworld.default.svc.cluster.local
 ```
 
 With the subsets defined, we turn our attention to the routing specification.  We use a [VirtualService](https://istio.io/latest/docs/reference/config/networking/virtual-service/), in this case to direct 25% of traffic to v1 and 75% to v2:
