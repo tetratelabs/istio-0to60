@@ -366,26 +366,6 @@
     Generate a load
   </a>
   
-    <nav class="md-nav" aria-label="Generate a load">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-a-load-generator" class="md-nav__link">
-    Install a load generator
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generate-a-load_1" class="md-nav__link">
-    Generate a load
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -582,26 +562,6 @@
     Generate a load
   </a>
   
-    <nav class="md-nav" aria-label="Generate a load">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-a-load-generator" class="md-nav__link">
-    Install a load generator
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generate-a-load_1" class="md-nav__link">
-    Generate a load
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -753,73 +713,14 @@
 </code></pre></div>
 <h2 id="generate-a-load">Generate a load<a class="headerlink" href="#generate-a-load" title="Permanent link">&para;</a></h2>
 <p>In order to have something to observe, we need to generate a load on our system.</p>
-<h3 id="install-a-load-generator">Install a load generator<a class="headerlink" href="#install-a-load-generator" title="Permanent link">&para;</a></h3>
-<p>Install a simple load generating tool named <a href="https://github.com/JoeDog/siege" target="_blank"><code>siege</code></a>.</p>
-<p>We normally install <code>siege</code> with the <code>apt-get</code> package manager.
-However, given the cloud shell's ephemeral nature, anything installed outside our home directory will vanish after a session timeout.</p>
-<p>Alternatives:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Install from source</label><label for="__tabbed_1_2">Run the load generator locally</label><label for="__tabbed_1_3">Use a bash command instead</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>Install from source. It's a little more work, but does not exhibit the above-mentioned problem.</p>
-<p>Here are the steps to install from source:</p>
-<ol>
-<li>
-<p>Fetch the package</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>wget http://download.joedog.org/siege/siege-latest.tar.gz
+<p>Use a simple bash <code>while</code> loop to make repeated <code>curl</code> requests to the app:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">while</span> true<span class="p">;</span> <span class="k">do</span> curl -I http://<span class="nv">$GATEWAY_IP</span><span class="p">;</span> sleep <span class="m">0</span>.5<span class="p">;</span> <span class="k">done</span>
 </code></pre></div>
-</li>
-<li>
-<p>Unpack it</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>tar -xzf siege-latest.tar.gz
-</code></pre></div>
-</li>
-<li>
-<p>Navigate into the siege subdirectory with <code>cd siege</code><span class="keys"><kbd class="key-tab">Tab</kbd></span></p>
-</li>
-<li>
-<p>Run the <code>configure</code> script, and request that siege get installed inside your home directory</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>
-</code></pre></div>
-</li>
-<li>
-<p>Build the code</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>make
-</code></pre></div>
-</li>
-<li>
-<p>Finally, install (copies the binary to <code>~/bin</code>)</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>make install
-</code></pre></div>
-</li>
-</ol>
-<p>Feel free to delete (or preserve) the downloaded tar file and source code.</p>
-</div>
-<div class="tabbed-block">
-<p>Run the load generator from your laptop.  On a mac, using homebrew the command is <code>brew install siege</code>.</p>
-</div>
-<div class="tabbed-block">
-<p>Instead of <code>siege</code> use a simple bash <code>while</code> loop to make repeated <code>curl</code> requests to the app:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">while</span> true<span class="p">;</span> <span class="k">do</span> curl -I http://<span class="nv">$GATEWAY_IP</span><span class="p">;</span> sleep <span class="m">0</span>.5<span class="p">;</span> <span class="k">done</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="generate-a-load_1">Generate a load<a class="headerlink" href="#generate-a-load_1" title="Permanent link">&para;</a></h3>
-<p>With <code>siege</code> now installed, familiarize yourself with the command and its options.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>siege --help
-</code></pre></div>
-<p>Run the following command to generate a mild load against the application.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>siege --delay<span class="o">=</span><span class="m">3</span> --concurrent<span class="o">=</span><span class="m">3</span> --time<span class="o">=</span>20M http://<span class="nv">$GATEWAY_IP</span>/
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code>siege</code> command stays in the foreground while it runs.
-It may be simplest to leave it running, and open a separate terminal in your cloud shell environment.</p>
-</div>
+<p>The curl requests will be running in foreground.
+It may be simplest to obtain a new shell prompt by opening a second, separate terminal.</p>
 <h2 id="kiali">Kiali<a class="headerlink" href="#kiali" title="Permanent link">&para;</a></h2>
 <p>Launch the Kiali dashboard:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>istioctl dashboard kiali
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>istioctl dashboard kiali
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -853,7 +754,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <p>Close the Kiali dashboard.  Interrupt the <code>istioctl dashboard kiali</code> command by pressing <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>.</p>
 <h2 id="zipkin">Zipkin<a class="headerlink" href="#zipkin" title="Permanent link">&para;</a></h2>
 <p>Launch the Zipkin dashboard:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>istioctl dashboard zipkin
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>istioctl dashboard zipkin
 </code></pre></div>
 <p>The Zipkin dashboard displays.</p>
 <ul>
@@ -875,8 +776,8 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <ol>
 <li>
 <p>Run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus <span class="se">\</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  <span class="p">|</span> grep istio_requests
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus <span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  <span class="p">|</span> grep istio_requests
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why port 15020?</p>
@@ -889,7 +790,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <ol>
 <li>
 <p>Start the prometheus dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>istioctl dashboard prometheus
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>istioctl dashboard prometheus
 </code></pre></div>
 </li>
 <li>
@@ -901,12 +802,12 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 </li>
 <li>
 <p>As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>istio_requests_total{response_code=&quot;200&quot;}
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>istio_requests_total{response_code=&quot;200&quot;}
 </code></pre></div>
 </li>
 <li>
 <p>With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>rate(istio_requests_total[5m])
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>rate(istio_requests_total[5m])
 </code></pre></div>
 </li>
 </ol>
@@ -919,7 +820,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <ol>
 <li>
 <p>Launch the Grafana dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>istioctl dashboard grafana
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>istioctl dashboard grafana
 </code></pre></div>
 </li>
 <li>
@@ -934,7 +835,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Terminate the <code>istioctl dashboard</code> command (<span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-c">C</kbd></span>)</li>
-<li>Likewise, terminate the <code>siege</code> command</li>
+<li>Likewise, terminate the bash while loop.</li>
 </ol>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>We turn our attention next to security features of a service mesh.</p>
