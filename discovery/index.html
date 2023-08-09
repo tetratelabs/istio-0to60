@@ -13,7 +13,7 @@
     
     
       
-        <title>Service discovery, load balancing, and routing - Istio 0 to 60 Labs</title>
+        <title>Service discovery and load balancing - Istio 0 to 60 Labs</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#service-discovery-load-balancing-and-routing" class="md-skip">
+        <a href="#service-discovery-and-load-balancing" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Service discovery, load balancing, and routing
+              Service discovery and load balancing
             
           </span>
         </div>
@@ -286,12 +286,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Service discovery, load balancing, and routing
+          Service discovery and load balancing
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Service discovery, load balancing, and routing
+        Service discovery and load balancing
       </a>
       
         
@@ -345,8 +345,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#routing" class="md-nav__link">
-    Routing
+  <a href="#traffic-distribution" class="md-nav__link">
+    Traffic distribution
   </a>
   
 </li>
@@ -526,8 +526,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#routing" class="md-nav__link">
-    Routing
+  <a href="#traffic-distribution" class="md-nav__link">
+    Traffic distribution
   </a>
   
 </li>
@@ -552,7 +552,7 @@
   </a>
 
 
-<h1 id="service-discovery-load-balancing-and-routing">Service discovery, load balancing, and routing<a class="headerlink" href="#service-discovery-load-balancing-and-routing" title="Permanent link">&para;</a></h1>
+<h1 id="service-discovery-and-load-balancing">Service discovery and load balancing<a class="headerlink" href="#service-discovery-and-load-balancing" title="Permanent link">&para;</a></h1>
 <p>This lab explores service discovery and load balancing in Istio.</p>
 <h2 id="clusters-and-endpoints">Clusters and endpoints<a class="headerlink" href="#clusters-and-endpoints" title="Permanent link">&para;</a></h2>
 <p>The <code>istioctl</code> CLI's diagnostic command <code>proxy-status</code> provides a simple way to list all proxies that Istio knows about.</p>
@@ -638,9 +638,9 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>istioctl proxy-config cluster deploy/sleep <span class="se">\</span>
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  --fqdn helloworld.default.svc.cluster.local -o yaml <span class="p">|</span> grep lbPolicy
 </code></pre></div>
-<h2 id="routing">Routing<a class="headerlink" href="#routing" title="Permanent link">&para;</a></h2>
+<h2 id="traffic-distribution">Traffic distribution<a class="headerlink" href="#traffic-distribution" title="Permanent link">&para;</a></h2>
 <p>We can go a step further and control how much traffic to send to version v1 and how much to v2.</p>
-<p>First we define the two subsets, v1 and v2:</p>
+<p>First, define the two subsets, v1 and v2:</p>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">helloworld-dr.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
@@ -679,7 +679,8 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl apply -f helloworld-dr.yaml
 </code></pre></div>
 <p>If we now inspect the list of clusters, note that there's one for each subset:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>istioctl proxy-config cluster deploy/sleep --fqdn helloworld.default.svc.cluster.local
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>istioctl proxy-config cluster deploy/sleep <span class="se">\</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  --fqdn helloworld.default.svc.cluster.local
 </code></pre></div>
 <p>With the subsets defined, we turn our attention to the routing specification.  We use a <a href="https://istio.io/latest/docs/reference/config/networking/virtual-service/">VirtualService</a>, in this case to direct 25% of traffic to v1 and 75% to v2:</p>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">helloworld-vs.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1"> 1</a></span>
