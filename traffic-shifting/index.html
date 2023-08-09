@@ -480,6 +480,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -621,6 +628,13 @@
         <li class="md-nav__item">
   <a href="#going-further" class="md-nav__link">
     Going further
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup" class="md-nav__link">
+    Cleanup
   </a>
   
 </li>
@@ -995,6 +1009,25 @@ Within a minute or so, the Kiali dashboard should also reflect the fact that all
 <p>Though it no longer receives any traffic, we decide to leave v1 running a while longer before retiring it.</p>
 <h2 id="going-further">Going further<a class="headerlink" href="#going-further" title="Permanent link">&para;</a></h2>
 <p>Investigate <a href="https://flagger.app/" target="_blank">Flagger</a>, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  <a href="https://github.com/eitansuez/istio-flagger">Here</a> is an exploration of Flagger with Istio and its <code>bookinfo</code> sample application.</p>
+<h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h2>
+<p>After completing this lab, reset your application to its initial state:</p>
+<ol>
+<li>
+<p>Delete the <code>customers</code> virtual service:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl delete virtualservice customers
+</code></pre></div>
+</li>
+<li>
+<p>Delete the destination rule for the customers service:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>kubectl delete destinationrule customers
+</code></pre></div>
+</li>
+<li>
+<p>Delete the <code>customer-v2</code> deployment:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl delete deploy customers-v2
+</code></pre></div>
+</li>
+</ol>
 
 
 
