@@ -32,7 +32,7 @@ If we were to just deploy v2, the selector would match both versions.
 We can inform Istio that two distinct subsets of the `customers` service exist, and we can use the `version` label as the discriminator.
 
 ```yaml linenums="1" title="customers-destinationrule.yaml"
---8<-- "customers-destinationrule.yaml"
+--8<-- "traffic-shifting/customers-destinationrule.yaml"
 ```
 
 1. Apply the above destination rule to the cluster.
@@ -48,7 +48,7 @@ We can inform Istio that two distinct subsets of the `customers` service exist, 
 Armed with two distinct destinations, the `VirtualService` custom resource allows us to define a routing rule that sends all traffic to the v1 subset.
 
 ```yaml linenums="1" title="customers-virtualservice.yaml"
---8<-- "customers-virtualservice.yaml"
+--8<-- "traffic-shifting/customers-virtualservice.yaml"
 ```
 
 Above, note how the route specifies subset v1.
@@ -67,7 +67,7 @@ Apply the following Kubernetes deployment to the cluster.
 
 ??? tldr "customers-v2.yaml"
     ```yaml linenums="1"
-    --8<-- "customers-v2.yaml"
+    --8<-- "traffic-shifting/customers-v2.yaml"
     ```
 
 ### Check that traffic routes strictly to v1
@@ -105,7 +105,7 @@ We wish to proceed with caution.  Before customers can see version 2, we want to
 Review this proposed updated routing specification.
 
 ```yaml linenums="1" title="customers-vs-debug.yaml"
---8<-- "customers-vs-debug.yaml"
+--8<-- "traffic-shifting/customers-vs-debug.yaml"
 ```
 
 We are telling Istio to check an HTTP header:  if the `user-agent` is set to `debug`, route to v2, otherwise route to v1.
@@ -165,7 +165,7 @@ Well, v2 looks good; we decide to expose the new version to the public, but we'r
 Start by siphoning 10% of traffic over to v2.
 
 ```yaml linenums="1" title="customers-vs-canary.yaml"
---8<-- "customers-vs-canary.yaml"
+--8<-- "traffic-shifting/customers-vs-canary.yaml"
 ```
 
 Above, note the `weight` field specifying 10 percent of traffic to subset `v2`.
@@ -197,7 +197,7 @@ Watch the request volume change (you may need to click on the "refresh dashboard
 Finally, switch all traffic over to v2.
 
 ```yaml linenums="1" title="customers-virtualservice-final.yaml"
---8<-- "customers-virtualservice-final.yaml"
+--8<-- "traffic-shifting/customers-virtualservice-final.yaml"
 ```
 
 After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).
