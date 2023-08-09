@@ -60,7 +60,7 @@ Configuring ingress with Istio is performed in two parts:
 
     !!! tldr "gateway.yaml"
         ```yaml linenums="1"
-        --8<-- "gateway.yaml"
+        --8<-- "ingress/gateway.yaml"
         ```
 
     Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address `$GATEWAY_IP` will match.
@@ -81,7 +81,7 @@ Configuring ingress with Istio is performed in two parts:
 
     ???+ tldr "web-frontend-virtualservice.yaml"
         ```yaml linenums="1"
-        --8<-- "web-frontend-virtualservice.yaml"
+        --8<-- "ingress/web-frontend-virtualservice.yaml"
         ```
 
     Note how this specification references the name of the gateway ("frontend-gateway"), a matching host ("*"), and specifies a route for requests to be directed to the `web-frontend` service.
