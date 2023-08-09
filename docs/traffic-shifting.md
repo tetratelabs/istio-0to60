@@ -74,17 +74,9 @@ Apply the following Kubernetes deployment to the cluster.
 
 1. Generate some traffic.
 
-    === "With siege"
-
-        ```{.shell .language-shell}
-        siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
-        ```
-
-    === "With bash"
-
-        ```{.shell .language-shell}
-        while true; do curl -I http://$GATEWAY_IP/; sleep 0.5; done
-        ```
+    ```{.shell .language-shell}
+    while true; do curl -I http://$GATEWAY_IP/; sleep 0.5; done
+    ```
 
 1. Open a separate terminal and launch the Kiali dashboard
 

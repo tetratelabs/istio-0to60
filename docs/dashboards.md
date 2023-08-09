@@ -57,87 +57,14 @@ istioctl dashboard --help
 
 In order to have something to observe, we need to generate a load on our system.
 
-### Install a load generator
-
-Install a simple load generating tool named [`siege`](https://github.com/JoeDog/siege){target=_blank}.
-
-We normally install `siege` with the `apt-get` package manager.
-However, given the cloud shell's ephemeral nature, anything installed outside our home directory will vanish after a session timeout.
-
-Alternatives:
-
-=== "Install from source"
-
-    Install from source. It's a little more work, but does not exhibit the above-mentioned problem.
-
-    Here are the steps to install from source:
-
-    1. Fetch the package
-
-        ```{.shell .language-shell}
-        wget http://download.joedog.org/siege/siege-latest.tar.gz
-        ```
-
-    1. Unpack it
-
-        ```{.shell .language-shell}
-        tar -xzf siege-latest.tar.gz
-        ```
-
-    1. Navigate into the siege subdirectory with `cd siege`++tab++
-
-    1. Run the `configure` script, and request that siege get installed inside your home directory
-
-        ```{.shell .language-shell}
-        ./configure --prefix=$HOME
-        ```
-
-    1. Build the code
-
-        ```{.shell .language-shell}
-        make
-        ```
-
-    1. Finally, install (copies the binary to `~/bin`)
-
-        ```{.shell .language-shell}
-        make install
-        ```
-
-    Feel free to delete (or preserve) the downloaded tar file and source code.
-
-=== "Run the load generator locally"
-
-    Run the load generator from your laptop.  On a mac, using homebrew the command is `brew install siege`.
-
-=== "Use a bash command instead"
-
-
-    Instead of `siege` use a simple bash `while` loop to make repeated `curl` requests to the app:
-
-    ```{.shell .language-shell}
-    while true; do curl -I http://$GATEWAY_IP; sleep 0.5; done
-    ```
-
-
-### Generate a load
-
-With `siege` now installed, familiarize yourself with the command and its options.
+Use a simple bash `while` loop to make repeated `curl` requests to the app:
 
 ```{.shell .language-shell}
-siege --help
+while true; do curl -I http://$GATEWAY_IP; sleep 0.5; done
 ```
 
-Run the following command to generate a mild load against the application.
-
-```{.shell .language-shell}
-siege --delay=3 --concurrent=3 --time=20M http://$GATEWAY_IP/
-```
-
-!!! note
-
-    The `siege` command stays in the foreground while it runs.
-    It may be simplest to leave it running, and open a separate terminal in your cloud shell environment.
+The curl requests will be running in foreground.
+It may be simplest to obtain a new shell prompt by opening a second, separate terminal.
 
 ## Kiali
 
@@ -283,7 +210,7 @@ Feel free to further explore these dashboards.
 ## Cleanup
 
 1. Terminate the `istioctl dashboard` command (++ctrl+c++)
-1. Likewise, terminate the `siege` command
+1. Likewise, terminate the bash while loop.
 
 ## Next
 
