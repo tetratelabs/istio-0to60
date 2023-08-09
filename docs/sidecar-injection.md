@@ -24,7 +24,7 @@ kubectl run mywebserver --image nginx \
 Inspect the contents of the generated file.  Here it is below, slightly cleaned up:
 
 ```yaml linenums="1" title="nginx-pod.yaml"
---8<-- "nginx-pod.yaml"
+--8<-- "sidecar-injection/nginx-pod.yaml"
 ```
 
 The main thing to note at this point is that this Pod spec consists of a single container using the image `nginx`.
