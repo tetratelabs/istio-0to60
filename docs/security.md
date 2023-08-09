@@ -52,7 +52,7 @@ Istio provides the `PeerAuthentication` custom resource to specify peer authenti
 
     !!! tldr "mtls-strict.yaml"
         ```yaml linenums="1"
-        --8<-- "mtls-strict.yaml"
+        --8<-- "security/mtls-strict.yaml"
         ```
 
     !!! info
@@ -106,7 +106,7 @@ Study the below authorization policy.
 
 !!! tldr "authz-policy-customers.yaml"
     ```yaml linenums="1"
-    --8<-- "authz-policy-customers.yaml"
+    --8<-- "security/authz-policy-customers.yaml"
     ```
 
 - The `selector` section specifies that the policy applies to the `customers` service.
