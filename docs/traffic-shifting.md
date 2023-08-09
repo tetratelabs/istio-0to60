@@ -208,3 +208,25 @@ Though it no longer receives any traffic, we decide to leave v1 running a while 
 ## Going further
 
 Investigate [Flagger](https://flagger.app/){target=_blank}, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  [Here](https://github.com/eitansuez/istio-flagger) is an exploration of Flagger with Istio and its `bookinfo` sample application.
+
+## Cleanup
+
+After completing this lab, reset your application to its initial state:
+
+1. Delete the `customers` virtual service:
+
+    ```shell
+    kubectl delete virtualservice customers
+    ```
+
+1. Delete the destination rule for the customers service:
+
+    ```shell
+    kubectl delete destinationrule customers
+    ```
+
+1. Delete the `customer-v2` deployment:
+
+    ```shell
+    kubectl delete deploy customers-v2
+    ```
