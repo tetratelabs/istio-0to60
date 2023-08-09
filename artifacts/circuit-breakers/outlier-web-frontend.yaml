@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: web-frontend
+spec:
+  host: web-frontend.default.svc.cluster.local
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 1 # (1)
+      interval: 5s # (2)
+      baseEjectionTime: 60s # (3)
+      maxEjectionPercent: 100 # (4)

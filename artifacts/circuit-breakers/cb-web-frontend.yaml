@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: web-frontend
+spec:
+  host: web-frontend.default.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 1 # (1)
+        http2MaxRequests: 1 # (2)
+        maxRequestsPerConnection: 1 # (3)
