@@ -24,8 +24,8 @@ extra_css:
 nav:
   - environment.md
   - install.md
-  - Extra:
-    - sidecar-injection.md
+  - sidecar-injection.md
+  - discovery.md
   - the-app.md
   - ingress.md
   - dashboards.md

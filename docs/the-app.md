@@ -42,12 +42,12 @@ In this lab we will use automatic injection, which involves labeling the namespa
 
     ??? tldr "web-frontend.yaml"
         ```yaml linenums="1"
-        --8<-- "web-frontend.yaml"
+        --8<-- "the-app/web-frontend.yaml"
         ```
 
     ??? tldr "customers.yaml"
         ```yaml linenums="1"
-        --8<-- "customers.yaml"
+        --8<-- "the-app/customers.yaml"
         ```
 
     Each file defines its corresponding deployment, service account, and ClusterIP service.
@@ -90,7 +90,7 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 
     ??? tldr "sleep.yaml"
         ```yaml linenums="1"
-        --8<-- "sleep.yaml"
+        --8<-- "the-app/sleep.yaml"
         ```
 
     ```{.shell .language-shell}

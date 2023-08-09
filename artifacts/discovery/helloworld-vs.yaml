@@ -1,0 +1,19 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: hello-routing
+spec:
+  hosts:
+  - helloworld.default.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: helloworld.default.svc.cluster.local
+        subset: v1
+      weight: 25
+    - destination:
+        host: helloworld.default.svc.cluster.local
+        subset: v2
+      weight: 75
+
