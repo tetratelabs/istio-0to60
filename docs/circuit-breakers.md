@@ -115,11 +115,11 @@ Code 503 : 26 (52.0 %)
 
 When a request is dropped due to circuit breaking, the response will contain a response header `x-envoy-overloaded` with value "true".
 
-One way to see this header is to run a fortio load with two concurrent connections, uninterrupted, in one terminal:
+One way to see this header is to run a fortio load with two concurrent connections in one terminal for a couple of minutes:
 
 ```shell
 kubectl exec deploy/fortio -c fortio -- \
-  fortio load -c 2 -qps 0 -t 0 --allow-initial-errors http://web-frontend
+  fortio load -c 2 -qps 0 -t 2m --allow-initial-errors -quiet http://web-frontend
 ```
 
 In a separate terminal, invoke a single request:
