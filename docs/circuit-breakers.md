@@ -38,11 +38,20 @@ We'll use [Fortio](https://fortio.org/){target=_blank} to generate load on the `
 1. Make a single request to make sure everything is working:
 
     ```shell
-    kubectl exec deploy/fortio -c fortio -- \
-      fortio curl web-frontend
+    kubectl exec deploy/fortio -c fortio -- fortio curl web-frontend
     ```
 
-    The above command should result in an HTTP 200 OK response from the `web-frontend` app.
+    The above command should result in an HTTP 200 "OK" response from the `web-frontend` app.
+
+1. With fortio, we can generate a load of 50 requests with two concurrent connections like this:
+
+    ```shell
+    kubectl exec deploy/fortio -c fortio -- \
+      fortio load -c 2 -qps 0 -n 50 -quiet web-frontend
+    ```
+
+    All 50 requests should succeed.  That is the meaning of `Code 200 : 50` in the output.
+
 
 ## Circuit breaker - connection pool settings
 
@@ -83,7 +92,43 @@ Code 503 : 26 (52.0 %)
 
 !!! Tip
 
-    To reset the metric counters, run `kubectl exec deploy/fortio -c istio-proxy -- curl -X POST localhost:15000/reset_counters`
+    To reset the metric counters, run:
+
+    ```shell
+    kubectl exec deploy/fortio -c istio-proxy -- curl -sX POST localhost:15000/reset_counters
+    ```
+
+## The `x-envoy-overloaded` header
+
+When a request is dropped due to circuit breaking, the response will contain a response header `x-envoy-overloaded` with value "true".
+
+One way to see this header is to run a fortio load with two concurrent connections, uninterrupted, in one terminal:
+
+```shell
+kubectl exec deploy/fortio -c fortio -- \
+  fortio load -c 2 -qps 0 -t 0 --allow-initial-errors http://web-frontend
+```
+
+In a separate terminal, invoke a single request:
+
+```shell
+kubectl exec deploy/fortio -c fortio -- fortio curl http://web-frontend
+```
+
+Here is an example response to a dropped request:
+
+```console hl_lines="2"
+> HTTP/1.1 503 Service Unavailable
+> x-envoy-overloaded: true
+> content-length: 81
+> content-type: text/plain
+> date: Thu, 10 Aug 2023 18:25:37 GMT
+> server: envoy
+>
+> upstream connect error or disconnect/reset before headers. reset reason: overflowcommand terminated with exit code 1
+```
+
+Then press ++ctrl+c++ to interrupt the load generation.
 
 ## Observe failures in Zipkin
 
@@ -93,8 +138,9 @@ Open the Zipkin dashboard:
 istioctl dash zipkin
 ```
 
-In the Zipkin UI, click the **Run Query** button and pick a failing trace to see the details.
-You can identify failing traces by looking at the number of spans - the failing trace will have 1 span, while the successful ones will have 4 spans.
+In the Zipkin UI, list failing traces by clicking the "+" button in the search field and specifying the query: `tagQuery=error`.  Then click the **Run Query** button.
+
+Pick a failing trace to view the details.
 
 The requests are failing because the circuit breaker is tripped.  [Response flags](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#config-access-log-format-response-flags){target=_blank} are set to `UO` (Upstream Overflow) and the status code is 503 (service unavailable).
 
@@ -114,9 +160,11 @@ Apply the following PromQL query:
 envoy_cluster_upstream_rq_pending_overflow{app="fortio", cluster_name="outbound|80||web-frontend.default.svc.cluster.local"}
 ```
 
+The query shows the metrics for requests originating from the `fortio` app and going to the `web-frontend` service.
+
 The `upstream_rq_pending_overflow` and other metrics are described [in the Envoy documentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cluster_stats#general){target=_blank}.
 
-The query shows the metrics for requests originating from the `fortio` app and going to the `web-frontend` service.
+Noteworthy are [circuit-breaking specific metrics](https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cluster_stats#circuit-breakers-statistics){target=_blank} showing the state of various circuit breakers.  For example `rq_open` indicates whether the "requests" circuit breaker is open, and its companion `remaining_rq` indicates how many requests remain to trip the corresponding circuit breaker.
 
 We can also look at the metrics directly from the `istio-proxy` container in the Fortio Pod:
 
@@ -134,6 +182,18 @@ cluster.outbound|80||web-frontend.default.svc.cluster.local.upstream_rq_pending_
 cluster.outbound|80||web-frontend.default.svc.cluster.local.upstream_rq_pending_overflow: 26
 cluster.outbound|80||web-frontend.default.svc.cluster.local.upstream_rq_pending_total: 24
 ```
+
+!!! info
+
+    Yet another convenient way to look at the stats emitted by an Envoy sidecar is via the Envoy dashboard:
+
+    ```shell
+    istioctl dashboard envoy deploy/fortio
+    ```
+
+    In the web ui, click on the "stats" endpoint, and filter by target outbound cluster "web-frontend".
+
+## Resolving the errors
 
 To resolve these errors, we can adjust the circuit breaker settings.
 
