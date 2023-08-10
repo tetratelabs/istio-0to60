@@ -53,6 +53,19 @@ We'll use [Fortio](https://fortio.org/){target=_blank} to generate load on the `
     All 50 requests should succeed.  That is the meaning of `Code 200 : 50` in the output.
 
 
+!!! info
+
+    Fortio also has a GUI, to access it:
+
+    1. Port-forward the deployment's port
+
+        ```shell
+        kubectl port-forward deploy/fortio 8080
+        ```
+    
+    1. In a browser, visit [http://localhost:8080/fortio](http://localhost:8080/fortio){target=_blank}
+
+
 ## Circuit breaker - connection pool settings
 
 Study the following DestionationRule:
