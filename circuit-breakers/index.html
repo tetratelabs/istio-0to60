@@ -713,7 +713,7 @@
 <a id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
 <a id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
 <a id="__codelineno-1-41" name="__codelineno-1-41"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fortio</span><span class="w"></span>
-<a id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fortio/fortio:latest_release</span><span class="w"></span>
+<a id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fortio/fortio:latest</span><span class="w"></span>
 <a id="__codelineno-1-43" name="__codelineno-1-43"></a><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span><span class="w"></span>
 <a id="__codelineno-1-44" name="__codelineno-1-44"></a><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
 <a id="__codelineno-1-45" name="__codelineno-1-45"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
@@ -807,9 +807,9 @@
 </div>
 <h2 id="the-x-envoy-overloaded-header">The <code>x-envoy-overloaded</code> header<a class="headerlink" href="#the-x-envoy-overloaded-header" title="Permanent link">&para;</a></h2>
 <p>When a request is dropped due to circuit breaking, the response will contain a response header <code>x-envoy-overloaded</code> with value "true".</p>
-<p>One way to see this header is to run a fortio load with two concurrent connections, uninterrupted, in one terminal:</p>
+<p>One way to see this header is to run a fortio load with two concurrent connections in one terminal for a couple of minutes:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> deploy/fortio -c fortio -- <span class="se">\</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  fortio load -c <span class="m">2</span> -qps <span class="m">0</span> -t <span class="m">0</span> --allow-initial-errors http://web-frontend
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  fortio load -c <span class="m">2</span> -qps <span class="m">0</span> -t 2m --allow-initial-errors -quiet http://web-frontend
 </code></pre></div>
 <p>In a separate terminal, invoke a single request:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl <span class="nb">exec</span> deploy/fortio -c fortio -- fortio curl http://web-frontend
