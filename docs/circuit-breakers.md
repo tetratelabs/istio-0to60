@@ -7,26 +7,12 @@ This lab demonstrate how to configure [circuit breaking](https://www.envoyproxy.
 - Kubernetes with Istio and other tools (Prometheus, Zipkin, Grafana) installed
 - `web-frontend` and `customers` workloads already deployed and running.
 
-## Collect additional metrics
+## Revise the Istio installation configuration
 
-Modify the installation of Istio to use the [demo profile](https://istio.io/latest/docs/setup/additional-setup/config-profiles/){target=_blank} and to enable collection of additional metrics:
-
-```yaml linenums="1" title="istio-metrics.yaml"
---8<-- "circuit-breakers/istio-metrics.yaml"
-```
-
-The above will enable collection of metrics for all prefixes in the list and for all workloads in the mesh.
-
-!!! info
-
-    This is not recommended for production environments as the number of metrics collected will be very large. 
-
-    Typically, we'd constrain the metrics collection of extra metrics to a specific workload. For example, we could have enabled those metrics on the Fortio deployment we'll use to generate the load, so the metrics would only be collected for that workload).
-
-Save the above to `istio-metrics.yaml` and apply the configuration to your Istio installation:
+Modify the installation of Istio to use the [demo profile](https://istio.io/latest/docs/setup/additional-setup/config-profiles/){target=_blank} which enables high levels of tracing, which is convenient for this lab.
 
 ```shell
-istioctl install -f istio-metrics.yaml
+istioctl install --set profile=demo
 ```
 
 ## Install Fortio
@@ -37,11 +23,11 @@ We'll use [Fortio](https://fortio.org/){target=_blank} to generate load on the `
 
 1. Deploy Fortio
 
-    ??? note "Click for fortio.yaml"
+    ```yaml linenums="1" title="fortio.yaml" hl_lines="27-28"
+    --8<-- "circuit-breakers/fortio.yaml"
+    ```
 
-        ```yaml linenums="1" title="fortio.yaml"
-        --8<-- "circuit-breakers/fortio.yaml"
-        ```
+    Above, notice the annotation, which configures the inclusion of additional Envoy metrics (aka statistics) including circuit breaking.
 
     Save the above file to `fortio.yaml` and deploy it:
 
@@ -52,22 +38,11 @@ We'll use [Fortio](https://fortio.org/){target=_blank} to generate load on the `
 1. Make a single request to make sure everything is working:
 
     ```shell
-    kubectl exec deploy/fortio-deploy -c fortio -- \
-      /usr/bin/fortio curl web-frontend
+    kubectl exec deploy/fortio -c fortio -- \
+      fortio curl web-frontend
     ```
 
-    The tail of the output should resemble this:
-
-    ```console
-    ...
-    HTTP/1.1 200 OK
-    x-powered-by: Express
-    content-type: text/html; charset=utf-8
-    content-length: 2471
-    etag: W/"9a7-hEXE7lJW5CDgD+e2FypGgChcgho"
-    x-envoy-upstream-service-time: 28
-    server: envoy
-    ```
+    The above command should result in an HTTP 200 OK response from the `web-frontend` app.
 
 ## Circuit breaker - connection pool settings
 
@@ -96,8 +71,8 @@ If we increase the number of connections and send more requests (i.e. 2 workers 
 The errors happen because the `http2MaxRequests` is set to 1 and we have more than 1 concurrent request being sent. Additionally, we're exceeding the `maxRequestsPerConnection` limit.
 
 ```shell
-kubectl exec deploy/fortio-deploy -c fortio -- \
-  /usr/bin/fortio load -c 2 -qps 0 -n 50 -loglevel Warning web-frontend
+kubectl exec deploy/fortio -c fortio -- \
+  fortio load -c 2 -qps 0 -n 50 -quiet web-frontend
 ```
 
 ```console
@@ -108,7 +83,7 @@ Code 503 : 26 (52.0 %)
 
 !!! Tip
 
-    To reset the metric counters, run `kubectl exec deploy/fortio-deploy -c istio-proxy -- curl -X POST localhost:15000/reset_counters`
+    To reset the metric counters, run `kubectl exec deploy/fortio -c istio-proxy -- curl -X POST localhost:15000/reset_counters`
 
 ## Observe failures in Zipkin
 
@@ -139,14 +114,14 @@ Apply the following PromQL query:
 envoy_cluster_upstream_rq_pending_overflow{app="fortio", cluster_name="outbound|80||web-frontend.default.svc.cluster.local"}
 ```
 
-The `upstream_rq_pending_overflow` and other metrics are described [here](https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cluster_stats#general){target=_blank}.
+The `upstream_rq_pending_overflow` and other metrics are described [in the Envoy documentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cluster_stats#general){target=_blank}.
 
 The query shows the metrics for requests originating from the `fortio` app and going to the `web-frontend` service.
 
 We can also look at the metrics directly from the `istio-proxy` container in the Fortio Pod:
 
 ```shell
-kubectl exec deploy/fortio-deploy -c istio-proxy -- \
+kubectl exec deploy/fortio -c istio-proxy -- \
   pilot-agent request GET stats | grep web-frontend | grep pending
 ```
 
@@ -188,8 +163,8 @@ kubectl apply -f cb-web-frontend.yaml
 If we re-run Fortio with the same parameters, we'll notice less failures this time:
 
 ```shell
-kubectl exec deploy/fortio-deploy -c fortio -- \
-  /usr/bin/fortio load -c 2 -qps 0 -n 50 -loglevel Warning web-frontend
+kubectl exec deploy/fortio -c fortio -- \
+  fortio load -c 2 -qps 0 -n 50 -quiet web-frontend
 ```
 
 ```console
@@ -251,7 +226,7 @@ kubectl delete destinationrule web-frontend
 Reset the metric counters:
 
 ```shell
-kubectl exec deploy/fortio-deploy -c istio-proxy -- \
+kubectl exec deploy/fortio -c istio-proxy -- \
   curl -X POST localhost:15000/reset_counters
 ```
 
@@ -280,8 +255,8 @@ kubectl apply -f web-frontend-failing.yaml
 If we run Fortio we'll see that majority (roughly, 80%) of the requests will be failing. That's because the `web-frontend-failing` deployment has more replicas than the "good" deployment.
 
 ```shell
-kubectl exec deploy/fortio-deploy -c fortio -- \
-  /usr/bin/fortio load -c 2 -qps 0 -n 50 -loglevel Warning web-frontend
+kubectl exec deploy/fortio -c fortio -- \
+  fortio load -c 2 -qps 0 -n 50 -quiet web-frontend
 ```
 
 ```console
@@ -310,8 +285,8 @@ kubectl apply -f outlier-web-frontend.yaml
 If we repeat the test, we might get a similar distribution of responses the first time.  However, if we repeat the command (once the outliers were ejected), we'll get a much better distribution:
 
 ```shell
-kubectl exec deploy/fortio-deploy -c fortio -- \
-  /usr/bin/fortio load -c 2 -qps 0 -n 50 -loglevel Warning web-frontend
+kubectl exec deploy/fortio -c fortio -- \
+  fortio load -c 2 -qps 0 -n 50 -quiet web-frontend
 ```
 
 ```console
@@ -324,7 +299,7 @@ The reason for more HTTP 200 responses is because as soon as the failing hosts w
 We can also look at the metrics from the outlier detection in the same way we did for the circuit breakers:
 
 ```shell
-kubectl exec deploy/fortio-deploy -c istio-proxy -- \
+kubectl exec deploy/fortio -c istio-proxy -- \
   pilot-agent request GET stats | grep web-frontend | grep ejections_total
 ```
 

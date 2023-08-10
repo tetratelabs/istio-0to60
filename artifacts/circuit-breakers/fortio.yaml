@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,14 +16,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fortio-deploy
+  name: fortio
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: fortio
   template:
     metadata:
+      annotations:
+        # This annotation causes Envoy to serve cluster.outbound statistics via 15000/stats
+        # in addition to the stats normally served by Istio.
+        proxy.istio.io/config: |-
+          proxyStatsMatcher:
+            inclusionPrefixes:
+            - "cluster.outbound"
+            - "cluster_manager"
+            - "listener_manager"
+            - "server"
+            - "cluster.xds-grpc"
       labels:
         app: fortio
     spec:
