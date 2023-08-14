@@ -23,14 +23,14 @@ spec:
     spec:
       serviceAccountName: web-frontend
       containers:
-        - image: gcr.io/tetratelabs/web-frontend:1.0.0
-          imagePullPolicy: Always
-          name: web
-          ports:
-            - containerPort: 8080
-          env:
-            - name: CUSTOMER_SERVICE_URL
-              value: "http://customers.default.svc.cluster.local"
+      - name: web
+        image: gcr.io/tetratelabs/web-frontend:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CUSTOMER_SERVICE_URL
+          value: "http://customers.default.svc.cluster.local"
 ---
 kind: Service
 apiVersion: v1
@@ -42,6 +42,6 @@ spec:
   selector:
     app: web-frontend
   ports:
-    - port: 80
-      name: http
-      targetPort: 8080
+  - port: 80
+    name: http
+    targetPort: 8080

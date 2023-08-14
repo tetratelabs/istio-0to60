@@ -25,11 +25,11 @@ spec:
     spec:
       serviceAccountName: customers
       containers:
-        - image: gcr.io/tetratelabs/customers:1.0.0
-          imagePullPolicy: Always
-          name: svc
-          ports:
-            - containerPort: 3000
+      - image: gcr.io/tetratelabs/customers:1.0.0
+        imagePullPolicy: Always
+        name: svc
+        ports:
+        - containerPort: 3000
 ---
 kind: Service
 apiVersion: v1
@@ -41,6 +41,6 @@ spec:
   selector:
     app: customers
   ports:
-    - port: 80
-      name: http
-      targetPort: 3000
+  - port: 80
+    name: http
+    targetPort: 3000
