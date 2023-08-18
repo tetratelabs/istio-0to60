@@ -23,8 +23,16 @@ Make a note of the external IP address for the load balancer.
 Assign it to an environment variable.
 
 ```{.shell .language-shell}
-GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
+
+!!! warning "When using K3D"
+
+    If you have opted to run Kubernetes directly on your local machine with K3D, use "localhost" instead:
+
+    ```{.shell .language-shell}
+    export GATEWAY_IP=localhost
+    ```
 
 ??? tip ":material-console:{.gcp-blue} A small investment"
 
@@ -39,10 +47,6 @@ GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.
 
     EOF
     ```
-
-??? warning "When using K3D"
-
-    If you have opted to run Kubernetes directly on your local machine with K3D, use "localhost" in lieu of the cited Gateway IP address.
 
 In normal circumstances we associate this IP address with a hostname via DNS.
 For the sake of simplicity, in this workshop we will use the gateway public IP address directly.
