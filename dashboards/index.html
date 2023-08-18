@@ -761,6 +761,13 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <li>Click on the red '+' button and select <em>serviceName</em>.</li>
 <li>Select the service named <code>web-frontend.default</code> and click on the <em>Run Query</em> button (lightblue) on the right.</li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Trace Sampling</p>
+<p>When you installed Istio at the start of this workshop, the default configuration uses the <a href="https://github.com/istio/istio/blob/master/manifests/profiles/default.yaml#L121" target="_blank">default profile, which sets trace sampling to 1% of requests</a>.</p>
+<p>If you wish to increase the trace sampling percentage to capture more distributed traces, you can upgrade the Istio installation with the following command:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>istioctl install --set values.pilot.traceSampling<span class="o">=</span><span class="m">100</span>
+</code></pre></div>
+</div>
 <p>A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.</p>
 <ul>
 <li>Click the <em>Show</em> button to the right of one of the traces having four (4) spans.</li>
@@ -776,8 +783,8 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <ol>
 <li>
 <p>Run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus <span class="se">\</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  <span class="p">|</span> grep istio_requests
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl <span class="nb">exec</span> svc/customers -- curl -s localhost:15020/stats/prometheus <span class="se">\</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  <span class="p">|</span> grep istio_requests
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why port 15020?</p>
@@ -790,7 +797,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <ol>
 <li>
 <p>Start the prometheus dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>istioctl dashboard prometheus
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>istioctl dashboard prometheus
 </code></pre></div>
 </li>
 <li>
@@ -802,12 +809,12 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 </li>
 <li>
 <p>As an example of Prometheus' dimensional metrics capability, we can ask for total requests having a response code of 200:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>istio_requests_total{response_code=&quot;200&quot;}
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>istio_requests_total{response_code=&quot;200&quot;}
 </code></pre></div>
 </li>
 <li>
 <p>With respect to requests, it's more interesting to look at the rate of incoming requests over a time window.  Try:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>rate(istio_requests_total[5m])
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>rate(istio_requests_total[5m])
 </code></pre></div>
 </li>
 </ol>
@@ -820,7 +827,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <ol>
 <li>
 <p>Launch the Grafana dashboard</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>istioctl dashboard grafana
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>istioctl dashboard grafana
 </code></pre></div>
 </li>
 <li>
