@@ -124,6 +124,17 @@ The Zipkin dashboard displays.
 - Click on the red '+' button and select _serviceName_.
 - Select the service named `web-frontend.default` and click on the _Run Query_ button (lightblue) on the right.
 
+!!! warning "Trace Sampling"
+
+    When you installed Istio at the start of this workshop, the default configuration uses the [default profile, which sets trace sampling to 1% of requests](https://github.com/istio/istio/blob/master/manifests/profiles/default.yaml#L121){target=_blank}.
+
+    If you wish to increase the trace sampling percentage to capture more distributed traces, you can upgrade the Istio installation with the following command:
+
+    ```{.shell .language-shell}
+    istioctl install --set values.pilot.traceSampling=100
+    ```
+
+
 A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.
 
 - Click the _Show_ button to the right of one of the traces having four (4) spans.
