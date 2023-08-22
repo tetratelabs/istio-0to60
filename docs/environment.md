@@ -116,7 +116,7 @@
 
 === "Killercoda"
 
-    If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from [here](https://killercoda.com/eitansuez/).
+    If you prefer to do away with having to setup your own Kubernetes environment, Killercoda offers a simple browser-based interactive environment.  The Istio 0 to 60 scenarios have been ported to Killercoda and can be launched from [here](https://killercoda.com/eitansuez/){target=_blank}.
 
     If you choose this option, please disregard this page's remaining instructions.
 
@@ -135,7 +135,7 @@
 
     This workshop makes extensive use of the `kubectl` CLI.
 
-    Consider configuring an alias to make typing a little easier.
+    Consider configuring an alias to make typing a little easier.  Here are commands to configure the "k" alias with command completion, for the bash shell:
 
     ```shell
     cat << EOF >> ~/.bashrc
