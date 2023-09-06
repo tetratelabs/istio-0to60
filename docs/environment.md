@@ -6,7 +6,7 @@
 
     If you brought your own Kubernetes cluster:
 
-    - Istio version {{istio.version}} officially supports Kubernetes versions 1.24 - 1.27.  Feel free to consult the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for more information.
+    - Istio version {{istio.version}} officially supports Kubernetes versions 1.25 - 1.28.  Feel free to consult the Istio [support status of Istio releases page](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases){target=_blank} for more information.
 
     - We recommend a 3-worker node cluster of machine type "e2-standard-2" or similar, though a smaller cluster will likely work just fine.
 
