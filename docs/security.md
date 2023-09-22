@@ -79,6 +79,27 @@ kubectl exec -n other-ns deploy/sleep -- curl customers.default
 
 The console output should indicate that the _connection was reset by peer_.
 
+## Inspecting a workload certificate
+
+1. Capture the certificate returned by the `customers` workload:
+
+    ```{.shell .language-shell}
+    kubectl exec deploy/sleep -c istio-proxy -- \
+    openssl s_client -showcerts -connect customers:80 > cert.txt
+    ```
+
+1. Edit `cert.txt` so that it contains only the certificate chain.
+
+1. Inspect the certificate with:
+
+    ```{.shell .language-shell}
+    openssl x509 -in cert.txt -text -noout
+    ```
+
+1. Review the certificate fields:
+
+    1. The certificate validity period should be 24 hrs.
+    1. The _Subject Alternative Name_ field should contain the spiffe URI.
 
 ## Security in depth
 
