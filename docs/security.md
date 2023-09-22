@@ -101,6 +101,52 @@ The console output should indicate that the _connection was reset by peer_.
     1. The certificate validity period should be 24 hrs.
     1. The _Subject Alternative Name_ field should contain the spiffe URI.
 
+
+
+!!! question "How do I know that traffic is mTls-encrypted?"
+
+    Here is a recipe that uses the [`tcpdump`](https://www.tcpdump.org/){target=_blank} utility to spy on traffic to a service to verify that it is indeed encrypted.
+
+    1. Update the Istio installation with the configuration field `values.proxy.privileged` set to `true`:
+
+        ```{.shell .language-shell}
+        istioctl install --set values.global.proxy.privileged=true
+        ```
+
+        For a description of this configuration field, see the output of `helm show values istio/istiod | grep privileged`.
+
+    1. Restart the `customers` deployment:
+
+        ```{.shell .language-shell}
+        kubectl rollout restart deploy customers-v1
+        ```
+
+    1. Grab the IP address of the customers Pod:
+
+        ```{.shell .language-shell}
+        IP_ADDRESS=$(kubectl get pod -l app=customers -o jsonpath='{.items[0].status.podIP}')
+        ```
+
+    1. Shell into the `customers` sidecar container:
+
+        ```{.shell .language-shell}
+        kubectl exec -it svc/customers -c istio-proxy -- env IP_ADDRESS=$IP_ADDRESS /bin/bash
+        ```
+
+    1. Start `tcpdump` on the port that the `customers` service is listening on:
+
+        ```{.shell .language-shell}
+        sudo tcpdump -vvvv -A -i eth0 "((dst port 3000) and (net ${IP_ADDRESS}))"
+        ```
+
+    1. In separate terminal make a call to the customers service:
+
+        ```{.shell .language-shell}
+        kubectl exec deploy/sleep -- curl customers
+        ```
+
+    You will see encrypted text in the `tcpdump` output.
+
 ## Security in depth
 
 Another important layer of security is to define an authorization policy, in which we allow only specific services to communicate with other services.
