@@ -374,13 +374,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#candidate-follow-on-exercises" class="md-nav__link">
-    Candidate follow-on exercises
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#next" class="md-nav__link">
     Next
   </a>
@@ -531,13 +524,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#candidate-follow-on-exercises" class="md-nav__link">
-    Candidate follow-on exercises
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#next" class="md-nav__link">
     Next
   </a>
@@ -580,8 +566,8 @@
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">When using K3D</p>
-<p>If you have opted to run Kubernetes directly on your local machine with K3D, use "localhost" instead:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span> <span class="nv">GATEWAY_IP</span><span class="o">=</span>localhost
+<p>If you have opted to run Kubernetes directly on your local machine with K3D, use "127.0.0.1" instead:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span> <span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="m">127</span>.0.0.1
 </code></pre></div>
 </div>
 <details class="tip">
@@ -632,12 +618,12 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 <a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
 <a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">    </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span><span class="w"></span>
 <a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">  </span><span class="nt">servers</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">        </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
-<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
-<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTP</span><span class="w"></span>
-<a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">      </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">      </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTP</span><span class="w"></span>
+<a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w"></span>
 </code></pre></div></td></tr></table></div>
 </div>
 <p>Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address <code>$GATEWAY_IP</code> will match.</p>
@@ -706,12 +692,86 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </li>
 </ol>
 <p>Finally, verify that you can now access <code>web-frontend</code> from your web browser using the gateway IP address.</p>
-<h2 id="candidate-follow-on-exercises">Candidate follow-on exercises<a class="headerlink" href="#candidate-follow-on-exercises" title="Permanent link">&para;</a></h2>
-<p>We will not explore ingress any further in this workshop.  Consider the following as independent exercises:</p>
-<ul>
-<li>Creating a DNS A record for the gateway IP, and narrowing down the scope of the gateway to only match that hostname.</li>
-<li><a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/#configure-a-tls-ingress-gateway-for-a-single-host" target="_blank">Configuring a TLS ingress gateway</a></li>
-</ul>
+<div class="admonition question">
+<p class="admonition-title">What if I wanted to configure ingress with TLS?</p>
+<p>Here is a recipe that illustrates how to configure secure ingress with a self-signed certificate:</p>
+<ol>
+<li>
+<p>Generate the certificate:</p>
+<ol>
+<li>
+<p>Generate a self-signed root certificate in the folder <code>example_certs</code></p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mkdir example_certs
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>openssl req -x509 -sha256 -nodes -days <span class="m">365</span> -newkey rsa:2048 -subj <span class="s1">&#39;/O=example Inc./CN=example.com&#39;</span> -keyout example_certs/example.com.key -out example_certs/example.com.crt
+</code></pre></div>
+</li>
+<li>
+<p>Generate a certificate and private key for the hostname <code>webfrontend.example.com</code>:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>openssl req -out example_certs/webfrontend.example.com.csr -newkey rsa:2048 -nodes -keyout example_certs/webfrontend.example.com.key -subj <span class="s2">&quot;/CN=webfrontend.example.com/O=webfrontend organization&quot;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>openssl x509 -req -sha256 -days <span class="m">365</span> -CA example_certs/example.com.crt -CAkey example_certs/example.com.key -set_serial <span class="m">0</span> -in example_certs/webfrontend.example.com.csr -out example_certs/webfrontend.example.com.crt
+</code></pre></div>
+</li>
+</ol>
+</li>
+<li>
+<p>Store the certificate as a secret in your Kubernetes cluster:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl create -n istio-system secret tls webfrontend-credential <span class="se">\</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  --key<span class="o">=</span>example_certs/webfrontend.example.com.key <span class="se">\</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  --cert<span class="o">=</span>example_certs/webfrontend.example.com.crt
+</code></pre></div>
+</li>
+<li>
+<p>Revise the gateway configuration to listen on port 443, and to reference the secret that the envoy listeners will present to incoming requests:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span>
+<span class="normal"><a href="#__codelineno-13-17">17</a></span>
+<span class="normal"><a href="#__codelineno-13-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nn">---</span><span class="w"></span>
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span><span class="w"></span>
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gateway</span><span class="w"></span>
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span><span class="w"></span>
+<a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">    </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span><span class="w"></span>
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">  </span><span class="nt">servers</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="hll"><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"></span>
+</span><a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="hll"><span class="w">      </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span><span class="w"></span>
+</span><a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="hll"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https</span><span class="w"></span>
+</span><a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="hll"><span class="w">      </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPS</span><span class="w"></span>
+</span><a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="hll"><span class="w">    </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
+</span><a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="hll"><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SIMPLE</span><span class="w"></span>
+</span><a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="hll"><span class="w">      </span><span class="nt">credentialName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webfrontend-credential</span><span class="w"></span>
+</span><a id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="hll"><span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><a id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="hll"><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webfrontend.example.com</span><span class="w"></span>
+</span></code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Apply the revised gateway configuration:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl apply -f gateway-tls.yaml
+</code></pre></div>
+</li>
+<li>
+<p>Test your implementation by making a request to the ingress gateway:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl -k https://webfrontend.example.com/ --resolve webfrontend.example.com:443:<span class="nv">$GATEWAY_IP</span>
+</code></pre></div>
+</li>
+</ol>
+<p>See the <a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/" target="_blank">Istio documentation</a> for additional examples relating to the topic of configuring secure gateways.</p>
+</div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>The application is now running and exposed on the internet.</p>
 <p>In the next lab, we turn our attention to the observability features that are built in to Istio.</p>
