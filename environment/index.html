@@ -691,7 +691,8 @@ Click on the <em>Reconnect</em> button when this happens.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>k3d cluster create my-istio-cluster <span class="se">\</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    --api-port <span class="m">6443</span> <span class="se">\</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    --k3s-arg <span class="s2">&quot;--disable=traefik@server:0&quot;</span> <span class="se">\</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    --port <span class="m">80</span>:80@loadbalancer
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    --port <span class="m">80</span>:80@loadbalancer <span class="se">\</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    --port <span class="m">443</span>:443@loadbalancer
 </code></pre></div>
 </div>
 </div>
