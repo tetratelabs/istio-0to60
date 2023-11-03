@@ -19,6 +19,7 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.footer
+    - content.code.copy
 #    - navigation.tabs
 extra_css:
   - css/custom.css
