@@ -30,6 +30,7 @@ nav:
   - discovery.md
   - the-app.md
   - ingress.md
+  - ingress-gwapi.md
   - dashboards.md
   - security.md
   - traffic-shifting.md
