@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../security/">
+        <link rel="prev" href="../traffic-shifting/">
       
       
-        <link rel="next" href="../traffic-shifting-gwapi/">
+        <link rel="next" href="../circuit-breakers/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Traffic shifting - Istio 0 to 60 Labs</title>
+        <title>Traffic shifting with the Gateway API - Istio 0 to 60 Labs</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#traffic-shifting" class="md-skip">
+        <a href="#traffic-shifting-with-the-gateway-api" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Traffic shifting
+              Traffic shifting with the Gateway API
             
           </span>
         </div>
@@ -419,6 +419,25 @@
       
   
   
+  
+    <li class="md-nav__item">
+      <a href="../traffic-shifting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Traffic shifting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -434,7 +453,7 @@
           
   
   <span class="md-ellipsis">
-    Traffic shifting
+    Traffic shifting with the Gateway API
   </span>
   
 
@@ -445,7 +464,7 @@
         
   
   <span class="md-ellipsis">
-    Traffic shifting
+    Traffic shifting with the Gateway API
   </span>
   
 
@@ -482,15 +501,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#destinationrules" class="md-nav__link">
-    DestinationRules
+  <a href="#version-specific-services" class="md-nav__link">
+    Version-specific services
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#virtualservices" class="md-nav__link">
-    VirtualServices
+  <a href="#httproutes" class="md-nav__link">
+    HttpRoutes
   </a>
   
 </li>
@@ -583,25 +602,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../traffic-shifting-gwapi/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Traffic shifting with the Gateway API
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../circuit-breakers/" class="md-nav__link">
         
   
@@ -676,15 +676,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#destinationrules" class="md-nav__link">
-    DestinationRules
+  <a href="#version-specific-services" class="md-nav__link">
+    Version-specific services
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#virtualservices" class="md-nav__link">
-    VirtualServices
+  <a href="#httproutes" class="md-nav__link">
+    HttpRoutes
   </a>
   
 </li>
@@ -781,7 +781,7 @@
   
 
 
-<h1 id="traffic-shifting">Traffic shifting<a class="headerlink" href="#traffic-shifting" title="Permanent link">&para;</a></h1>
+<h1 id="traffic-shifting-with-the-gateway-api">Traffic shifting with the Gateway API<a class="headerlink" href="#traffic-shifting-with-the-gateway-api" title="Permanent link">&para;</a></h1>
 <p>Version 2 of the customers service has been developed, and it's time to deploy it to production.
 Whereas version 1 returned a list of customer names, version 2 also includes each customer's city.</p>
 <h2 id="deploying-customers-v2">Deploying customers, v2<a class="headerlink" href="#deploying-customers-v2" title="Permanent link">&para;</a></h2>
@@ -796,9 +796,12 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>customers<span class="w"> </span>-o<span class="w"> </span>wide
 </code></pre></div>
 <p>If we were to just deploy v2, the selector would match both versions.</p>
-<h3 id="destinationrules">DestinationRules<a class="headerlink" href="#destinationrules" title="Permanent link">&para;</a></h3>
-<p>We can inform Istio that two distinct subsets of the <code>customers</code> service exist, and we can use the <code>version</code> label as the discriminator.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-destinationrule.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<h3 id="version-specific-services">Version-specific services<a class="headerlink" href="#version-specific-services" title="Permanent link">&para;</a></h3>
+<p>Istio has the concept of a subset, defined through a <code>DestinationRule</code> resource.
+The Kubernetes Gateway API does not have that concept.
+Instead, one can define a subset of a service's endpoints by simply defining another service with a more specific selector.</p>
+<p>So, for the <code>customers</code> service, we can define two subsets by using the <code>version</code> label as a discriminator, like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-subsets.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
@@ -811,34 +814,58 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <span class="normal"><a href="#__codelineno-2-11">11</a></span>
 <span class="normal"><a href="#__codelineno-2-12">12</a></span>
 <span class="normal"><a href="#__codelineno-2-13">13</a></span>
-<span class="normal"><a href="#__codelineno-2-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nn">---</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DestinationRule</span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span>
+<span class="normal"><a href="#__codelineno-2-15">15</a></span>
+<span class="normal"><a href="#__codelineno-2-16">16</a></span>
+<span class="normal"><a href="#__codelineno-2-17">17</a></span>
+<span class="normal"><a href="#__codelineno-2-18">18</a></span>
+<span class="normal"><a href="#__codelineno-2-19">19</a></span>
+<span class="normal"><a href="#__codelineno-2-20">20</a></span>
+<span class="normal"><a href="#__codelineno-2-21">21</a></span>
+<span class="normal"><a href="#__codelineno-2-22">22</a></span>
+<span class="normal"><a href="#__codelineno-2-23">23</a></span>
+<span class="normal"><a href="#__codelineno-2-24">24</a></span>
+<span class="normal"><a href="#__codelineno-2-25">25</a></span>
+<span class="normal"><a href="#__codelineno-2-26">26</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nn">---</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="nt">metadata</span><span class="p">:</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="nt">subsets</span><span class="p">:</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="hll"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v1</span>
+</span><a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="nt">spec</span><span class="p">:</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="hll"><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+</span><a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="nn">---</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="nt">metadata</span><span class="p">:</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="hll"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v2</span>
+</span><a id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="nt">spec</span><span class="p">:</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="hll"><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span>
+</span><a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3000</span>
 </code></pre></div></td></tr></table></div>
 <ol>
 <li>
-<p>Apply the above destination rule to the cluster.</p>
+<p>Apply the above resources to the cluster.</p>
 </li>
 <li>
-<p>Verify that it's been applied.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>destinationrule
+<p>Verify that two new services <code>customers-v1</code> and <code>customers-v2</code> are now defined and present:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-o<span class="w"> </span>wide
 </code></pre></div>
 </li>
 </ol>
-<h3 id="virtualservices">VirtualServices<a class="headerlink" href="#virtualservices" title="Permanent link">&para;</a></h3>
-<p>Armed with two distinct destinations, the <code>VirtualService</code> custom resource allows us to define a routing rule that sends all traffic to the v1 subset.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-virtualservice.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<h3 id="httproutes">HttpRoutes<a class="headerlink" href="#httproutes" title="Permanent link">&para;</a></h3>
+<p>Armed with two distinct destinations, the <code>HttpRoute</code> custom resource allows us to define a routing rule that sends all traffic to the <code>customers-v1</code> Service.</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-route.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
@@ -850,28 +877,30 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <span class="normal"><a href="#__codelineno-4-10">10</a></span>
 <span class="normal"><a href="#__codelineno-4-11">11</a></span>
 <span class="normal"><a href="#__codelineno-4-12">12</a></span>
-<span class="normal"><a href="#__codelineno-4-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nn">---</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nn">---</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gateway.networking.k8s.io/v1beta1</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPRoute</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="nt">metadata</span><span class="p">:</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
 <a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">  </span><span class="nt">parentRefs</span><span class="p">:</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">backendRefs</span><span class="p">:</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v1</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 </code></pre></div></td></tr></table></div>
-<p>Above, note how the route specifies subset v1.</p>
+<p>Above, note how the targeted "backend ref" is the service <code>customers-v1</code>.</p>
 <ol>
 <li>
-<p>Apply the virtual service to the cluster.</p>
+<p>Apply the HttpRoute to the cluster.</p>
 </li>
 <li>
 <p>Verify that it's been applied.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>virtualservice<span class="w"> </span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>httproute
 </code></pre></div>
 </li>
 </ol>
@@ -953,7 +982,7 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <p>We wish to proceed with caution.  Before customers can see version 2, we want to make sure that the service functions properly.</p>
 <h2 id="expose-debug-traffic-to-v2">Expose "debug" traffic to v2<a class="headerlink" href="#expose-debug-traffic-to-v2" title="Permanent link">&para;</a></h2>
 <p>Review this proposed updated routing specification.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-vs-debug.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-route-debug.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
@@ -973,31 +1002,33 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <span class="normal"><a href="#__codelineno-9-18">18</a></span>
 <span class="normal"><a href="#__codelineno-9-19">19</a></span>
 <span class="normal"><a href="#__codelineno-9-20">20</a></span>
-<span class="normal"><a href="#__codelineno-9-21">21</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nn">---</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span>
+<span class="normal"><a href="#__codelineno-9-21">21</a></span>
+<span class="normal"><a href="#__codelineno-9-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nn">---</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gateway.networking.k8s.io/v1beta1</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPRoute</span>
 <a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="nt">metadata</span><span class="p">:</span>
 <a id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
 <a id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
-<a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">headers</span><span class="p">:</span>
-<a id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">        </span><span class="nt">user-agent</span><span class="p">:</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">          </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug</span>
-<a id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="w">    </span><span class="nt">route</span><span class="p">:</span>
-<a id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span>
-<a id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">  </span><span class="nt">parentRefs</span><span class="p">:</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">matches</span><span class="p">:</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">headers</span><span class="p">:</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Exact</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user-agent</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="w">        </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="w">    </span><span class="nt">backendRefs</span><span class="p">:</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v2</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">backendRefs</span><span class="p">:</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v1</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 </code></pre></div></td></tr></table></div>
 <p>We are telling Istio to check an HTTP header:  if the <code>user-agent</code> is set to <code>debug</code>, route to v2, otherwise route to v1.</p>
 <p>Open a new terminal and apply the above resource to the cluster; it will overwrite the currently defined VirtualService as both yaml files use the same resource name.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>customers-vs-debug.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>customers-route-debug.yaml
 </code></pre></div>
 <h3 id="test-it">Test it<a class="headerlink" href="#test-it" title="Permanent link">&para;</a></h3>
 <p>Open a browser and visit the application.</p>
@@ -1037,7 +1068,7 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <h2 id="canary">Canary<a class="headerlink" href="#canary" title="Permanent link">&para;</a></h2>
 <p>Well, v2 looks good; we decide to expose the new version to the public, but we're still prudent.</p>
 <p>Start by siphoning 10% of traffic over to v2.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-vs-canary.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-route-canary.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
@@ -1055,22 +1086,22 @@ Whereas version 1 returned a list of customer names, version 2 also includes eac
 <span class="normal"><a href="#__codelineno-13-16">16</a></span>
 <span class="normal"><a href="#__codelineno-13-17">17</a></span>
 <span class="normal"><a href="#__codelineno-13-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nn">---</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gateway.networking.k8s.io/v1beta1</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPRoute</span>
 <a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="nt">metadata</span><span class="p">:</span>
 <a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
 <a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span>
-<a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">  </span><span class="nt">parentRefs</span><span class="p">:</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">backendRefs</span><span class="p">:</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v2</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v1</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 <a id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 </code></pre></div></td></tr></table></div>
 <p>Above, note the <code>weight</code> field specifying 10 percent of traffic to subset <code>v2</code>.
@@ -1090,7 +1121,7 @@ Look at the request rate and the incoming success rate, also the latencies.</p>
 <p>If all looks good, up the percentage from 90/10 to, say 50/50.</p>
 <p>Watch the request volume change (you may need to click on the "refresh dashboard" button in the upper right-hand corner).</p>
 <p>Finally, switch all traffic over to v2.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-virtualservice-final.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1"> 1</a></span>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">customers-route-final.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-15-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-15-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-15-4"> 4</a></span>
@@ -1102,19 +1133,21 @@ Look at the request rate and the incoming success rate, also the latencies.</p>
 <span class="normal"><a href="#__codelineno-15-10">10</a></span>
 <span class="normal"><a href="#__codelineno-15-11">11</a></span>
 <span class="normal"><a href="#__codelineno-15-12">12</a></span>
-<span class="normal"><a href="#__codelineno-15-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nn">---</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span>
+<span class="normal"><a href="#__codelineno-15-13">13</a></span>
+<span class="normal"><a href="#__codelineno-15-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nn">---</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gateway.networking.k8s.io/v1beta1</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPRoute</span>
 <a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="nt">metadata</span><span class="p">:</span>
 <a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
 <a id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span>
-<a id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span>
-<a id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers.default.svc.cluster.local</span>
-<a id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">        </span><span class="nt">subset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">  </span><span class="nt">parentRefs</span><span class="p">:</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">backendRefs</span><span class="p">:</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customers-v2</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 </code></pre></div></td></tr></table></div>
 <p>After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).
 Within a minute or so, the Kiali dashboard should also reflect the fact that all traffic is going to the customers v2 service.</p>
@@ -1126,12 +1159,13 @@ Within a minute or so, the Kiali dashboard should also reflect the fact that all
 <ol>
 <li>
 <p>Delete the <code>customers</code> virtual service:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>virtualservice<span class="w"> </span>customers
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>httproute<span class="w"> </span>customers
 </code></pre></div>
 </li>
 <li>
 <p>Delete the destination rule for the customers service:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>destinationrule<span class="w"> </span>customers
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>service<span class="w"> </span>customers-v1
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>service<span class="w"> </span>customers-v2
 </code></pre></div>
 </li>
 <li>
@@ -1167,7 +1201,7 @@ Within a minute or so, the Kiali dashboard should also reflect the fact that all
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../security/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Security">
+          <a href="../traffic-shifting/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Traffic shifting">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -1177,20 +1211,20 @@ Within a minute or so, the Kiali dashboard should also reflect the fact that all
                 Previous
               </span>
               <div class="md-ellipsis">
-                Security
+                Traffic shifting
               </div>
             </div>
           </a>
         
         
           
-          <a href="../traffic-shifting-gwapi/" class="md-footer__link md-footer__link--next" aria-label="Next: Traffic shifting with the Gateway API">
+          <a href="../circuit-breakers/" class="md-footer__link md-footer__link--next" aria-label="Next: Circuit breakers">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Traffic shifting with the Gateway API
+                Circuit breakers
               </div>
             </div>
             <div class="md-footer__button md-icon">
