@@ -34,6 +34,7 @@ nav:
   - dashboards.md
   - security.md
   - traffic-shifting.md
+  - traffic-shifting-gwapi.md
   - circuit-breakers.md
   - Summary: summary.md
 markdown_extensions:

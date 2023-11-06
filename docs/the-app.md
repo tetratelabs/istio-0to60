@@ -115,6 +115,6 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 
 ## Next
 
-In the next lab, we expose the `web-frontend` using an Istio Ingress Gateway.
+In the next lab, we expose the `web-frontend` using an Istio Ingress Gateway.  Alternatively, you have the option of exploring the future Kubernetes API Gateway version of the Ingress lab.
 
 This will allow us to access this application on the web.
