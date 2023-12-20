@@ -23,7 +23,8 @@ Make a note of the external IP address for the load balancer.
 Assign it to an environment variable.
 
 ```{.shell .language-shell}
-export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+export GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway \
+    -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 !!! warning "When using K3D"
@@ -55,8 +56,8 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 
 Configuring ingress with Istio is performed in two parts:
 
-1. Define a `Gateway` custom resource that governs the specific host, port, and protocol to expose
-1. Specify how requests should be routed with a `VirtualService` custom resource.
+1. Define a `Gateway` Custom Resource that governs the specific host, port, and protocol to expose.
+1. Specify how requests should be routed with a `VirtualService` Custom Resource.
 
 ### Create a Gateway resource
 
@@ -69,7 +70,7 @@ Configuring ingress with Istio is performed in two parts:
 
     Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address `$GATEWAY_IP` will match.
 
-    The selector _istio: ingressgateway_ ensures that this gateway resource binds to the physical ingress gateway.
+    The selector _istio: ingressgateway_ selects the Envoy gateway workload to be configured, the one residing in the `istio-system` namespace.
 
 1. Apply the gateway resource to your cluster.
 
@@ -77,7 +78,13 @@ Configuring ingress with Istio is performed in two parts:
     kubectl apply -f gateway.yaml
     ```
 
-1. Attempt an HTTP request in your browser to the gateway IP address.  It should return a 404 (not found).
+1. Attempt an HTTP request in your browser to the gateway IP address.
+
+    ```shell
+    curl -v http://$GATEWAY_IP/
+    ```
+
+    It should return a 404: not found.
 
 ### Create a VirtualService resource
 
@@ -90,7 +97,7 @@ Configuring ingress with Istio is performed in two parts:
 
     Note how this specification references the name of the gateway ("frontend-gateway"), a matching host ("*"), and specifies a route for requests to be directed to the `web-frontend` service.
 
-1. Apply the virtual service resource to your cluster.
+1. Apply the VirtualService resource to your cluster.
 
     ```{.shell .language-shell}
     kubectl apply -f web-frontend-virtualservice.yaml
@@ -102,7 +109,7 @@ Configuring ingress with Istio is performed in two parts:
     kubectl get virtualservice
     ```
 
-    The output indicates that the virtual service named `web-frontend` is bound to the gateway, as well as any hostname that routes to the load balancer IP address.
+    The output indicates that the VirtualService named `web-frontend` is bound to the gateway `frontend-gateway`, as well as any hostname that routes to the load balancer IP address.
 
 Finally, verify that you can now access `web-frontend` from your web browser using the gateway IP address.
 
@@ -160,4 +167,4 @@ Finally, verify that you can now access `web-frontend` from your web browser usi
 
 The application is now running and exposed on the internet.
 
-In the next lab, we turn our attention to the observability features that are built in to Istio.
+In the next lab, we turn our attention to the observability features that are built into Istio.
