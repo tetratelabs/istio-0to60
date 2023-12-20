@@ -9,7 +9,7 @@ By default, Istio is configured such that when a service is deployed onto the me
 - Workloads are given an identity as a function of their associated service account and namespace.
 - An x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services.
 
-In the [observability](dashboards.md#kiali) lab, we looked at the Kiali dashboard and noted the lock icons indicating that traffic was secured with mTLS.
+In the [observability](dashboards.md#kiali) lab, we looked at the Kiali dashboard and noted the :material-lock: icons indicating that traffic was secured with mTLS.
 
 ### Can a workload receive plain-text requests?
 
@@ -87,8 +87,6 @@ The console output should indicate that the _connection was reset by peer_.
     kubectl exec deploy/sleep -c istio-proxy -- \
     openssl s_client -showcerts -connect customers:80 > cert.txt
     ```
-
-1. Edit `cert.txt` so that it contains only the certificate chain.
 
 1. Inspect the certificate with:
 
