@@ -22,7 +22,7 @@
           --network "default"
         ```
 
-    - Feel free to provision a K8S cluster on any infrastructure of your choosing.
+    - **Feel free to provision a K8S cluster on any infrastructure of your choosing.**
 
     Be sure to configure your `kubeconfig` file to point to your cluster.
 
