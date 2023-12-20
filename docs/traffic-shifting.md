@@ -43,9 +43,17 @@ We can inform Istio that two distinct subsets of the `customers` service exist, 
     kubectl get destinationrule
     ```
 
+It's also worthwhile to invoke the `istioctl x describe` command on the `customers` service:
+
+```shell
+istioctl x describe svc customers
+```
+
+Notice how the output references the newly-created subsets v1 and v2.
+
 ### VirtualServices
 
-Armed with two distinct destinations, the `VirtualService` custom resource allows us to define a routing rule that sends all traffic to the v1 subset.
+Armed with two distinct destinations, the `VirtualService` Custom Resource allows us to define a routing rule that sends all traffic to the v1 subset.
 
 ```yaml linenums="1" title="customers-virtualservice.yaml"
 --8<-- "traffic-shifting/customers-virtualservice.yaml"
@@ -60,6 +68,8 @@ Above, note how the route specifies subset v1.
     ```{.shell .language-shell}
     kubectl get virtualservice 
     ```
+
+We can now safely proceed to deploy v2, without having to worry about the new workload receiving traffic.
 
 ### Finally deploy customers, v2
 
@@ -166,7 +176,7 @@ Kiali should now show traffic going to both v1 and v2.
 - Apply the above resource.
 - In your browser:  undo the injection of the `user-agent` header, and refresh the page a bunch of times.
 
-In Kiali, under the _Display_ pulldown menu, you can turn on traffic distribution, to see how much traffic is sent to each subset.
+In Kiali, under the _Display_ pulldown menu, you can turn on "Traffic Distribution", to view the relative percentage of traffic sent to each subset.
 
 Most of the requests still go to v1, but some (10%) are directed to v2.
 
@@ -192,14 +202,14 @@ Finally, switch all traffic over to v2.
 --8<-- "traffic-shifting/customers-virtualservice-final.yaml"
 ```
 
-After you apply the above yaml, go to your browser and make sure all requests land on v2 (2-column output).
+After applying the above resource, go to your browser and make sure all requests land on v2 (two-column output).
 Within a minute or so, the Kiali dashboard should also reflect the fact that all traffic is going to the customers v2 service.
 
 Though it no longer receives any traffic, we decide to leave v1 running a while longer before retiring it.
 
 ## Going further
 
-Investigate [Flagger](https://flagger.app/){target=_blank}, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  [Here](https://github.com/eitansuez/istio-flagger) is an exploration of Flagger with Istio and its `bookinfo` sample application.
+Investigate [Flagger](https://flagger.app/){target=_blank}, an Istio-compatible tool that can be used to automate the process of progressive delivery (aka Canary rollouts).  [Here](https://github.com/eitansuez/istio-flagger){target=_blank} is an exploration of Flagger with Istio and its `bookinfo` sample application.
 
 ## Cleanup
 
