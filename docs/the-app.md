@@ -65,7 +65,7 @@ In this lab we will use automatic injection, which involves labeling the namespa
 Confirm that:
 
 - Two pods are running, one for each service
-- Each pod consists of two containers, the one running the service image, plus the Envoy sidecar
+- Each pod consists of two containers, one running the service image, the other runs the Envoy sidecar
 
     ```{.shell .language-shell}
     kubectl get pod
@@ -113,8 +113,11 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 
     The console output should show the start of an HTML page listing customers in an HTML table.
 
+The application is now deployed and functioning.
+
 ## Next
 
-In the next lab, we expose the `web-frontend` using an Istio Ingress Gateway.  Alternatively, you have the option of exploring the future Kubernetes API Gateway version of the Ingress lab.
+In the next lab, we expose the `web-frontend` using an Istio Ingress Gateway.  This will allow us to access this application on the web.
 
-This will allow us to access this application on the web.
+Alternatively, you have the option of exploring the future [Kubernetes API Gateway](https://gateway-api.sigs.k8s.io/){target=_blank} version of the Ingress lab.
+
