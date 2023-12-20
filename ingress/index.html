@@ -669,7 +669,8 @@
 </code></pre></div>
 <p>Make a note of the external IP address for the load balancer.</p>
 <p>Assign it to an environment variable.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>istio-ingressgateway<span class="w"> </span>-ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GATEWAY_IP</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>istio-ingressgateway<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>-ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">When using K3D</p>
@@ -693,8 +694,8 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 <h2 id="configuring-ingress">Configuring ingress<a class="headerlink" href="#configuring-ingress" title="Permanent link">&para;</a></h2>
 <p>Configuring ingress with Istio is performed in two parts:</p>
 <ol>
-<li>Define a <code>Gateway</code> custom resource that governs the specific host, port, and protocol to expose</li>
-<li>Specify how requests should be routed with a <code>VirtualService</code> custom resource.</li>
+<li>Define a <code>Gateway</code> Custom Resource that governs the specific host, port, and protocol to expose.</li>
+<li>Specify how requests should be routed with a <code>VirtualService</code> Custom Resource.</li>
 </ol>
 <h3 id="create-a-gateway-resource">Create a Gateway resource<a class="headerlink" href="#create-a-gateway-resource" title="Permanent link">&para;</a></h3>
 <ol>
@@ -734,7 +735,7 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </code></pre></div></td></tr></table></div>
 </div>
 <p>Above, we specify the HTTP protocol, port 80, and a wildcard ("*") host matcher which ensures that HTTP requests using the load balancer IP address <code>$GATEWAY_IP</code> will match.</p>
-<p>The selector <em>istio: ingressgateway</em> ensures that this gateway resource binds to the physical ingress gateway.</p>
+<p>The selector <em>istio: ingressgateway</em> selects the Envoy gateway workload to be configured, the one residing in the <code>istio-system</code> namespace.</p>
 </li>
 <li>
 <p>Apply the gateway resource to your cluster.</p>
@@ -742,7 +743,10 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </code></pre></div>
 </li>
 <li>
-<p>Attempt an HTTP request in your browser to the gateway IP address.  It should return a 404 (not found).</p>
+<p>Attempt an HTTP request in your browser to the gateway IP address.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>curl<span class="w"> </span>-v<span class="w"> </span>http://<span class="nv">$GATEWAY_IP</span>/
+</code></pre></div>
+<p>It should return a 404: not found.</p>
 </li>
 </ol>
 <h3 id="create-a-virtualservice-resource">Create a VirtualService resource<a class="headerlink" href="#create-a-virtualservice-resource" title="Permanent link">&para;</a></h3>
@@ -751,51 +755,51 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 <p>Review the following VirtualService specification.</p>
 <details class="tldr" open="open">
 <summary>web-frontend-virtualservice.yaml</summary>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-7-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-7-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-7-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-7-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-7-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-7-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-7-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-7-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-7-10">10</a></span>
-<span class="normal"><a href="#__codelineno-7-11">11</a></span>
-<span class="normal"><a href="#__codelineno-7-12">12</a></span>
-<span class="normal"><a href="#__codelineno-7-13">13</a></span>
-<span class="normal"><a href="#__codelineno-7-14">14</a></span>
-<span class="normal"><a href="#__codelineno-7-15">15</a></span>
-<span class="normal"><a href="#__codelineno-7-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nn">---</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="nt">metadata</span><span class="p">:</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">  </span><span class="nt">gateways</span><span class="p">:</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend.default.svc.cluster.local</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="w">        </span><span class="nt">port</span><span class="p">:</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="w">          </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-8-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-8-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-8-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-8-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-8-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-8-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-8-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-8-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-8-10">10</a></span>
+<span class="normal"><a href="#__codelineno-8-11">11</a></span>
+<span class="normal"><a href="#__codelineno-8-12">12</a></span>
+<span class="normal"><a href="#__codelineno-8-13">13</a></span>
+<span class="normal"><a href="#__codelineno-8-14">14</a></span>
+<span class="normal"><a href="#__codelineno-8-15">15</a></span>
+<span class="normal"><a href="#__codelineno-8-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nn">---</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VirtualService</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="nt">metadata</span><span class="p">:</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="nt">spec</span><span class="p">:</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">  </span><span class="nt">gateways</span><span class="p">:</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w">  </span><span class="nt">http</span><span class="p">:</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">route</span><span class="p">:</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-frontend.default.svc.cluster.local</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="w">        </span><span class="nt">port</span><span class="p">:</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="w">          </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 </code></pre></div></td></tr></table></div>
 </details>
 <p>Note how this specification references the name of the gateway ("frontend-gateway"), a matching host ("*"), and specifies a route for requests to be directed to the <code>web-frontend</code> service.</p>
 </li>
 <li>
-<p>Apply the virtual service resource to your cluster.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>web-frontend-virtualservice.yaml
+<p>Apply the VirtualService resource to your cluster.</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>web-frontend-virtualservice.yaml
 </code></pre></div>
 </li>
 <li>
 <p>List virtual services in the default namespace.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>virtualservice
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>virtualservice
 </code></pre></div>
-<p>The output indicates that the virtual service named <code>web-frontend</code> is bound to the gateway, as well as any hostname that routes to the load balancer IP address.</p>
+<p>The output indicates that the VirtualService named <code>web-frontend</code> is bound to the gateway <code>frontend-gateway</code>, as well as any hostname that routes to the load balancer IP address.</p>
 </li>
 </ol>
 <p>Finally, verify that you can now access <code>web-frontend</code> from your web browser using the gateway IP address.</p>
@@ -808,72 +812,72 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 <ol>
 <li>
 <p>Generate a self-signed root certificate in the folder <code>example_certs</code></p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mkdir<span class="w"> </span>example_certs
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>openssl<span class="w"> </span>req<span class="w"> </span>-x509<span class="w"> </span>-sha256<span class="w"> </span>-nodes<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-newkey<span class="w"> </span>rsa:2048<span class="w"> </span>-subj<span class="w"> </span><span class="s1">&#39;/O=example Inc./CN=example.com&#39;</span><span class="w"> </span>-keyout<span class="w"> </span>example_certs/example.com.key<span class="w"> </span>-out<span class="w"> </span>example_certs/example.com.crt
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>mkdir<span class="w"> </span>example_certs
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>openssl<span class="w"> </span>req<span class="w"> </span>-x509<span class="w"> </span>-sha256<span class="w"> </span>-nodes<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-newkey<span class="w"> </span>rsa:2048<span class="w"> </span>-subj<span class="w"> </span><span class="s1">&#39;/O=example Inc./CN=example.com&#39;</span><span class="w"> </span>-keyout<span class="w"> </span>example_certs/example.com.key<span class="w"> </span>-out<span class="w"> </span>example_certs/example.com.crt
 </code></pre></div>
 </li>
 <li>
 <p>Generate a certificate and private key for the hostname <code>webfrontend.example.com</code>:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>openssl<span class="w"> </span>req<span class="w"> </span>-out<span class="w"> </span>example_certs/webfrontend.example.com.csr<span class="w"> </span>-newkey<span class="w"> </span>rsa:2048<span class="w"> </span>-nodes<span class="w"> </span>-keyout<span class="w"> </span>example_certs/webfrontend.example.com.key<span class="w"> </span>-subj<span class="w"> </span><span class="s2">&quot;/CN=webfrontend.example.com/O=webfrontend organization&quot;</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-sha256<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-CA<span class="w"> </span>example_certs/example.com.crt<span class="w"> </span>-CAkey<span class="w"> </span>example_certs/example.com.key<span class="w"> </span>-set_serial<span class="w"> </span><span class="m">0</span><span class="w"> </span>-in<span class="w"> </span>example_certs/webfrontend.example.com.csr<span class="w"> </span>-out<span class="w"> </span>example_certs/webfrontend.example.com.crt
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>openssl<span class="w"> </span>req<span class="w"> </span>-out<span class="w"> </span>example_certs/webfrontend.example.com.csr<span class="w"> </span>-newkey<span class="w"> </span>rsa:2048<span class="w"> </span>-nodes<span class="w"> </span>-keyout<span class="w"> </span>example_certs/webfrontend.example.com.key<span class="w"> </span>-subj<span class="w"> </span><span class="s2">&quot;/CN=webfrontend.example.com/O=webfrontend organization&quot;</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-sha256<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-CA<span class="w"> </span>example_certs/example.com.crt<span class="w"> </span>-CAkey<span class="w"> </span>example_certs/example.com.key<span class="w"> </span>-set_serial<span class="w"> </span><span class="m">0</span><span class="w"> </span>-in<span class="w"> </span>example_certs/webfrontend.example.com.csr<span class="w"> </span>-out<span class="w"> </span>example_certs/webfrontend.example.com.crt
 </code></pre></div>
 </li>
 </ol>
 </li>
 <li>
 <p>Store the certificate as a secret in your Kubernetes cluster:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>secret<span class="w"> </span>tls<span class="w"> </span>webfrontend-credential<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>--key<span class="o">=</span>example_certs/webfrontend.example.com.key<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>--cert<span class="o">=</span>example_certs/webfrontend.example.com.crt
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>secret<span class="w"> </span>tls<span class="w"> </span>webfrontend-credential<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--key<span class="o">=</span>example_certs/webfrontend.example.com.key<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>--cert<span class="o">=</span>example_certs/webfrontend.example.com.crt
 </code></pre></div>
 </li>
 <li>
 <p>Revise the gateway configuration to listen on port 443, and to reference the secret that the envoy listeners will present to incoming requests:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-13-10">10</a></span>
-<span class="normal"><a href="#__codelineno-13-11">11</a></span>
-<span class="normal"><a href="#__codelineno-13-12">12</a></span>
-<span class="normal"><a href="#__codelineno-13-13">13</a></span>
-<span class="normal"><a href="#__codelineno-13-14">14</a></span>
-<span class="normal"><a href="#__codelineno-13-15">15</a></span>
-<span class="normal"><a href="#__codelineno-13-16">16</a></span>
-<span class="normal"><a href="#__codelineno-13-17">17</a></span>
-<span class="normal"><a href="#__codelineno-13-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nn">---</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gateway</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="nt">metadata</span><span class="p">:</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">    </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span>
-<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">  </span><span class="nt">servers</span><span class="p">:</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="hll"><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span>
-</span><a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="hll"><span class="w">      </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span>
-</span><a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="hll"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https</span>
-</span><a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="hll"><span class="w">      </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPS</span>
-</span><a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="hll"><span class="w">    </span><span class="nt">tls</span><span class="p">:</span>
-</span><a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="hll"><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SIMPLE</span>
-</span><a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="hll"><span class="w">      </span><span class="nt">credentialName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webfrontend-credential</span>
-</span><a id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="hll"><span class="w">    </span><span class="nt">hosts</span><span class="p">:</span>
-</span><a id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="hll"><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webfrontend.example.com</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-14-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-14-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-14-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-14-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-14-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-14-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-14-10">10</a></span>
+<span class="normal"><a href="#__codelineno-14-11">11</a></span>
+<span class="normal"><a href="#__codelineno-14-12">12</a></span>
+<span class="normal"><a href="#__codelineno-14-13">13</a></span>
+<span class="normal"><a href="#__codelineno-14-14">14</a></span>
+<span class="normal"><a href="#__codelineno-14-15">15</a></span>
+<span class="normal"><a href="#__codelineno-14-16">16</a></span>
+<span class="normal"><a href="#__codelineno-14-17">17</a></span>
+<span class="normal"><a href="#__codelineno-14-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nn">---</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.istio.io/v1alpha3</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gateway</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="nt">metadata</span><span class="p">:</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frontend-gateway</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="nt">spec</span><span class="p">:</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="w">    </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingressgateway</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="w">  </span><span class="nt">servers</span><span class="p">:</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="hll"><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span>
+</span><a id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="hll"><span class="w">      </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span>
+</span><a id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="hll"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https</span>
+</span><a id="__codelineno-14-13" name="__codelineno-14-13"></a><span class="hll"><span class="w">      </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HTTPS</span>
+</span><a id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="hll"><span class="w">    </span><span class="nt">tls</span><span class="p">:</span>
+</span><a id="__codelineno-14-15" name="__codelineno-14-15"></a><span class="hll"><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SIMPLE</span>
+</span><a id="__codelineno-14-16" name="__codelineno-14-16"></a><span class="hll"><span class="w">      </span><span class="nt">credentialName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webfrontend-credential</span>
+</span><a id="__codelineno-14-17" name="__codelineno-14-17"></a><span class="hll"><span class="w">    </span><span class="nt">hosts</span><span class="p">:</span>
+</span><a id="__codelineno-14-18" name="__codelineno-14-18"></a><span class="hll"><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webfrontend.example.com</span>
 </span></code></pre></div></td></tr></table></div>
 </li>
 <li>
 <p>Apply the revised gateway configuration:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>gateway-tls.yaml
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>gateway-tls.yaml
 </code></pre></div>
 </li>
 <li>
 <p>Test your implementation by making a request to the ingress gateway:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl<span class="w"> </span>-k<span class="w"> </span>https://webfrontend.example.com/<span class="w"> </span>--resolve<span class="w"> </span>webfrontend.example.com:443:<span class="nv">$GATEWAY_IP</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>-k<span class="w"> </span>https://webfrontend.example.com/<span class="w"> </span>--resolve<span class="w"> </span>webfrontend.example.com:443:<span class="nv">$GATEWAY_IP</span>
 </code></pre></div>
 </li>
 </ol>
@@ -881,7 +885,7 @@ For the sake of simplicity, in this workshop we will use the gateway public IP a
 </div>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
 <p>The application is now running and exposed on the internet.</p>
-<p>In the next lab, we turn our attention to the observability features that are built in to Istio.</p>
+<p>In the next lab, we turn our attention to the observability features that are built into Istio.</p>
 
 
 

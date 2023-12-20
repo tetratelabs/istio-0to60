@@ -878,7 +878,7 @@
 <ul>
 <li>Two pods are running, one for each service</li>
 <li>
-<p>Each pod consists of two containers, the one running the service image, plus the Envoy sidecar</p>
+<p>Each pod consists of two containers, one running the service image, the other runs the Envoy sidecar</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pod
 </code></pre></div>
 </li>
@@ -1047,9 +1047,10 @@ The Istio distribution provides a sample app called <code>sleep</code> that will
 <p>The console output should show the start of an HTML page listing customers in an HTML table.</p>
 </li>
 </ol>
+<p>The application is now deployed and functioning.</p>
 <h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
-<p>In the next lab, we expose the <code>web-frontend</code> using an Istio Ingress Gateway.  Alternatively, you have the option of exploring the future Kubernetes API Gateway version of the Ingress lab.</p>
-<p>This will allow us to access this application on the web.</p>
+<p>In the next lab, we expose the <code>web-frontend</code> using an Istio Ingress Gateway.  This will allow us to access this application on the web.</p>
+<p>Alternatively, you have the option of exploring the future <a href="https://gateway-api.sigs.k8s.io/" target="_blank">Kubernetes API Gateway</a> version of the Ingress lab.</p>
 
 
 

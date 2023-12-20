@@ -733,7 +733,7 @@
 <li>Workloads are given an identity as a function of their associated service account and namespace.</li>
 <li>An x.509 certificate is issued to the workload (and regularly rotated) and used to identify the workload in calls to other services.</li>
 </ul>
-<p>In the <a href="../dashboards/#kiali">observability</a> lab, we looked at the Kiali dashboard and noted the lock icons indicating that traffic was secured with mTLS.</p>
+<p>In the <a href="../dashboards/#kiali">observability</a> lab, we looked at the Kiali dashboard and noted the <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2h1m-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3Z"/></svg></span> icons indicating that traffic was secured with mTLS.</p>
 <h3 id="can-a-workload-receive-plain-text-requests">Can a workload receive plain-text requests?<a class="headerlink" href="#can-a-workload-receive-plain-text-requests" title="Permanent link">&para;</a></h3>
 <p>We can test whether a mesh workload, such as the <code>customers</code> service, will allow a plain-text request as follows:</p>
 <ol>
@@ -814,9 +814,6 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>deploy/sleep<span class="w"> </span>-c<span class="w"> </span>istio-proxy<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>openssl<span class="w"> </span>s_client<span class="w"> </span>-showcerts<span class="w"> </span>-connect<span class="w"> </span>customers:80<span class="w"> </span>&gt;<span class="w"> </span>cert.txt
 </code></pre></div>
-</li>
-<li>
-<p>Edit <code>cert.txt</code> so that it contains only the certificate chain.</p>
 </li>
 <li>
 <p>Inspect the certificate with:</p>
