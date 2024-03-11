@@ -26,7 +26,7 @@ The `istioctl` CLI is located in the `bin/` subdirectory.
 
     Cloud Shell only preserves files located inside your home directory across sessions.
 
-    This means that if you install a binary to a `PATH` such as `/usr/local/bin`, after your session times out that file will no longer be there!
+    This means that if you install a binary to a `PATH` such as `/usr/local/bin`, after your session times out that file may no longer be there!
 
     As a workaround, you will add `${HOME}/bin` to your `PATH` and place the binary there.
 
