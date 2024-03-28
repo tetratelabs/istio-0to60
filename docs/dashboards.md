@@ -210,11 +210,11 @@ Close the Prometheus dashboard and terminate the corresponding `istioctl dashboa
     istioctl dashboard grafana
     ```
 
-1. From the sidebar, select _Dashboards_ --> _Browse_
+1. From the sidebar, select _Dashboards_
 1. Click on the folder named _Istio_ to reveal pre-designed Istio-specific Grafana dashboards
-1. Explore the Istio Mesh Dashboard.  Note the Global Request Volume and Global Success Rate.
-1. Explore the Istio Service Dashboard.  First select the service `web-frontend` and inspect its metrics, then switch to the `customers` service and review its dashboard.
-1. Explore the Istio Workload Dashboard.  Select the `web-frontend` workload.  Look at Outbound Services and note the outbound requests to the customers service.  Select the `customers` workload and note that it makes no Oubtound Services calls.
+1. Explore the _Istio Mesh Dashboard_.  Note the Global Request Volume and Global Success Rate.
+1. Explore the _Istio Service Dashboard_.  First select the service `web-frontend` and inspect its metrics, then switch to the `customers` service and review its dashboard.
+1. Explore the _Istio Workload Dashboard_.  Select the `web-frontend` workload.  Look at Outbound Services and note the outbound requests to the customers service.  Select the `customers` workload and note that it makes no Outbound Services calls.
 
 Feel free to further explore these dashboards.
 
