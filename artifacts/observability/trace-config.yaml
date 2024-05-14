@@ -1,0 +1,15 @@
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  profile: default
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        sampling: 100.0
+    extensionProviders:
+    - name: zipkin
+      zipkin:
+        service: zipkin.istio-system.svc.cluster.local
+        port: 9411

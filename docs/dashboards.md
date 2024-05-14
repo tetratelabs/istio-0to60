@@ -39,6 +39,22 @@ These addons are located in the `samples/addons/` folder of the distribution.
     kubectl apply -f kiali.yaml
     ```
 
+1. To enable distributed tracing, we must explicitly define a provider, and enable it in the mesh, as follows:
+
+    ```yaml linenums="1"
+    --8<-- "observability/trace-config.yaml"
+    ```
+
+    ```shell
+    istioctl install -f observability/trace-config.yaml
+    ```
+
+    Then:
+
+    ```shell
+    kubectl apply -f observability/enable-tracing.yaml
+    ```
+
 1. Verify that the `istio-system` namespace is now running additional workloads for each of the addons.
 
     ```{.shell .language-shell}
@@ -123,17 +139,6 @@ The Zipkin dashboard displays.
 
 - Click on the red '+' button and select _serviceName_.
 - Select the service named `web-frontend.default` and click on the _Run Query_ button (lightblue) on the right.
-
-!!! warning "Trace Sampling"
-
-    When you installed Istio at the start of this workshop, the default configuration uses the [default profile, which sets trace sampling to 1% of requests](https://github.com/istio/istio/blob/master/manifests/profiles/default.yaml#L121){target=_blank}.
-
-    If you wish to increase the trace sampling percentage to capture more distributed traces, you can upgrade the Istio installation with the following command:
-
-    ```{.shell .language-shell}
-    istioctl install --set values.pilot.traceSampling=100
-    ```
-
 
 A number of query results will display.  Each row is expandable and will display more detail in terms of the services participating in that particular trace.
 

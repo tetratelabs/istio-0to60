@@ -13,7 +13,7 @@ Rather than use the Istio native `Gateway` and `VirtualService` resources, in th
 Install the Kubernetes Gateway API Custom Resource Definitions (CRDs):
 
 ```shell
-kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.0.0" | kubectl apply -f -
+kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0" | kubectl apply -f -
 ```
 
 ## The Ingress gateway
