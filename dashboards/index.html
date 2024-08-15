@@ -855,7 +855,7 @@
 <ol>
 <li>
 <p>Navigate to the addons directory</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/istio-1.22.3/samples/addons
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/istio-1.23.0/samples/addons
 </code></pre></div>
 </li>
 <li>
@@ -941,7 +941,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 <p>The Kiali dashboard displays.</p>
 <p>Customize the view as follows:</p>
 <ol>
-<li>Select the <em>Graph</em> section from the sidebar.</li>
+<li>Select the <em>Traffic Graph</em> section from the sidebar.</li>
 <li>Under <em>Select Namespaces</em> (at the top of the page), select the <code>default</code> namespace, the location where the application's pods are running.</li>
 <li>From the third "pulldown" menu, select <em>App graph</em>.</li>
 <li>From the <em>Display</em> "pulldown", toggle on <em>Traffic Animation</em> and <em>Security</em>.</li>
@@ -987,7 +987,7 @@ press <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd c
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Why port 15020?</p>
-<p>See <a href="https://istio.io/latest/docs/ops/deployment/requirements/#ports-used-by-istio" target="_blank">Ports used by Istio</a> sidecar proxy.</p>
+<p>See <a href="https://istio.io/latest/docs/ops/deployment/application-requirements/#ports-used-by-istio" target="_blank">Ports used by Istio</a> sidecar proxy.</p>
 </div>
 <p>The list of metrics returned by the endpoint is rather lengthy, so we just peek at "istio_requests" metric.  The full response contains many more metrics.</p>
 </li>

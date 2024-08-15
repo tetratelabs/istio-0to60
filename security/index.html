@@ -803,7 +803,7 @@
 </li>
 <li>
 <p>Call the customer service from that pod:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>other-ns<span class="w"> </span>deploy/sleep<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>customers.default
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>other-ns<span class="w"> </span>deploy/sleep<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>customers.default<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </code></pre></div>
 </li>
 </ol>
@@ -861,7 +861,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <li>
 <p>Capture the certificate returned by the <code>customers</code> workload:</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>deploy/sleep<span class="w"> </span>-c<span class="w"> </span>istio-proxy<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>openssl<span class="w"> </span>s_client<span class="w"> </span>-showcerts<span class="w"> </span>-connect<span class="w"> </span>customers:80<span class="w"> </span>&gt;<span class="w"> </span>cert.txt
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>openssl<span class="w"> </span>s_client<span class="w"> </span>-showcerts<span class="w"> </span>-connect<span class="w"> </span>customers:80<span class="w"> </span>&gt;<span class="w"> </span>cert.txt
 </code></pre></div>
 </li>
 <li>
@@ -921,7 +921,7 @@ This is called <em>permissive mode</em> and is specifically designed to allow se
 <ol>
 <li>
 <p>Call the <code>customers</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>deploy/sleep<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>deploy/sleep<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>customers<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </code></pre></div>
 </li>
 <li>

@@ -1065,7 +1065,7 @@ The Istio distribution provides a sample app called <code>sleep</code> that will
 </li>
 <li>
 <p>Use the <code>kubectl exec</code> command to call the <code>customers</code> service.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>deploy/sleep<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>customers
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>deploy/sleep<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>customers<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </code></pre></div>
 <p>The console output should show a list of customers in JSON format.</p>
 </li>

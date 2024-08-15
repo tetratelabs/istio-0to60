@@ -739,7 +739,7 @@
 </ol>
 <h2 id="deploy-the-helloworld-sample">Deploy the <code>helloworld</code> sample<a class="headerlink" href="#deploy-the-helloworld-sample" title="Permanent link">&para;</a></h2>
 <p>The Istio distribution comes with a sample application "helloworld".</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>~/istio-1.22.3
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>~/istio-1.23.0
 </code></pre></div>
 <p>Deploy <code>helloworld</code> to the default namespace.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>samples/helloworld/helloworld.yaml
@@ -768,7 +768,7 @@
 </code></pre></div>
 <p>The <code>istioctl</code> CLI's diagnostic command <code>proxy-config</code> will help us inspect the configuration of proxies.</p>
 <p>Envoy's term for a service is "cluster".</p>
-<p>Confirm that <code>sleep</code> knows about other services (<code>helloworld</code>, <code>customers</code>, etc..):</p>
+<p>Confirm that <code>sleep</code> knows about other services (<code>helloworld</code>, mainly):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>istioctl<span class="w"> </span>proxy-config<span class="w"> </span>clusters<span class="w"> </span>deploy/sleep
 </code></pre></div>
 <p>List the endpoints backing each "cluster":</p>
