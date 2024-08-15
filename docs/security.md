@@ -36,7 +36,7 @@ We can test whether a mesh workload, such as the `customers` service, will allow
 1. Call the customer service from that pod:
 
     ```{.shell .language-shell}
-    kubectl exec -n other-ns deploy/sleep -- curl -s customers.default
+    kubectl exec -n other-ns deploy/sleep -- curl -s customers.default | jq
     ```
 
 The output is a JSON-formatted list of customers.
@@ -85,7 +85,7 @@ The console output should indicate that the _connection was reset by peer_.
 
     ```{.shell .language-shell}
     kubectl exec deploy/sleep -c istio-proxy -- \
-    openssl s_client -showcerts -connect customers:80 > cert.txt
+      openssl s_client -showcerts -connect customers:80 > cert.txt
     ```
 
 1. Inspect the certificate with:
@@ -154,7 +154,7 @@ At the moment, any container can, for example, call the customers service or the
 1. Call the `customers` service.
 
     ```{.shell .language-shell}
-    kubectl exec deploy/sleep -- curl -s customers
+    kubectl exec deploy/sleep -- curl -s customers | jq
     ```
 
 1. Call the `web-frontend` service.

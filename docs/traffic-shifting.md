@@ -144,7 +144,7 @@ The `user-agent` header can be included in a request in a number of ways:
 
     Refresh the page; traffic should be directed to v2.
 
-=== "`curl`"
+===+ "`curl`"
 
     ```{.shell .language-shell}
     curl -H "user-agent: debug" http://$GATEWAY_IP

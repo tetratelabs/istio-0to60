@@ -63,8 +63,6 @@ Here is the salient part:
     - --proxyLogLevel=warning
     - --proxyComponentLogLevel=misc:error
     - --log_output_level=default:info
-    - --concurrency
-    - "2"
     env:
     - ...
 ```
@@ -97,8 +95,7 @@ pilot-agent proxy sidecar \
     --domain $(POD_NAMESPACE).svc.cluster.local \
     --proxyLogLevel=warning \
     --proxyComponentLogLevel=misc:error \
-    --log_output_level=default:info \
-    --concurrency "2"
+    --log_output_level=default:info
 ```
 
 ## Apply the manifest

@@ -309,7 +309,7 @@ The circuit breaker is great when we want to protect the services from a sudden 
 
 For example, if we have a service that is still failing after multiple requests, it doesn't make sense to send even more requests to it. Instead, we can remove the instance of the failing service from the load balancing pool for a certain period of time. That way, we know that the requests will go to other instances of the service. After a pre-defined period of time, we can bring the failing service back into the load balancing pool.
 
-This process is called [outlier detection](https://www.envoyproxy.io/docs/envoy/v1.27.0/intro/arch_overview/upstream/outlier){target=_blank}. Just like in the connection pool settings, we can configure outlier detection in the DestinationRule.
+This process is called [outlier detection](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/outlier){target=_blank}. Just like in the connection pool settings, we can configure outlier detection in the DestinationRule.
 
 To see the outlier detection in action we need a service that is failing. We'll create a `web-frontend-failing` deployment and configure it to return HTTP 503 responses:
 

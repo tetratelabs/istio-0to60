@@ -104,7 +104,7 @@ The Kiali dashboard displays.
 
 Customize the view as follows:
 
-1. Select the _Graph_ section from the sidebar.
+1. Select the _Traffic Graph_ section from the sidebar.
 1. Under _Select Namespaces_ (at the top of the page), select the `default` namespace, the location where the application's pods are running.
 1. From the third "pulldown" menu, select _App graph_.
 1. From the _Display_ "pulldown", toggle on _Traffic Animation_ and _Security_.
@@ -170,7 +170,7 @@ With Istio, this is done automatically by the Envoy sidecar.
 
     !!! info "Why port 15020?"
 
-        See [Ports used by Istio](https://istio.io/latest/docs/ops/deployment/requirements/#ports-used-by-istio){target=_blank} sidecar proxy.
+        See [Ports used by Istio](https://istio.io/latest/docs/ops/deployment/application-requirements/#ports-used-by-istio){target=_blank} sidecar proxy.
 
 
     The list of metrics returned by the endpoint is rather lengthy, so we just peek at "istio_requests" metric.  The full response contains many more metrics.

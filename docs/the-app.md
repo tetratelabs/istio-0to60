@@ -100,7 +100,7 @@ The Istio distribution provides a sample app called `sleep` that will serve this
 1. Use the `kubectl exec` command to call the `customers` service.
 
     ```{.shell .language-shell}
-    kubectl exec deploy/sleep -- curl -s customers
+    kubectl exec deploy/sleep -- curl -s customers | jq
     ```
 
     The console output should show a list of customers in JSON format.

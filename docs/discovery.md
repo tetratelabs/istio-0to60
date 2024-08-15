@@ -93,7 +93,7 @@ The `istioctl` CLI's diagnostic command `proxy-config` will help us inspect the 
 
 Envoy's term for a service is "cluster".
 
-Confirm that `sleep` knows about other services (`helloworld`, `customers`, etc..):
+Confirm that `sleep` knows about other services (`helloworld`, mainly):
 
 ```shell
 istioctl proxy-config clusters deploy/sleep
