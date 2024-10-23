@@ -81,7 +81,7 @@ Configuring ingress with Istio is performed in two parts:
 1. Attempt an HTTP request in your browser to the gateway IP address.
 
     ```shell
-    curl -v http://$GATEWAY_IP/
+    curl -sv http://$GATEWAY_IP/ | head
     ```
 
     It should return a 404: not found.

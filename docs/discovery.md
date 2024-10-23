@@ -76,7 +76,7 @@ The output can be prettified, and filtered (to highlight the list of host names 
 
 ```shell
 kubectl exec -n istio-system deploy/istiod -- \
-  curl -s localhost:15014/debug/registryz | jq .[].hostname
+  curl -s localhost:15014/debug/registryz | jq '.[].hostname'
 ```
 
 Confirm that the `helloworld` service is listed in the output.

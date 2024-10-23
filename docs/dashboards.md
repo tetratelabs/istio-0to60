@@ -41,7 +41,7 @@ These addons are located in the `samples/addons/` folder of the distribution.
 
 1. To enable distributed tracing, we must explicitly define a provider, and enable it in the mesh, as follows:
 
-    ```yaml linenums="1"
+    ```yaml linenums="1" title="trace-config.yaml"
     --8<-- "observability/trace-config.yaml"
     ```
 
@@ -50,6 +50,10 @@ These addons are located in the `samples/addons/` folder of the distribution.
     ```
 
     Then:
+
+    ```yaml linenums="1" title="enable-tracing.yaml"
+    --8<-- "observability/enable-tracing.yaml"
+    ```
 
     ```shell
     kubectl apply -f observability/enable-tracing.yaml
@@ -164,7 +168,7 @@ With Istio, this is done automatically by the Envoy sidecar.
 1. Run the following command:
 
     ```{.shell .language-shell}
-    kubectl exec svc/customers -- curl -s localhost:15020/stats/prometheus \
+    kubectl exec svc/web-frontend -- wget -qO - localhost:15020/stats/prometheus \
       | grep istio_requests
     ```
 
